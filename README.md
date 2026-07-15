@@ -65,14 +65,15 @@ PHP 내장 서버는 Range를 지원하지 않아 이 라우터 없이는 `<vide
 - `preview.html` — 메인
 - `preview-detail.html` — 콘텐츠 상세
 - `preview-watch-drama.html` / `preview-watch-movie.html` — 드라마/영화 재생
-- `preview-player.html` — 쇼츠(세로) 재생
+- `preview-player.html` — 쇼츠(세로) 재생 · 위로 드래그(스와이프/휠)하면 다음 쇼츠가 아래에서 올라오는 세로 피드
 - `preview-login.html` — 로그인/회원가입(단일 페이지 3단계)
 
 `preview*.html`은 QA 확인용으로 블레이드 출력을 정적으로 재현한 파일입니다.
 마크업 수정은 반드시 블레이드 템플릿(`resources/views/`)에서 하세요.
 
 ### 테스트 영상
-`public/videos/`의 `drama01.mp4`·`cow_story.mp4`는 데모용 더미 영상입니다.
+`public/videos/`의 `drama01.mp4`·`cow_story.mp4`·`shot01.mp4`는 데모용 더미 영상입니다.
+(`cow_story`·`shot01` = 쇼츠 세로 피드 1·2번째, `drama01` = 드라마/영화 재생)
 실서비스 연동 시 스트리밍 URL로 교체하세요.
 
 ## 사용 폰트 (CDN)

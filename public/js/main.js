@@ -514,9 +514,13 @@
      * - 진행바 : timeupdate 로 실시간 갱신, 클릭/드래그로 구간 이동(시킹)
      */
     function initPlayerVideo() {
-        var video = document.querySelector('.js-player-video');
-        if (!video) { return; }
+        var videos = document.querySelectorAll('.js-player-video');
+        if (!videos.length) { return; }
+        // 세로 피드에서 슬라이드마다 영상이 있으므로 각 영상을 독립적으로 제어
+        Array.prototype.forEach.call(videos, setupPlayerVideo);
+    }
 
+    function setupPlayerVideo(video) {
         var wrap = video.closest('.player__video');
         var playBtn = wrap.querySelector('.player__play');
         var muteBtn = wrap.querySelector('.js-player-mute');
@@ -814,35 +818,169 @@
         var player = document.querySelector('.player');
         if (!player) { return; }
 
-        var toggle = player.querySelector('.js-comments-toggle');
+        // 세로 피드에서는 슬라이드마다 댓글 버튼이 있으므로 모두 공유 패널에 연결
+        var toggles = player.querySelectorAll('.js-comments-toggle');
         var panel = player.querySelector('.player__comments');
-        if (!toggle || !panel) { return; }
+        if (!toggles.length || !panel) { return; }
 
         var closeBtn = panel.querySelector('.js-comments-close');
+        var lastToggle = toggles[0];
 
         function setOpen(open) {
             player.classList.toggle('is-comments', open);
-            toggle.setAttribute('aria-expanded', String(open));
+            Array.prototype.forEach.call(toggles, function (t) {
+                t.setAttribute('aria-expanded', String(open));
+            });
             panel.setAttribute('aria-hidden', String(!open));
         }
 
-        toggle.addEventListener('click', function () {
-            setOpen(!player.classList.contains('is-comments'));
+        Array.prototype.forEach.call(toggles, function (toggle) {
+            toggle.addEventListener('click', function () {
+                lastToggle = toggle;
+                setOpen(!player.classList.contains('is-comments'));
+            });
         });
 
         if (closeBtn) {
             closeBtn.addEventListener('click', function () {
                 setOpen(false);
-                toggle.focus();
+                lastToggle.focus();
             });
         }
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && player.classList.contains('is-comments')) {
                 setOpen(false);
-                toggle.focus();
+                lastToggle.focus();
             }
         });
+    }
+
+    /**
+     * 쇼츠 세로 피드: 위로 드래그(스와이프/휠)하면 다음 슬라이드가 아래에서 올라오고,
+     * 아래로 드래그하면 이전 슬라이드로. 활성 슬라이드의 영상만 재생한다.
+     * 진행바 시킹/레일 버튼/링크 위에서 시작한 제스처는 스와이프로 보지 않으며,
+     * 댓글이 열려 있으면 스와이프를 막는다.
+     */
+    function initPlayerFeed() {
+        var feed = document.querySelector('.js-player-feed');
+        if (!feed) { return; }
+
+        var slides = feed.querySelectorAll('.player__slide');
+        if (slides.length < 2) { return; } // 넘길 슬라이드가 없으면 스킵
+
+        var player = feed.closest('.player');
+        var index = 0;
+        var startX = 0, startY = 0;
+        var tracking = false; // 포인터 눌림
+        var decided = false;  // 가로/세로 방향 판정 완료
+        var swiping = false;  // 세로 스와이프 확정
+        var didSwipe = false; // 직전 제스처가 스와이프였는지(클릭 차단용)
+        var height = 0;
+        var IGNORE = '.player__progress, .player__rail, .player__mute, .player__play, .player__comments, button, a, input, textarea';
+
+        function commentsOpen() {
+            return !!player && player.classList.contains('is-comments');
+        }
+
+        function setActive(i) {
+            Array.prototype.forEach.call(slides, function (slide, si) {
+                slide.classList.toggle('is-active', si === i);
+                var v = slide.querySelector('.js-player-video');
+                if (!v) { return; }
+                if (si === i) {
+                    var p = v.play();
+                    if (p && p.catch) { p.catch(function () { /* 자동재생 거부 무시 */ }); }
+                } else {
+                    v.pause();
+                }
+            });
+        }
+
+        function goTo(i) {
+            index = Math.max(0, Math.min(slides.length - 1, i));
+            feed.style.transform = 'translateY(' + (-index * 100) + '%)';
+            setActive(index);
+        }
+
+        function onDown(e) {
+            // 새 포인터 시작 시 직전 스와이프 잔여 플래그를 즉시 해제한다.
+            // (버튼/링크 등 IGNORE 대상은 아래에서 조기 return 하므로 여기서 먼저 리셋해야
+            //  스와이프 직후의 버튼 탭 클릭이 잘못 차단되지 않는다.)
+            didSwipe = false;
+            if (e.pointerType === 'mouse' && e.button !== 0) { return; }
+            if (commentsOpen()) { return; }
+            if (e.target.closest(IGNORE)) { return; }
+            startX = e.clientX; startY = e.clientY;
+            tracking = true; decided = false; swiping = false;
+            height = feed.getBoundingClientRect().height;
+        }
+
+        function onMove(e) {
+            if (!tracking) { return; }
+            var dx = e.clientX - startX;
+            var dy = e.clientY - startY;
+            if (!decided) {
+                if (Math.abs(dx) < 8 && Math.abs(dy) < 8) { return; } // 방향 미확정
+                decided = true;
+                if (Math.abs(dx) > Math.abs(dy)) { tracking = false; return; } // 가로 제스처 → 스와이프 취소
+                swiping = true;
+                feed.classList.add('is-dragging');
+            }
+            if (!swiping) { return; }
+            // 첫/마지막 슬라이드 경계에서는 고무줄 저항
+            var delta = dy;
+            if ((index === 0 && dy > 0) || (index === slides.length - 1 && dy < 0)) {
+                delta = dy * 0.35;
+            }
+            didSwipe = true;
+            feed.style.transform = 'translateY(calc(' + (-index * 100) + '% + ' + delta + 'px))';
+            if (e.cancelable) { e.preventDefault(); }
+        }
+
+        function onUp(e) {
+            if (!tracking) { return; }
+            tracking = false;
+            feed.classList.remove('is-dragging');
+            if (!swiping) { return; }
+            swiping = false;
+            var moved = e.clientY - startY;
+            var threshold = Math.min(140, height * 0.15);
+            if (moved <= -threshold && index < slides.length - 1) { goTo(index + 1); }
+            else if (moved >= threshold && index > 0) { goTo(index - 1); }
+            else { goTo(index); } // 스냅백
+        }
+
+        feed.addEventListener('pointerdown', onDown);
+        feed.addEventListener('pointermove', onMove);
+        feed.addEventListener('pointerup', onUp);
+        feed.addEventListener('pointercancel', function () {
+            tracking = false; swiping = false;
+            feed.classList.remove('is-dragging');
+            goTo(index);
+        });
+
+        // 스와이프 직후 발생하는 click(재생 토글) 차단
+        feed.addEventListener('click', function (e) {
+            if (didSwipe) {
+                e.stopPropagation();
+                e.preventDefault();
+                didSwipe = false;
+            }
+        }, true);
+
+        // 데스크톱 휠로도 이동 (연속 입력 쿨다운)
+        var wheelLock = false;
+        feed.addEventListener('wheel', function (e) {
+            if (commentsOpen() || Math.abs(e.deltaY) < 20) { return; }
+            e.preventDefault();
+            if (wheelLock) { return; }
+            wheelLock = true;
+            setTimeout(function () { wheelLock = false; }, 550);
+            if (e.deltaY > 0) { goTo(index + 1); } else { goTo(index - 1); }
+        }, { passive: false });
+
+        goTo(0);
     }
 
     /**
@@ -883,6 +1021,7 @@
         initHeroSwiper();
         initPlayerVideo();
         initPlayerComments();
+        initPlayerFeed();
         initWatchVideo();
         initWatchSeason();
     }

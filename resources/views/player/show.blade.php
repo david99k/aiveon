@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $video['title'] . ' · AIVEON')
+@section('title', ($shorts[0]['title'] ?? '쇼츠') . ' · AIVEON')
 
 {{-- 몰입형 플레이어 화면: 푸터 제외 + 문서 스크롤 잠금 (Figma 338:5895) --}}
 @section('hide-footer', '1')
@@ -8,82 +8,89 @@
 
 @section('content')
     <section class="player">
-        {{-- 중앙 스테이지 : 세로 영상 + 우측 액션 레일 --}}
-        <div class="player__stage">
-            {{-- 콘텐츠 정보 : 데스크톱(≥1600)은 좌하단, 그 이하는 영상 위 오버레이 --}}
-            <div class="player__info">
-                <div class="player__channel">
-                    <a href="#" class="player__channel-avatar"><img src="{{ asset($channel['avatar']) }}" alt=""></a>
-                    <a href="#" class="player__channel-name">{{ $channel['name'] }}</a>
-                    <button type="button" class="player__follow">{{ $channel['following'] ? '팔로잉' : '팔로우' }}</button>
-                </div>
+        {{-- 세로 피드 : 위로 드래그하면 다음 쇼츠가 아래에서 올라온다 --}}
+        <div class="player__feed js-player-feed">
+            @foreach ($shorts as $short)
+                <article class="player__slide{{ $loop->first ? ' is-active' : '' }}" data-slide="{{ $loop->index }}">
+                    <div class="player__stage">
+                        {{-- 콘텐츠 정보 : 데스크톱(≥1600)은 좌하단, 그 이하는 영상 위 오버레이 --}}
+                        <div class="player__info">
+                            <div class="player__channel">
+                                <a href="#" class="player__channel-avatar"><img src="{{ asset($short['channel']['avatar']) }}" alt=""></a>
+                                <a href="#" class="player__channel-name">{{ $short['channel']['name'] }}</a>
+                                <button type="button" class="player__follow{{ $short['channel']['following'] ? '' : ' player__follow--primary' }}">{{ $short['channel']['following'] ? '팔로잉' : '팔로우' }}</button>
+                            </div>
 
-                <h2 class="player__title">{{ $video['title'] }}</h2>
+                            <h2 class="player__title">{{ $short['title'] }}</h2>
 
-                <ul class="hero__tags">
-                    @foreach ($video['tags'] as $tag)
-                        <li>{{ $tag }}</li>
-                    @endforeach
-                    @foreach ($video['ratings'] as $rating)
-                        <li class="tag--age{{ preg_replace('/\D/', '', $rating) }}">{{ $rating }}</li>
-                    @endforeach
-                </ul>
+                            <ul class="hero__tags">
+                                @foreach ($short['tags'] as $tag)
+                                    <li>{{ $tag }}</li>
+                                @endforeach
+                                @foreach ($short['ratings'] as $rating)
+                                    <li class="tag--age{{ preg_replace('/\D/', '', $rating) }}">{{ $rating }}</li>
+                                @endforeach
+                            </ul>
 
-                <p class="player__synopsis">{!! nl2br(e($video['synopsis'])) !!}<br><a href="#" class="player__more">더보기</a></p>
+                            <p class="player__synopsis">{!! nl2br(e($short['synopsis'])) !!}<br><a href="#" class="player__more">더보기</a></p>
 
-                <div class="player__ai">
-                    <a href="#" class="player__ai-label">사용 AI &nbsp;&gt;</a>
-                    @foreach ($aiTools as $tool)
-                        <span class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></span>
-                    @endforeach
-                </div>
-            </div>
-            <div class="player__video">
-                <video class="player__poster js-player-video" src="{{ asset($video['source']) }}"
-                       poster="{{ asset($video['poster']) }}" muted autoplay loop playsinline preload="metadata"></video>
-                <div class="player__grad"></div>
-                <button type="button" class="player__mute js-player-mute is-muted" aria-label="음소거 해제" aria-pressed="true">
-                    <img class="icon-muted" src="{{ asset('images/player/ic_mute.svg') }}" alt="">
-                    <svg class="icon-unmuted" viewBox="0 0 63 63" fill="none" aria-hidden="true"><circle cx="31.5" cy="31.5" r="31.5" fill="#000" fill-opacity="0.7"/><path d="M29.5 21.5c.8-.7 2-.13 2 .93v18.14c0 1.06-1.2 1.63-2 .93l-5.2-4.5h-3.3c-.9 0-1.5-.67-1.5-1.5v-8c0-.83.6-1.5 1.5-1.5h3.3l5.2-4.5Z" fill="#fff"/><path d="M36.5 26c1.7 1.3 2.7 3.3 2.7 5.5s-1 4.2-2.7 5.5M40 22.5c2.8 2.1 4.5 5.4 4.5 9s-1.7 6.9-4.5 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
-                </button>
-                <button type="button" class="player__play" aria-label="재생">
-                    <img src="{{ asset('images/player/ic_play.svg') }}" alt="">
-                </button>
-                <div class="player__progress" role="progressbar" aria-label="재생 진행률"
-                     aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $video['progress'] }}">
-                    <span class="player__progress-fill" style="width: {{ $video['progress'] }}%"></span>
-                </div>
-            </div>
+                            <div class="player__ai">
+                                <a href="#" class="player__ai-label">사용 AI &nbsp;&gt;</a>
+                                @foreach ($short['aiTools'] as $tool)
+                                    <span class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></span>
+                                @endforeach
+                            </div>
+                        </div>
 
-            <aside class="player__rail" aria-label="영상 액션">
-                <div class="player__rail-item">
-                    <button type="button" class="player__rail-btn" aria-label="좋아요">
-                        <img src="{{ asset('images/player/ic_heart.svg') }}" alt="">
-                    </button>
-                    <span class="player__rail-label">{{ $video['likes'] }}</span>
-                </div>
-                <div class="player__rail-item">
-                    <button type="button" class="player__rail-btn js-comments-toggle" aria-label="댓글" aria-expanded="false" aria-controls="player-comments">
-                        <img src="{{ asset('images/player/ic_comment.svg') }}" alt="">
-                    </button>
-                    <span class="player__rail-label">{{ $video['comments'] }}</span>
-                </div>
-                <div class="player__rail-item">
-                    <button type="button" class="player__rail-btn" aria-label="공유">
-                        <img src="{{ asset('images/player/ic_export.svg') }}" alt="">
-                    </button>
-                    <span class="player__rail-label">공유</span>
-                </div>
-                <div class="player__rail-item">
-                    <button type="button" class="player__rail-btn player__rail-btn--more" aria-label="더보기">
-                        <img src="{{ asset('images/player/ic_more.svg') }}" alt="">
-                    </button>
-                    <span class="player__rail-label">더보기</span>
-                </div>
-                <a href="#" class="player__rail-thumb" aria-label="{{ $channel['name'] }} 채널">
-                    <img src="{{ asset($channel['thumb']) }}" alt="">
-                </a>
-            </aside>
+                        <div class="player__video">
+                            <video class="player__poster js-player-video" src="{{ asset($short['source']) }}"
+                                   poster="{{ asset($short['poster']) }}" muted {{ $loop->first ? 'autoplay' : '' }} loop playsinline preload="{{ $loop->first ? 'auto' : 'none' }}"></video>
+                            <div class="player__grad"></div>
+                            <button type="button" class="player__mute js-player-mute is-muted" aria-label="음소거 해제" aria-pressed="true">
+                                <img class="icon-muted" src="{{ asset('images/player/ic_mute.svg') }}" alt="">
+                                <svg class="icon-unmuted" viewBox="0 0 63 63" fill="none" aria-hidden="true"><circle cx="31.5" cy="31.5" r="31.5" fill="#000" fill-opacity="0.7"/><path d="M29.5 21.5c.8-.7 2-.13 2 .93v18.14c0 1.06-1.2 1.63-2 .93l-5.2-4.5h-3.3c-.9 0-1.5-.67-1.5-1.5v-8c0-.83.6-1.5 1.5-1.5h3.3l5.2-4.5Z" fill="#fff"/><path d="M36.5 26c1.7 1.3 2.7 3.3 2.7 5.5s-1 4.2-2.7 5.5M40 22.5c2.8 2.1 4.5 5.4 4.5 9s-1.7 6.9-4.5 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+                            </button>
+                            <button type="button" class="player__play" aria-label="재생">
+                                <img src="{{ asset('images/player/ic_play.svg') }}" alt="">
+                            </button>
+                            <div class="player__progress" role="progressbar" aria-label="재생 진행률"
+                                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $short['progress'] }}">
+                                <span class="player__progress-fill" style="width: {{ $short['progress'] }}%"></span>
+                            </div>
+                        </div>
+
+                        <aside class="player__rail" aria-label="영상 액션">
+                            <div class="player__rail-item">
+                                <button type="button" class="player__rail-btn" aria-label="좋아요">
+                                    <img src="{{ asset('images/player/ic_heart.svg') }}" alt="">
+                                </button>
+                                <span class="player__rail-label">{{ $short['likes'] }}</span>
+                            </div>
+                            <div class="player__rail-item">
+                                <button type="button" class="player__rail-btn js-comments-toggle" aria-label="댓글" aria-expanded="false" aria-controls="player-comments">
+                                    <img src="{{ asset('images/player/ic_comment.svg') }}" alt="">
+                                </button>
+                                <span class="player__rail-label">{{ $short['comments'] }}</span>
+                            </div>
+                            <div class="player__rail-item">
+                                <button type="button" class="player__rail-btn" aria-label="공유">
+                                    <img src="{{ asset('images/player/ic_export.svg') }}" alt="">
+                                </button>
+                                <span class="player__rail-label">공유</span>
+                            </div>
+                            <div class="player__rail-item">
+                                <button type="button" class="player__rail-btn player__rail-btn--more" aria-label="더보기">
+                                    <img src="{{ asset('images/player/ic_more.svg') }}" alt="">
+                                </button>
+                                <span class="player__rail-label">더보기</span>
+                            </div>
+                            <a href="#" class="player__rail-thumb" aria-label="{{ $short['channel']['name'] }} 채널">
+                                <img src="{{ asset($short['channel']['thumb']) }}" alt="">
+                            </a>
+                        </aside>
+                    </div>
+                </article>
+            @endforeach
         </div>
 
         {{-- 댓글 패널 : 댓글 버튼 클릭 시 오른쪽에서 슬라이드 인 (Figma 498:2734) --}}

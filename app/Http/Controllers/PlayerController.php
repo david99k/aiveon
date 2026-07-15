@@ -8,6 +8,7 @@ use Illuminate\View\View;
  * 쇼츠·일반 콘텐츠 플레이어 (Figma "Main - 재생버튼 클릭시 - 쇼츠 및 일반 컨텐츠영상", node 338:5895).
  *
  * 세로(포스터) 썸네일 클릭 시 진입하는 몰입형 재생 화면.
+ * 위로 드래그(스와이프)하면 다음 쇼츠가 아래에서 올라오는 세로 피드 구조.
  * 실서비스 연동 시 {slug} 기반 조회 및 실제 영상 플레이어로 교체하세요.
  */
 class PlayerController
@@ -15,7 +16,27 @@ class PlayerController
     public function show(): View
     {
         return view('player.show', [
-            'video' => [
+            'shorts' => $this->shorts(),
+            'comments' => $this->comments(),
+        ]);
+    }
+
+    /**
+     * 세로 피드에 순서대로 쌓이는 쇼츠 목록.
+     * 실서비스에서는 추천/큐 로직으로 교체하세요.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function shorts(): array
+    {
+        $aiTools = [
+            ['icon' => 'images/player/ai_logo1.png', 'name' => 'AI 도구 1', 'light' => false],
+            ['icon' => 'images/player/ai_logo2.png', 'name' => 'AI 도구 2', 'light' => false],
+            ['icon' => 'images/player/ai_logo3.png', 'name' => 'AI 도구 3', 'light' => true],
+        ];
+
+        return [
+            [
                 'title' => '빛이 빛날 때',
                 'source' => 'videos/cow_story.mp4', // 테스트 영상 - 실서비스에서 스트리밍 URL로 교체
                 'poster' => 'images/player/poster_algorithm.jpg',
@@ -25,20 +46,33 @@ class PlayerController
                 'likes' => '102',
                 'comments' => '12',
                 'progress' => 21, // 재생 진행률(%)
+                'channel' => [
+                    'name' => '거스구스',
+                    'avatar' => 'images/player/avatar_gusgus.png',
+                    'thumb' => 'images/player/rail_thumb.jpg',
+                    'following' => true,
+                ],
+                'aiTools' => $aiTools,
             ],
-            'channel' => [
-                'name' => '거스구스',
-                'avatar' => 'images/player/avatar_gusgus.png',
-                'thumb' => 'images/player/rail_thumb.jpg',
-                'following' => true,
+            [
+                'title' => '여름의 기억',
+                'source' => 'videos/shot01.mp4', // 테스트 영상 - 실서비스에서 스트리밍 URL로 교체
+                'poster' => 'images/main/poster_02.jpg',
+                'tags' => ['2026', 'AI 애니메이션', '판타지'],
+                'ratings' => ['15+'],
+                'synopsis' => '잊고 지낸 어느 여름날의 조각들이 천천히 되살아나며 마음 한켠을 데우는 짧은 이야기...',
+                'likes' => '58',
+                'comments' => '7',
+                'progress' => 0,
+                'channel' => [
+                    'name' => '몽글스튜디오',
+                    'avatar' => 'images/main/creator_profile_02.jpg',
+                    'thumb' => 'images/main/poster_02.jpg',
+                    'following' => false,
+                ],
+                'aiTools' => $aiTools,
             ],
-            'aiTools' => [
-                ['icon' => 'images/player/ai_logo1.png', 'name' => 'AI 도구 1', 'light' => false],
-                ['icon' => 'images/player/ai_logo2.png', 'name' => 'AI 도구 2', 'light' => false],
-                ['icon' => 'images/player/ai_logo3.png', 'name' => 'AI 도구 3', 'light' => true],
-            ],
-            'comments' => $this->comments(),
-        ]);
+        ];
     }
 
     /** @return array<int, array<string, string>> */

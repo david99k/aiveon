@@ -1314,12 +1314,28 @@ body.page-player { overflow: hidden; }
 /* 뷰포트에 꽉 차는 몰입형 화면: 스크롤 없이 영상이 화면 높이에 맞춰진다 */
 .player {
   position: relative;
-  display: flex;
-  justify-content: center;
   height: 100vh;
   height: 100dvh; /* 모바일 주소창 변동 대응 */
-  padding: 102px 24px 24px; /* GNB(86) + 여백 */
   overflow: hidden;
+}
+
+/* 세로 피드 : 슬라이드를 세로로 쌓고 translateY 로 다음/이전 쇼츠 전환.
+   드래그 중에는 .is-dragging 으로 트랜지션을 끄고 손가락을 따라간다. */
+.player__feed {
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  touch-action: pan-y; /* 세로 제스처는 JS 가 처리 */
+}
+.player__feed.is-dragging { transition: none; }
+
+/* 각 슬라이드 = 쇼츠 1개(뷰포트 높이). 스테이지를 가로 중앙 정렬 */
+.player__slide {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding: 102px 24px 24px; /* GNB(86) + 여백 */
 }
 
 /* 좌하단 콘텐츠 정보 (스테이지 기준 앵커).
@@ -2545,6 +2561,14 @@ body.page-player { overflow: hidden; }
 
   /* 위쪽 간격은 .watch 의 gap 이 담당, 아래(댓글 입력)와는 붙지 않게 여백 유지 */
   .watch__divider { margin: 0 0 24px; }
+
+  /* Player(쇼츠) : 태블릿·모바일에서 우측 레일 아이콘 축소 (기본 60 → 48) */
+  .player__rail { width: 48px; gap: 8px; }
+  .player__rail-btn { width: 48px; height: 48px; }
+  .player__rail-btn img { width: 24px; max-height: 24px; }
+  .player__rail-btn--more img { width: 3px; height: 16px; }
+  .player__rail-label { font-size: 12px; line-height: 22px; }
+  .player__rail-thumb { width: 48px; height: 48px; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2795,13 +2819,29 @@ body.page-player { overflow: hidden; }
   .watch__rec-thumb { height: 101px; } /* 180 x 101 ≈ 16:9 */
   .comment--reply { margin-left: 40px; }
 
-  /* Player : 영상+레일이 화면을 꽉 채움, 정보는 영상 위 오버레이 유지 */
-  .player { padding: 96px 16px 16px; }
-  .player__stage { width: 100%; justify-content: center; gap: 12px; }
-  .player__video { width: calc(100% - 72px); }
+  /* Player : 영상 전체폭 + 레일을 영상 오른쪽 안으로 오버레이 */
+  .player__slide { padding: 96px 16px 16px; }
+  .player__stage { width: 100%; }
+  .player__video { width: 100%; }
   .player__mute { top: 14px; left: 14px; width: 44px; height: 44px; }
   .player__play { width: 64px; height: 64px; }
-  .player__info { left: 16px; right: 88px; bottom: 36px; gap: 12px; }
+
+  /* 레일 : 영상 우측 하단 오버레이 + 아이콘 배경 투명하게(영상이 비쳐 보이도록) */
+  .player__rail {
+    position: absolute;
+    right: 8px;
+    bottom: 20px;
+    z-index: 3;
+  }
+  .player__rail-btn { background-color: rgba(0, 0, 0, 0.2); }
+  .player__rail-btn:hover,
+  .player__rail-btn:focus-visible { background-color: rgba(0, 0, 0, 0.38); }
+  .player__rail-btn img { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)); }
+  .player__rail-label { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65); }
+  .player__rail-thumb { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45); }
+
+  /* 정보 : 좌측 하단, 레일 공간만큼 우측 확보 */
+  .player__info { left: 16px; right: 76px; bottom: 20px; gap: 12px; }
   .player__title { font-size: 20px; }
   .player__synopsis { font-size: 14px; line-height: 22px; }
 
