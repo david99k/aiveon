@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>빛이 빛날 때 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/detail/show.blade.php 출력 결과를 정적으로 재현한 파일입니다.
+        메인의 히어로 '상세보기'/콘텐츠 카드 클릭 시 이 페이지로 이동합니다. (Figma 338:4681)
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="#" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="#" class="gnb__nav-link">AI BL</a>
+                    <a href="#" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="#" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="#" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <button type="button" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </button>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <!-- 상세 히어로 (Figma 338:4681) -->
+            <section class="hero hero--detail">
+                <div class="hero__bg">
+                    <img src="images/main/hero_main.jpg" alt="">
+                </div>
+                <div class="hero__content">
+                    <span class="hero__badge">OFFICIAL</span>
+                    <h2 class="hero__title">빛이 빛날 때</h2>
+                    <ul class="hero__tags">
+                        <li>2026</li>
+                        <li>드라마</li>
+                        <li>멜로</li>
+                    </ul>
+                    <span class="hero__subscribe">Premium 구독</span>
+                    <p class="hero__synopsis">&lt;빛이 빛날 때&gt;는 각자의 가슴속에 깊은 상처와 어둠을 품고 살아가는 인물들이 서로의 삶에 스며들어 따뜻한 위로와 희망이 되어주는 힐링 휴먼 로맨스 드라마입니다.<br>&ldquo;당신의 하루에, 가장 따뜻한 빛이 되기를&rdquo;이라는 메인 카피처럼, 치열하고 삭막한 현실 속에서 길을 잃고 지친 사람들이 어떻게 서로를 구원하고 치유하는지를 섬세한 시선으로 그려냅니다. 사랑하는 사람의 품에 기대어 비로소 평안을 찾은 두 남녀 주인공을 중심으로, 저마다의 사연과 삶의 무게를 짊어진 다양한 주변 인물들의 이야기가 옴니버스처럼 따스하게 교차합니다. <a href="#" class="hero__more">더보기</a></p>
+                    <div class="hero__actions">
+                        <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
+                        <a href="#" class="btn btn--ghost btn--icon">공유하기 <img src="images/common/ic_share.svg" alt=""></a>
+                        <a href="#" class="btn btn--ghost btn--icon">저장하기 <img src="images/common/ic_bookmark.svg" alt=""></a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 에피소드 목록 1~6화 -->
+            <section class="section">
+                <h2 class="blind">에피소드 1~6화</h2>
+                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="에피소드 1~6화">
+                    <ul class="video-list">
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 1화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 2화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 3화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 4화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 5화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 6화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 에피소드 목록 7~12화 -->
+            <section class="section">
+                <h2 class="blind">에피소드 7~12화</h2>
+                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="에피소드 7~12화">
+                    <ul class="video-list">
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 7화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 8화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 9화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 10화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 11화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-watch-drama.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/hero_main.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때 12화</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 함께 많이 찾는 영상 -->
+            <section class="section">
+                <h2 class="section__title">빛이 빛날때를 보시는 분들이 많이 찾는 영상</h2>
+                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="빛이 빛날때를 보시는 분들이 많이 찾는 영상">
+                    <ul class="video-list">
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_invasion.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_nemo.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_adventure.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_aicode.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                        <li class="video-card"><a href="preview-detail.html" class="video-card__link"><figure class="video-card__thumb"><img src="images/main/thumb_wide_sleep.jpg" alt="" loading="lazy"></figure><div class="video-card__info"><strong class="video-card__title">빛이 빛날때</strong><span class="video-card__meta">크리에이터 · 조회수 12만</span></div></a></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 추천 컨텐츠 -->
+            <section class="section section--poster">
+                <h2 class="section__title">추천 컨텐츠</h2>
+                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="추천 컨텐츠">
+                    <ul class="poster-list">
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                        <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></article></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul>
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">채용</a></li>
+                        <li><a href="#">뉴스룸</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                        <li><a href="#">정산정책</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul>
+                        <li><a href="#">고객센터</a></li>
+                        <li><a href="#">크리에이터 지원센터</a></li>
+                        <li><a href="#">공지사항</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

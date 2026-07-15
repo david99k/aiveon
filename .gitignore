@@ -1,0 +1,26 @@
+# QA 임시 (puppeteer 노드 모듈 · 크롬 프로필 · 스크린샷)
+/.qa-tmp/
+
+# 원본 소스·작업 파일 (주석 스크린샷, 최적화 전 원본 이미지/영상)
+/mj_aaa/
+
+# 오래된 압축본
+/html_synergy-lalabel.zip
+
+# 미사용 원본 PNG — 최적화 .jpg(hero_main02.jpg·03.jpg)로 교체됨
+/public/images/main/hero_main02.png
+/public/images/main/hero_main03.png
+
+# 라라벨(통합 시 생성)
+/vendor/
+/node_modules/
+/.env
+/.env.*
+!/.env.example
+/storage/*.key
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log

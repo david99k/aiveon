@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 27">
+<g id="Ellipse">
+<circle cx="42" cy="42" r="42" fill="var(--fill-0, #0C0C10)" fill-opacity="0.5"/>
+<circle cx="42" cy="42" r="41.25" stroke="var(--stroke-0, white)" stroke-opacity="0.4" stroke-width="1.5"/>
+</g>
+<g id="Play">
+<path id="Vector" d="M33 28L55 42L33 56V28Z" fill="var(--fill-0, white)"/>
+</g>
+</g>
+</svg>

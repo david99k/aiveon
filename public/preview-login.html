@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AIVEON - 회원가입 (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/auth/signup.blade.php 출력 결과를 정적으로 재현한 파일입니다.
+        3단계(가입정보 → 본인인증 → 이메일인증/약관)가 한 페이지에서 부드럽게 전환됩니다.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="#" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="#" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="#" class="gnb__nav-link">AI BL</a>
+                    <a href="#" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="#" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="#" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <button type="button" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </button>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="auth">
+            <form class="auth__box auth-flow" data-step="1" action="preview.html" method="get" novalidate>
+                <div class="auth-flow__nav">
+                    <button type="button" class="auth-flow__back js-flow-back" aria-label="이전 단계">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <div class="auth-flow__progress" role="progressbar" aria-label="가입 진행 단계" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><span class="auth-flow__bar"></span></div>
+                    <span class="auth-flow__count"><b class="js-flow-count">1</b><span class="dim"> / 3</span></span>
+                </div>
+
+                <p class="blind auth-flow__status" role="status" aria-live="polite"></p>
+
+                <div class="auth-flow__viewport">
+                    <div class="auth-flow__track">
+
+                        <!-- STEP 1 : 가입 정보 -->
+                        <section class="auth-step" data-step="1" aria-label="가입 정보 입력">
+                            <div class="auth__head">
+                                <h2 class="auth__title">AIVEON에 오신 걸 환영해요</h2>
+                                <p class="auth__subtitle">몇 초면 끝나요. 바로 시청을 시작하세요</p>
+                            </div>
+
+                            <div class="field" data-field="email">
+                                <label class="field__label" for="email">이메일</label>
+                                <div class="field__control">
+                                    <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error">
+                                    <span class="field__alert" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg></span>
+                                </div>
+                                <p class="field__error" id="email-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">이미 사용중인 이메일입니다.</span></p>
+                            </div>
+
+                            <div class="field" data-field="password">
+                                <label class="field__label" for="password">비밀번호</label>
+                                <div class="field__control">
+                                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요" autocomplete="new-password" aria-describedby="password-error">
+                                    <span class="field__alert" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg></span>
+                                    <button type="button" class="field__toggle js-pw-toggle" aria-label="비밀번호 표시" aria-pressed="false">
+                                        <svg class="icon-on" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.7 4.5 10 4.5 18.5 10 18.5 10 15.3 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+                                        <svg class="icon-off" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.7 4.5 10 4.5c1.4 0 2.7.4 3.8 1M18.5 10s-1 1.7-2.9 3.2M8 15.2c.6.2 1.3.3 2 .3 5.3 0 8.5-5.5 8.5-5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 3l14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                                    </button>
+                                </div>
+                                <p class="field__error" id="password-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">비밀번호를 8자 이상 입력해주세요.</span></p>
+                            </div>
+
+                            <div class="field" data-field="password_confirm">
+                                <label class="field__label" for="password_confirm">비밀번호 확인</label>
+                                <div class="field__control">
+                                    <input type="password" id="password_confirm" name="password_confirmation" placeholder="비밀번호를 다시 입력해주세요" autocomplete="new-password" aria-describedby="password-confirm-error">
+                                    <span class="field__alert" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg></span>
+                                    <button type="button" class="field__toggle js-pw-toggle" aria-label="비밀번호 표시" aria-pressed="false">
+                                        <svg class="icon-on" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.7 4.5 10 4.5 18.5 10 18.5 10 15.3 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+                                        <svg class="icon-off" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.7 4.5 10 4.5c1.4 0 2.7.4 3.8 1M18.5 10s-1 1.7-2.9 3.2M8 15.2c.6.2 1.3.3 2 .3 5.3 0 8.5-5.5 8.5-5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 3l14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                                    </button>
+                                </div>
+                                <p class="field__error" id="password-confirm-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">비밀번호가 일치하지 않습니다.</span></p>
+                            </div>
+
+                            <div class="auth__terms-row">
+                                <input type="checkbox" class="checkbox js-agree" id="agree" name="agree" value="1" aria-describedby="agree-error" checked>
+                                <label for="agree">이용약관 및 개인정보 처리방침에 동의합니다</label>
+                            </div>
+                            <p class="auth__terms-error" id="agree-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span>이용약관 및 개인정보 처리방침에 동의해주세요.</span></p>
+
+                            <button type="button" class="auth__submit js-flow-next">회원가입</button>
+
+                            <div class="auth__divider"><span>또는 SNS 계정으로 가입</span></div>
+
+                            <div class="auth__social">
+                                <a href="#" class="social--google" aria-label="Google로 가입"><img src="images/common/google.png" alt=""></a>
+                                <a href="#" class="social--kakao" aria-label="카카오로 가입"><img src="images/common/kakao.png" alt=""></a>
+                                <a href="#" class="social--naver" aria-label="네이버로 가입"><img src="images/common/naver.png" alt=""></a>
+                            </div>
+
+                            <p class="auth__prompt">
+                                <span class="auth__prompt-q">이미 AIVEON 회원이신가요?</span>
+                                <a href="#">로그인</a>
+                            </p>
+                        </section>
+
+                        <!-- STEP 2 : 이메일 인증 + 약관 동의 -->
+                        <section class="auth-step" data-step="2" aria-label="이메일 인증 및 약관 동의" inert aria-hidden="true">
+                            <div class="auth__head">
+                                <h2 class="auth__title">이메일 인증</h2>
+                                <p class="auth__subtitle">닉네임과 이메일 인증, 약관 동의만 마치면 가입이 완료 됩니다.</p>
+                            </div>
+
+                            <div class="field" data-field="code">
+                                <label class="field__label" for="code">메일 인증번호</label>
+                                <div class="field__control">
+                                    <input type="text" id="code" name="code" placeholder="메일로 받은 6자리 코드" inputmode="numeric" maxlength="6" aria-describedby="code-error">
+                                    <span class="field__timer js-code-timer">00:00</span>
+                                    <button type="button" class="field__inline-btn js-send-code">인증하기</button>
+                                </div>
+                                <div class="field__help">
+                                    <span class="field__help-q">코드를 못 받으셨나요?</span>
+                                    <a href="#" class="js-resend-code">인증번호 재전송</a>
+                                </div>
+                                <p class="field__error" id="code-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">6자리 인증번호를 정확히 입력해주세요.</span></p>
+                            </div>
+
+                            <div class="auth__hr"></div>
+
+                            <label class="terms-all">
+                                <input type="checkbox" class="checkbox checkbox--lg js-terms-all">
+                                <span>약관에 모두 동의합니다</span>
+                            </label>
+
+                            <div class="terms-list">
+                                <div class="terms-item">
+                                    <div class="terms-item__main">
+                                        <input type="checkbox" class="checkbox checkbox--lg js-terms-item" id="term-privacy" name="terms[]" value="term-privacy" checked>
+                                        <label for="term-privacy">
+                                            <span class="terms-item__tag terms-item__tag--req">[필수]</span>
+                                            <span class="terms-item__txt">개인정보 수집 및 이용 안내 동의</span>
+                                        </label>
+                                    </div>
+                                    <a href="#" class="terms-item__view" aria-label="개인정보 수집 및 이용 안내 동의 보기">보기</a>
+                                </div>
+
+                                <div class="terms-item">
+                                    <div class="terms-item__main">
+                                        <input type="checkbox" class="checkbox checkbox--lg js-terms-item" id="term-age" name="terms[]" value="term-age">
+                                        <label for="term-age">
+                                            <span class="terms-item__tag terms-item__tag--req">[필수]</span>
+                                            <span class="terms-item__txt">만 14세 이상입니다.</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="terms-item">
+                                    <div class="terms-item__main">
+                                        <input type="checkbox" class="checkbox checkbox--lg js-terms-item" id="term-service" name="terms[]" value="term-service">
+                                        <label for="term-service">
+                                            <span class="terms-item__tag terms-item__tag--req">[필수]</span>
+                                            <span class="terms-item__txt">서비스 이용약관 동의</span>
+                                        </label>
+                                    </div>
+                                    <a href="#" class="terms-item__view" aria-label="서비스 이용약관 동의 보기">보기</a>
+                                </div>
+
+                                <div class="terms-item">
+                                    <div class="terms-item__main">
+                                        <input type="checkbox" class="checkbox checkbox--lg js-terms-item" id="term-marketing" name="terms[]" value="term-marketing">
+                                        <label for="term-marketing">
+                                            <span class="terms-item__tag terms-item__tag--opt">[선택]</span>
+                                            <span class="terms-item__txt">AI 최신 소식 · 혜택 · 정보 수신</span>
+                                        </label>
+                                    </div>
+                                    <a href="#" class="terms-item__view" aria-label="AI 최신 소식 · 혜택 · 정보 수신 보기">보기</a>
+                                </div>
+                            </div>
+                            <p class="js-terms-error" id="terms-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span>필수 약관에 모두 동의해주세요.</span></p>
+
+                            <button type="button" class="auth__submit js-flow-next">다음</button>
+                        </section>
+
+                        <!-- STEP 3 : 본인 인증 (최종) -->
+                        <section class="auth-step" data-step="3" aria-label="본인 인증" inert aria-hidden="true">
+                            <div class="auth__head">
+                                <h2 class="auth__title">본인 인증</h2>
+                                <p class="auth__subtitle">안전한 이용을 위해 본인 인증을 진행해주세요</p>
+                            </div>
+
+                            <div class="field" data-field="name">
+                                <label class="field__label blind" for="name">이름</label>
+                                <div class="field__control">
+                                    <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" autocomplete="name" aria-describedby="name-error">
+                                    <span class="field__alert" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg></span>
+                                </div>
+                                <p class="field__error" id="name-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">이름을 입력해주세요.</span></p>
+                            </div>
+
+                            <div class="field" data-field="phone">
+                                <label class="field__label blind" for="phone">휴대폰 번호</label>
+                                <div class="field__control">
+                                    <input type="tel" id="phone" name="phone" placeholder="휴대폰 번호를 입력해주세요" inputmode="numeric" autocomplete="tel" maxlength="13" aria-describedby="phone-error">
+                                    <span class="field__alert" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg></span>
+                                </div>
+                                <p class="field__error" id="phone-error" role="alert"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 3.8v3.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="9.7" r="0.8" fill="currentColor"/></svg><span class="field__error-msg">올바른 휴대폰 번호를 입력해주세요.</span></p>
+                            </div>
+
+                            <button type="submit" class="auth__submit">동의하고 본인확인 하기</button>
+                        </section>
+
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

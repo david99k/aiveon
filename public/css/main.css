@@ -1,0 +1,2820 @@
+@charset "UTF-8";
+/* ==========================================================================
+   AIVEON 메인 (Synergy-on)
+   Figma: Synergy-on_aiveon / Main - 로그인 전 (node 160:3061, 1920 기준)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* color */
+  --bg-page: #0c0c10;
+  --bg-surface: #18181f;
+  --brand-primary: #a78bfa;
+  --accent-premium: #5eead4;
+  --badge-official: #232330;
+  /* 시안 원본은 #ff0000. 흰색 12px 텍스트와의 명도대비 AA(4.5:1) 충족을 위해 미세 조정(4.81:1) */
+  --badge-new: #e60000;
+  --overlay-white-20: rgba(255, 255, 255, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.65);
+
+  /* radius */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-pill: 999px;
+
+  /* 로그인 버튼 텍스트(퍼플 배경 위 어두운 텍스트) */
+  --accent-premium-text: #14111f;
+
+  /* 상세 페이지 */
+  --accent-gold: #d9a94e;                   /* Premium 구독 배지 */
+  --link-more: #6d4fe0;                     /* 시놉시스 더보기 */
+
+  /* auth(로그인/회원가입) 전용 */
+  --accent-violet: #8e6fe9;                 /* 타이머·보조 링크 */
+  --checkbox-on: #8066ff;                   /* 체크박스 활성 */
+  --field-border: rgba(255, 255, 255, 0.08);
+  --field-divider: rgba(255, 255, 255, 0.1);
+  --field-error: #f16063;                   /* 인풋 에러(레드) */
+
+  /* spacing */
+  --space-base: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 40px;
+
+  /* font */
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+  --font-gothic: 'Gothic A1', var(--font-sans);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base / Reset
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  min-width: 320px;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+em, address { font-style: normal; }
+img { display: block; max-width: 100%; }
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.blind {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 200;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--brand-primary);
+  color: var(--bg-page);
+  font-weight: 600;
+  transition: top 0.2s;
+}
+
+.skip-link:focus { top: 8px; }
+
+/* --------------------------------------------------------------------------
+   3. GNB
+   -------------------------------------------------------------------------- */
+.gnb {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 23px 64px;
+  /* 최상단(히어로 위)에서는 시안대로 거의 투명 */
+  background-color: rgba(24, 24, 31, 0.1);
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease;
+}
+
+/* 스크롤을 내리면 프로스티드 글래스 배경으로 전환해 콘텐츠 위에서도 가독성 확보 */
+.gnb.is-scrolled {
+  background-color: rgba(12, 12, 16, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.gnb__left {
+  display: flex;
+  align-items: center;
+  gap: 53px;
+}
+
+.gnb__logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.44px;
+  color: var(--brand-primary);
+}
+
+.gnb__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.gnb__nav-link {
+  font-family: var(--font-gothic);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.gnb__nav-link:hover,
+.gnb__nav-link:focus-visible { color: var(--text-primary); }
+
+.gnb__nav-link.is-active {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.gnb__utils {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.gnb__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Figma 추출 SVG가 width/height 100%로 지정되어 있어 명시적 크기 필요 */
+.gnb__icon-btn img {
+  width: 40px;
+  height: 40px;
+}
+
+.gnb__icon-btn--search img {
+  width: 28px;
+  height: 29px;
+}
+
+.gnb__upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--brand-primary);
+  border-radius: var(--radius-pill);
+  background-color: var(--brand-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+  color: var(--text-primary);
+  transition: filter 0.2s;
+}
+
+.gnb__upload:hover,
+.gnb__upload:focus-visible { filter: brightness(1.08); }
+
+/* 프로필 : 아바타 + 호버 시 나타나는 로그인 유도 팝업 */
+.gnb__profile-wrap {
+  position: relative;
+  display: flex;
+}
+
+.gnb__profile {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.gnb__profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gnb__profile-pop {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 195px;
+  padding: 24px 15px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-page);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+
+/* 아바타와 팝업 사이 12px 간격을 잇는 투명 브릿지 (호버 유지) */
+.gnb__profile-pop::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.gnb__profile-wrap:hover .gnb__profile-pop,
+.gnb__profile-wrap:focus-within .gnb__profile-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.gnb__profile-pop-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.gnb__profile-pop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--brand-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--accent-premium-text);
+  transition: filter 0.2s;
+}
+
+.gnb__profile-pop-btn:hover,
+.gnb__profile-pop-btn:focus-visible { filter: brightness(1.08); }
+
+/* --------------------------------------------------------------------------
+   4. Hero
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  height: 874px;
+  overflow: hidden;
+}
+
+.hero__bg,
+.hero__bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__bg img { object-fit: cover; }
+
+.hero__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(87deg, rgba(0, 0, 0, 0.46) 14.37%, rgba(0, 0, 0, 0.23) 96.59%);
+}
+
+.hero__content {
+  position: absolute;
+  left: 110px;
+  top: 538px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-base) var(--space-xs);
+  border-radius: var(--radius-sm);
+  background-color: var(--badge-official); /* 기본(OFFICIAL) : 다크 */
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  color: var(--text-primary);
+}
+
+/* 배지 종류별 배경색 : 카드 배지(.badge--premium/--new)와 동일한 색 체계 */
+.hero__badge--premium {
+  background-color: var(--accent-premium);
+  color: #000;
+  font-weight: 700;
+}
+
+.hero__badge--new {
+  background-color: var(--badge-new);
+  font-weight: 700;
+}
+
+/* --- 상세(콘텐츠) 히어로 : 시놉시스·구독 배지·액션 버튼 확장 (Figma 338:4681) --- */
+.hero--detail { height: 893px; }
+
+.hero--detail .hero__content {
+  top: 330px;
+  bottom: auto;
+  max-width: 676px;
+}
+
+/* Premium 구독 배지 (골드) */
+.hero__subscribe {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 20px;
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-gold);
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* 시놉시스 + 더보기 */
+.hero__synopsis {
+  max-width: 676px;
+  font-family: var(--font-gothic);
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--text-secondary);
+}
+
+.hero__more {
+  font-family: var(--font-gothic);
+  font-weight: 700;
+  color: var(--link-more);
+  white-space: nowrap;
+}
+
+.hero__more:hover,
+.hero__more:focus-visible { text-decoration: underline; }
+
+/* 아이콘 있는 고스트 버튼 (공유하기/저장하기) */
+.btn--icon {
+  gap: 10px;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.btn--icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.hero__title {
+  font-family: var(--font-gothic);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.96px;
+  color: var(--text-primary);
+}
+
+.hero__tags {
+  display: flex;
+  flex-wrap: wrap;      /* 좁은 폭에서는 태그 단위로 줄바꿈 */
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hero__tags li {
+  padding: 0 var(--space-xs);
+  border-radius: var(--radius-sm);
+  background-color: var(--overlay-white-20);
+  font-size: 14px;
+  line-height: 28px;
+  white-space: nowrap;  /* 태그 텍스트 중간 줄바꿈 방지 */
+  color: var(--text-primary);
+}
+
+.hero__desc {
+  max-width: 520px;
+  font-family: var(--font-gothic);
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--text-secondary);
+}
+
+.hero__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-gothic);
+  font-size: 16px;
+  font-weight: 600;
+  transition: filter 0.2s, background-color 0.2s;
+}
+
+.btn--primary {
+  background-color: var(--brand-primary);
+  color: var(--bg-page);
+}
+
+.btn--primary:hover { filter: brightness(1.08); }
+
+.btn--ghost {
+  background-color: var(--overlay-white-20);
+  color: var(--text-primary);
+}
+
+.btn--ghost:hover { background-color: rgba(255, 255, 255, 0.3); }
+
+/* --- Hero Swiper (3개 이상 콘텐츠 슬라이드) --- */
+/* .hero 가 .swiper 컨테이너를 겸한다. 슬라이드(.swiper-slide)가 각자
+   bg + content 를 가지므로 기존 .hero__bg/.hero__content 규칙이 그대로 적용된다. */
+
+/* 페이지네이션 : 하단 중앙 불릿 (활성 = 브랜드 퍼플 알약) */
+.hero .swiper-pagination { bottom: 24px; }
+
+.hero .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.hero .swiper-pagination-bullet-active {
+  width: 26px;
+  background-color: var(--brand-primary);
+}
+
+/* 좌우 내비 화살표 : 히어로 호버/키보드 포커스 시 노출 */
+.hero__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  border-radius: 50%;
+  background-color: rgba(12, 12, 16, 0.45);
+  color: var(--text-primary);
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.hero:hover .hero__nav,
+.hero__nav:focus-visible { opacity: 1; }
+
+.hero__nav:hover { background-color: rgba(12, 12, 16, 0.72); }
+
+.hero__nav--prev { left: 24px; }
+.hero__nav--next { right: 24px; }
+
+.hero__nav svg { width: 22px; height: 22px; display: block; }
+
+/* --------------------------------------------------------------------------
+   5. Section 공통 / 가로 스크롤 리스트
+   -------------------------------------------------------------------------- */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 28px var(--space-lg);
+}
+
+.section--poster { gap: 19px; }
+
+.section--top {
+  gap: 30px;
+  padding: 60px var(--space-lg);
+}
+
+.section--creator {
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+}
+
+.section__title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+/* 섹션 좌우 패딩(40px)을 스크롤 영역 안쪽으로 옮겨 풀블리드 처리.
+   시안처럼 넘치는 카드가 화면 오른쪽 끝에 걸쳐 보인다. */
+.scroll-x {
+  margin: 0 calc(-1 * var(--space-lg));
+  padding: 0 var(--space-lg);
+  overflow-x: auto;
+  cursor: grab;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE/Edge Legacy */
+}
+
+.scroll-x::-webkit-scrollbar { display: none; }
+
+.scroll-x:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px;
+}
+
+.scroll-x img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.scroll-x.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.scroll-x.is-dragging a { pointer-events: none; }
+
+/* --------------------------------------------------------------------------
+   6. 카드 - 가로형 (video-card)
+   -------------------------------------------------------------------------- */
+.video-list {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  width: max-content;
+}
+
+.video-card {
+  flex-shrink: 0;
+  width: 285px;
+}
+
+.video-card__link,
+.poster-card__link { display: block; }
+
+.video-card__thumb {
+  position: relative;
+  width: 100%;
+  height: 181px;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.video-card__thumb img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 19px;
+}
+
+.video-card__title {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.video-card__meta {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   7. 카드 - 세로형 (poster-card)
+   -------------------------------------------------------------------------- */
+.poster-list {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  width: max-content;
+}
+
+.poster-card {
+  flex-shrink: 0;
+  width: 253px;
+}
+
+.poster-card__thumb {
+  position: relative;
+  width: 100%;
+  height: 337px;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.poster-card__thumb img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0; /* 세로로 긴 포스터는 시안처럼 상단 기준으로 크롭 */
+}
+
+.poster-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 19px;
+}
+
+.poster-card__title {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.poster-card__meta {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   8. 배지 (PREMIUM / NEW / OFFICIAL)
+   -------------------------------------------------------------------------- */
+.badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+.badge--premium {
+  top: 10px;
+  right: 10px;
+  padding: var(--space-base) var(--space-xs);
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-premium);
+  color: #000;
+}
+
+.badge--new {
+  left: 0;
+  bottom: 0;
+  padding: var(--space-base) 10px;
+  background-color: var(--badge-new);
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. AIVEON TOP6 (rank-card)
+   -------------------------------------------------------------------------- */
+.rank-list {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: max-content;
+}
+
+.rank-card {
+  position: relative;
+  flex-shrink: 0;
+  padding-left: 72px;
+}
+
+/* 랭킹 숫자 : 투명 채움 + 브랜드 컬러 외곽선.
+   placeholder(빈 썸네일) 위로는 보이고, 포스터 이미지(z-index:1) 뒤로는 가려진다. */
+.rank-card__num {
+  position: absolute;
+  left: 0;
+  top: 65px;
+  z-index: 0;
+  font-family: var(--font-gothic);
+  font-size: 200px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 20px;
+  color: #000;
+  user-select: none;
+  pointer-events: none;
+}
+
+@supports (-webkit-text-stroke: 4px #000) {
+  .rank-card__num {
+    color: transparent;
+    -webkit-text-stroke: 4px var(--brand-primary);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. 크리에이터
+   -------------------------------------------------------------------------- */
+.creator-list {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  width: max-content;
+}
+
+.creator {
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.creator__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.creator__avatar {
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.creator__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.creator__info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  text-align: center;
+}
+
+.creator__name {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.creator__subs {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   11. Auth (로그인 / 회원가입 플로우)
+   Figma: 328:3779(진입) · 478:3855(에러) · 481:4166(본인인증) · 480:3978(인증/약관)
+   -------------------------------------------------------------------------- */
+.auth {
+  display: flex;
+  /* 세로 중앙이 아닌 상단 기준 정렬: 콘텐츠가 적은 단계에서도
+     폼 시작 높이가 단계 간 동일하게 유지된다 */
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 146px var(--space-md) 80px; /* 상단 GNB(86px) + 여백 확보 */
+  background-color: var(--bg-page);
+}
+
+.auth__box {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 440px;
+  max-width: 100%;
+}
+
+.auth__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 36px;
+}
+
+.auth__title {
+  font-family: var(--font-gothic);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--text-primary);
+}
+
+.auth__subtitle {
+  font-family: var(--font-gothic);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* 입력 필드 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field + .field,
+.field + .auth__terms-row,
+.field-group + .field-group { margin-top: 18px; }
+
+.field__label {
+  font-family: var(--font-gothic);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 18px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* 포커스 표시는 컨테이너가 담당: 보라 테두리 + 은은한 글로우 */
+.field__control:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.16);
+}
+
+/* 에러 상태로 포커스되면 글로우도 레드로 */
+.field.is-error .field__control:focus-within {
+  box-shadow: 0 0 0 3px rgba(241, 96, 99, 0.16);
+}
+
+/* 내부 input의 브라우저 기본 아웃라인 제거(각진 이중 박스 방지) —
+   가시적 포커스 표시는 위 :focus-within 테두리/글로우가 대신한다 */
+.field__control input:focus { outline: none; }
+
+.field__control input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+.field__control input::placeholder { color: var(--text-secondary); }
+.field__control input:-webkit-autofill { -webkit-text-fill-color: var(--text-primary); transition: background-color 5000s; }
+
+/* 비밀번호 표시 토글 */
+.field__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+}
+
+.field__toggle svg { width: 20px; height: 20px; display: block; }
+.field__toggle .icon-off { display: none; }
+.field__toggle.is-hidden .icon-on { display: none; }
+.field__toggle.is-hidden .icon-off { display: block; }
+
+/* 에러 상태 */
+.field__alert {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--field-error);
+}
+
+.field.is-error .field__control { border-color: var(--field-error); }
+.field.is-error .field__alert { display: flex; }
+
+.field__error {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--field-error);
+}
+
+.field.is-error .field__error { display: flex; }
+.field__error svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* 체크박스 (공통) */
+.checkbox {
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  background-color: var(--bg-surface);
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+}
+
+.checkbox::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+  background-color: #fff;
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 82% 0, 38% 66%);
+}
+
+.checkbox:checked {
+  border-color: var(--checkbox-on);
+  background-color: var(--checkbox-on);
+}
+
+.checkbox:checked::after { transform: scale(1); }
+.checkbox--lg { width: 20px; height: 20px; }
+
+/* 단순 약관 동의 (진입 화면) */
+.auth__terms-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.auth__terms-row label {
+  font-family: var(--font-gothic);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+/* 기본(퍼플) 제출 버튼 */
+.auth__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  margin-top: 28px;
+  border-radius: var(--radius-md);
+  background-color: var(--brand-primary);
+  color: var(--text-primary);
+  font-family: var(--font-gothic);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.16px;
+  transition: filter 0.2s;
+}
+
+.auth__submit:hover,
+.auth__submit:focus-visible { filter: brightness(1.08); }
+
+/* 구분선 */
+.auth__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 28px;
+}
+
+.auth__divider::before,
+.auth__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--field-divider);
+}
+
+.auth__divider span {
+  font-family: var(--font-gothic);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* SNS 로그인 */
+.auth__social {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.auth__social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: filter 0.2s;
+}
+
+.auth__social a:hover { filter: brightness(0.95); }
+.auth__social img { object-fit: contain; }
+
+.social--google { background-color: #fff; }
+.social--google img { width: 32px; height: 32px; }
+.social--kakao { background-color: #fddc3f; }
+.social--kakao img { width: 50px; height: 50px; }
+.social--naver { background-color: #00bf19; }
+.social--naver img { width: 50px; height: 50px; }
+
+/* 하단 안내 */
+.auth__prompt {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 40px;
+  font-family: var(--font-gothic);
+  font-size: 14px;
+}
+
+.auth__prompt-q { color: var(--text-secondary); }
+.auth__prompt a { font-weight: 700; color: var(--brand-primary); }
+.auth__prompt a:hover { text-decoration: underline; }
+
+/* --- 메일 인증(거의 다 됐어요) --- */
+.field__timer {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--accent-violet);
+}
+
+.field__inline-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--brand-primary);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: filter 0.2s;
+}
+
+.field__inline-btn:hover { filter: brightness(1.08); }
+
+.field__help {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.field__help-q { color: var(--text-secondary); }
+.field__help a { color: var(--accent-violet); }
+.field__help a:hover { text-decoration: underline; }
+
+.auth__hr {
+  height: 1px;
+  margin: 30px 0;
+  background-color: var(--field-border);
+}
+
+/* 약관 전체동의 박스 */
+.terms-all {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  height: 54px;
+  padding: 0 19px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  background-color: var(--badge-official);
+  cursor: pointer;
+}
+
+.terms-all span {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 개별 약관 목록 */
+.terms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 28px;
+}
+
+.terms-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 3px;
+}
+
+.terms-item__main {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.terms-item label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.terms-item__tag { font-weight: 600; }
+.terms-item__tag--req { color: var(--accent-violet); }
+.terms-item__tag--opt { color: var(--text-secondary); }
+.terms-item__txt { font-weight: 500; color: var(--text-primary); }
+.terms-item__view {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.terms-item__view:hover { text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   10-b. Footer
+   Figma: Footer (466:3603) - 브랜드 + 회사/약관·정책/고객지원 3컬럼 + 카피라이트
+   -------------------------------------------------------------------------- */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 120px; /* 마지막 콘텐츠 섹션과 충분한 간격 확보 */
+  padding: 44px 48px;
+  background-color: var(--bg-surface);
+}
+
+.footer__cols {
+  display: flex;
+  align-items: flex-start;
+  gap: 64px;
+  width: 100%;
+}
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-right: auto; /* 우측 링크 컬럼들과 사이 공간(시안 Spacer) */
+}
+
+.footer__logo {
+  font-family: var(--font-gothic);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--brand-primary);
+}
+
+.footer__tagline {
+  font-family: var(--font-gothic);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer__col-title {
+  font-family: var(--font-gothic);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.footer__col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer__col a {
+  font-family: var(--font-gothic);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+}
+
+.footer__col a:hover,
+.footer__col a:focus-visible { color: var(--text-primary); }
+
+.footer__copy {
+  font-family: var(--font-gothic);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   10-c. Player (쇼츠·일반 콘텐츠 재생)
+   Figma: Main - 재생버튼 클릭시 - 쇼츠 및 일반 컨텐츠영상 (338:5895)
+   세로 포스터 썸네일 클릭 시 진입. 중앙 세로 플레이어 + 우측 액션 레일 +
+   좌하단 콘텐츠 정보로 구성된 몰입형 화면(푸터 없음).
+   -------------------------------------------------------------------------- */
+/* 플레이어 페이지: 문서 스크롤 자체를 잠가 가로/세로 스크롤바 제거 */
+body.page-player { overflow: hidden; }
+
+/* 뷰포트에 꽉 차는 몰입형 화면: 스크롤 없이 영상이 화면 높이에 맞춰진다 */
+.player {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  height: 100dvh; /* 모바일 주소창 변동 대응 */
+  padding: 102px 24px 24px; /* GNB(86) + 여백 */
+  overflow: hidden;
+}
+
+/* 좌하단 콘텐츠 정보 (스테이지 기준 앵커).
+   기본(≥1600)은 페이지 좌측(left 110px 상당)에 두고, 댓글이 열리면
+   영상 위 오버레이 위치로 미끄러져 이동한다. calc(408px - 50vw)
+   = 110px - (100vw - 596px)/2 : 스테이지 좌표계에서의 페이지 좌측 110px. */
+.player__info {
+  position: absolute;
+  left: calc(408px - 50vw);
+  bottom: 13px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  width: 431px;
+  transition: left 0.45s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 댓글 열림: 정보가 영상 위 오버레이로 이동 (Figma 498:2736 - video+24, bottom 48) */
+.player.is-comments .player__info {
+  left: 24px;
+  bottom: 48px;
+}
+
+.player__channel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.player__channel-avatar {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.player__channel-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player__channel-name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+.player__follow {
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  transition: background-color 0.15s;
+}
+
+.player__follow:hover,
+.player__follow:focus-visible { background-color: rgba(255, 255, 255, 0.85); }
+
+/* 미팔로우 상태(팔로우) : 브랜드 퍼플 */
+.player__follow--primary {
+  background-color: var(--brand-primary);
+  color: var(--text-primary);
+}
+
+.player__follow--primary:hover,
+.player__follow--primary:focus-visible {
+  background-color: var(--brand-primary);
+  filter: brightness(1.08);
+}
+
+.player__title {
+  font-family: var(--font-gothic);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.44px;
+  color: var(--text-primary);
+}
+
+/* 연령 등급 태그 (hero__tags 안에서 사용) */
+.hero__tags .tag--age19 {
+  background-color: #c71515;
+  font-weight: 500;
+}
+
+.hero__tags .tag--age15 {
+  background-color: #e8bd31;
+  border: 1px solid #000;
+  color: #313131;
+  font-weight: 500;
+}
+
+.player__synopsis {
+  font-family: var(--font-gothic);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--text-secondary);
+}
+
+.player__more {
+  display: inline-block;
+  font-family: var(--font-gothic);
+  color: var(--text-secondary);
+}
+
+.player__more:hover,
+.player__more:focus-visible { color: var(--text-primary); text-decoration: underline; }
+
+/* 사용 AI */
+.player__ai {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.player__ai-label {
+  padding-right: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+.player__ai-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background-color: var(--overlay-white-20);
+  overflow: hidden;
+}
+
+.player__ai-chip--light { background-color: #fff; }
+
+.player__ai-chip img {
+  width: 30px;
+  height: 30px;
+  border-radius: 2px;
+  object-fit: contain;
+}
+
+/* 중앙 스테이지 : 세로 영상 + 우측 액션 레일 (하단 정렬).
+   댓글 패널이 열리면 좌측으로 이동해 남은 공간의 중앙에 위치한다. */
+.player__stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player.is-comments .player__stage { transform: translateX(-210px); } /* Figma: 663 -> 453 */
+
+.player__video {
+  position: relative;
+  width: auto;
+  height: 100%;
+  max-height: 836px; /* Figma 원본 크기 이상으로 커지지 않음 */
+  aspect-ratio: 516 / 836;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.player__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 하단 그라데이션 (정보 가독성) */
+.player__grad {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 65%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 100%);
+  pointer-events: none;
+}
+
+.player__video video { cursor: pointer; }
+
+.player__mute {
+  position: absolute;
+  top: 80px;
+  left: 34px;
+  width: 63px;
+  height: 63px;
+}
+
+.player__mute img,
+.player__mute svg { width: 100%; height: 100%; display: block; }
+
+/* 음소거 상태에 따라 아이콘 전환 (기본 .is-muted) */
+.player__mute .icon-unmuted { display: none; }
+.player__mute:not(.is-muted) .icon-muted { display: none; }
+.player__mute:not(.is-muted) .icon-unmuted { display: block; }
+
+.player__play {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 35px);
+  transform: translate(-50%, -50%);
+  width: 84px;
+  height: 84px;
+  transition: transform 0.2s, opacity 0.25s, visibility 0.25s;
+}
+
+.player__play:hover,
+.player__play:focus-visible { transform: translate(-50%, -50%) scale(1.07); }
+
+.player__play img { width: 100%; height: 100%; display: block; }
+
+/* 재생 중에는 중앙 재생 버튼 숨김 (일시정지하면 다시 표시) */
+.player__video.is-playing .player__play {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.player__progress {
+  position: absolute;
+  left: 16px;
+  right: 21px;
+  bottom: 23px;
+  height: 5px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+/* 5px 바를 정확히 누르기 어려우므로 위아래 10px씩 히트 영역 확장 */
+.player__progress::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+  bottom: -10px;
+}
+
+.player__progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 21%;
+  border-radius: 20px;
+  background-color: var(--brand-primary);
+}
+
+/* 우측 액션 레일 */
+.player__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.player__rail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player__rail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(24, 24, 31, 0.92);
+  transition: background-color 0.15s;
+}
+
+.player__rail-btn:hover,
+.player__rail-btn:focus-visible { background-color: rgba(42, 42, 56, 0.95); }
+
+.player__rail-btn img {
+  width: 30px;
+  height: auto;
+  max-height: 30px;
+  display: block;
+}
+
+/* 더보기(점 3개) 아이콘: 세로 스트립(3.6x19.8) 원본을 90도 회전해 가로 ••• 로 표시 */
+.player__rail-btn--more img {
+  width: 4px;
+  height: 20px;
+  max-height: none;
+  transform: rotate(90deg);
+}
+
+.player__rail-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.player__rail-thumb {
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.player__rail-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- 댓글 패널 (Figma 498:2734) : 우측에서 슬라이드 인 --- */
+.player__comments {
+  position: absolute;
+  right: 110px;
+  bottom: 47px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: 460px;
+  height: 836px;
+  max-height: calc(100vh - 140px);
+  padding: 28px 24px 26px 28px;
+  border-radius: 16px;
+  background-color: var(--bg-surface);
+  /* 화면 오른쪽 밖에서 대기 */
+  transform: translateX(calc(100% + 130px));
+  visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s;
+}
+
+.player.is-comments .player__comments {
+  transform: none;
+  visibility: visible;
+}
+
+.player__comments-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.player__comments-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+.player__comments-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+
+.player__comments-close:hover,
+.player__comments-close:focus-visible { background-color: rgba(255, 255, 255, 0.08); }
+
+.player__comments-close svg { width: 15px; height: 15px; display: block; }
+
+.player__comments-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.player__comments-list::-webkit-scrollbar { display: none; }
+
+.comment {
+  position: relative;
+  display: flex;
+  gap: 22px;
+  padding-right: 44px; /* 우측 더보기(⋮) 자리 */
+}
+
+.comment__avatar {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.comment__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.comment__meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.comment__name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+.comment__date {
+  font-size: 13px;
+  line-height: 28px;
+  color: var(--text-secondary);
+}
+
+.comment__text {
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 28px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.comment__actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.comment__actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 28px;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+}
+
+.comment__actions button:hover { color: var(--text-primary); }
+.comment__actions img { width: 16px; height: 14px; }
+
+/* 우측 상단 ⋮ (세로 점 3개 - ic_more.svg 원본 비율 그대로) */
+.comment__more {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.15s;
+}
+
+.comment__more:hover,
+.comment__more:focus-visible { background-color: rgba(255, 255, 255, 0.08); }
+
+.comment__more img { width: 4px; height: 20px; display: block; }
+
+/* 댓글 입력 */
+.player__comments-form {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.player__comments-form .comment__avatar { width: 50px; height: 50px; }
+
+.player__comments-input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+.player__comments-input::placeholder { color: var(--text-secondary); }
+.player__comments-input:focus { outline: none; border-color: var(--brand-primary); }
+
+.player__comments-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 11px;
+  margin-top: 12px;
+}
+
+.player__comments-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 28px;
+  color: var(--text-primary);
+  transition: filter 0.15s, background-color 0.15s;
+}
+
+.player__comments-cancel { background-color: rgba(255, 255, 255, 0.1); }
+.player__comments-cancel:hover { background-color: rgba(255, 255, 255, 0.18); }
+.player__comments-submit { background-color: var(--brand-primary); }
+.player__comments-submit:hover { filter: brightness(1.08); }
+
+/* 정보 영역을 좌측에 둘 공간이 없는 폭에서는 영상 위 오버레이(쇼츠 스타일)로 전환.
+   하단 그라데이션(.player__grad) 위에 얹혀 가독성이 유지된다. */
+@media (max-width: 1599px) {
+  .player__info {
+    left: 20px;
+    right: 100px; /* 레일(60) + 간격(20) + 안쪽 여백(20) */
+    bottom: 48px; /* 진행바 위 */
+    width: auto;
+  }
+
+  .player__synopsis { font-size: 15px; line-height: 26px; }
+
+  /* 댓글: 우측 여백 축소 + 남은 공간 중앙으로 스테이지 이동 ((460+24)/2) */
+  .player__comments { right: 24px; }
+  .player.is-comments .player__stage { transform: translateX(-242px); }
+}
+
+/* 스테이지+패널이 나란히 설 공간이 없으면 패널이 화면 위로 슬라이드 오버 */
+@media (max-width: 1099px) {
+  .player.is-comments .player__stage { transform: none; }
+
+  .player__comments {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: min(420px, calc(100vw - 32px));
+    height: min(636px, calc(100vh - 120px));
+    max-height: none;
+    z-index: 90;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    transform: translateX(calc(100% + 40px));
+  }
+
+  .player.is-comments .player__comments { transform: none; }
+}
+
+/* --------------------------------------------------------------------------
+   10-d. Watch (드라마/영화 재생 페이지)
+   Figma: Main - 재생버튼 클릭시 - 드라마(338:5601) / 영화(484:4617)
+   좌측 16:9 플레이어 + 정보 + 댓글, 우측 사이드바(에피소드[드라마만]/광고/추천).
+   -------------------------------------------------------------------------- */
+.watch {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 140px 110px 80px; /* GNB(86) + 54 */
+}
+
+.watch__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 1182px;
+}
+
+.watch__side {
+  flex: 0 0 488px;
+  width: 488px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- 16:9 플레이어 --- */
+.watch__player {
+  position: relative;
+  aspect-ratio: 1182 / 665;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.watch__player video,
+.watch__player > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* 전체화면 : aspect-ratio 해제하고 뷰포트에 꽉 채우되(100vw×100vh),
+   영상은 contain 으로 화면 안에 맞춰 밖으로 넘치지 않게 한다. */
+.watch__player:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: auto;
+  border-radius: 0;
+  background-color: #000;
+}
+.watch__player:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: auto;
+  border-radius: 0;
+  background-color: #000;
+}
+.watch__player:fullscreen video { object-fit: contain; }
+.watch__player:-webkit-full-screen video { object-fit: contain; }
+
+.watch__player-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 12, 16, 0.85) 0%, rgba(12, 12, 16, 0) 35%, rgba(12, 12, 16, 0) 65%, rgba(12, 12, 16, 0.92) 100%);
+  pointer-events: none;
+}
+
+.watch__topbar {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.watch__back {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.watch__back img { width: 100%; height: 100%; display: block; }
+
+.watch__topbar-title {
+  font-family: var(--font-gothic);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.watch__topbar-sub {
+  margin-top: 2px;
+  font-family: var(--font-gothic);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 중앙 재생 버튼 (쇼츠 플레이어와 동일 에셋) */
+.watch__play-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 84px;
+  height: 84px;
+  transition: transform 0.2s, opacity 0.25s, visibility 0.25s;
+}
+
+.watch__play-center:hover,
+.watch__play-center:focus-visible { transform: translate(-50%, -50%) scale(1.07); }
+
+.watch__play-center img { width: 100%; height: 100%; display: block; }
+
+.watch__player.is-playing .watch__play-center {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 진행바 + 스크럽 도트 */
+.watch__progress {
+  position: absolute;
+  left: 30px;
+  right: 35px;
+  bottom: 62px;
+  height: 5px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.watch__progress::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+  bottom: -10px;
+}
+
+.watch__progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 30%;
+  border-radius: 20px;
+  background-color: var(--brand-primary);
+}
+
+.watch__progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background-color: var(--brand-primary);
+}
+
+/* 하단 컨트롤 행 : 재생 / 음소거 / 시간 ... 전체화면 */
+.watch__controls {
+  position: absolute;
+  left: 35px;
+  right: 35px;
+  bottom: 26px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.watch__ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.watch__ctrl img,
+.watch__ctrl svg { display: block; }
+
+.watch__ctrl--play img { width: 16px; height: 18px; }
+.watch__ctrl--full { margin-left: auto; }
+.watch__ctrl--full img { width: 20px; height: 20px; }
+
+/* 음소거/소리 아이콘 : 동일 speaker 기반이라 두 상태 크기가 일치 */
+.watch__ctrl--mute { color: var(--text-primary); }
+.watch__ctrl--mute svg { width: 22px; height: 22px; }
+.watch__ctrl--mute .icon-unmuted { display: none; }
+.watch__ctrl--mute:not(.is-muted) .icon-muted { display: none; }
+.watch__ctrl--mute:not(.is-muted) .icon-unmuted { display: block; }
+
+/* 볼륨 : 유튜브식 - 음소거 버튼 옆에 호버 시 슬라이더가 펼쳐진다 */
+.watch__volume {
+  display: flex;
+  align-items: center;
+}
+
+.watch__volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 4px;
+  margin: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right,
+    var(--brand-primary) var(--vol, 0%), rgba(255, 255, 255, 0.35) var(--vol, 0%));
+  opacity: 0;
+  cursor: pointer;
+  transition: width 0.2s ease, opacity 0.2s ease, margin-left 0.2s ease;
+}
+
+.watch__volume:hover .watch__volume-slider,
+.watch__volume:focus-within .watch__volume-slider {
+  width: 80px;
+  margin-left: 12px;
+  opacity: 1;
+}
+
+.watch__volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+
+.watch__volume-slider::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+
+.watch__volume-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.watch__time {
+  font-size: 14px;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+/* 재생 중 마우스 유휴 시 컨트롤 자동 숨김 (마우스 움직이면 다시 표시) */
+.watch__topbar,
+.watch__progress,
+.watch__controls,
+.watch__player-grad {
+  transition: opacity 0.3s ease;
+}
+
+.watch__player.is-controls-hidden .watch__topbar,
+.watch__player.is-controls-hidden .watch__progress,
+.watch__player.is-controls-hidden .watch__controls,
+.watch__player.is-controls-hidden .watch__player-grad {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.watch__player.is-controls-hidden { cursor: none; }
+
+/* --- 플레이어 아래 정보 --- */
+.watch__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 26px;
+}
+
+.watch__head .hero__badge { margin-bottom: 12px; }
+
+.watch__title {
+  font-family: var(--font-gothic);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.56px;
+  color: var(--text-primary);
+}
+
+.watch__actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.watch__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.watch__synopsis {
+  font-family: var(--font-gothic);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--text-secondary);
+}
+
+.watch__divider {
+  height: 1px;
+  margin: 40px 0;
+  background-color: var(--field-border);
+}
+
+/* --- 댓글 (본문 하단) --- */
+.watch__comment-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.watch__comment-form .comment__avatar {
+  width: 60px;
+  height: 60px;
+}
+
+.watch__comment-input {
+  flex: 1;
+  min-width: 0;
+  height: 101px;
+  padding: 14px 16px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  resize: none;
+}
+
+.watch__comment-input::placeholder { color: var(--text-secondary); }
+.watch__comment-input:focus { outline: none; border-color: var(--brand-primary); }
+
+.watch__comments {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 34px;
+}
+
+/* 대댓글 : 들여쓰기 + 연결선 */
+.comment--reply {
+  margin-left: 61px;
+}
+
+.comment--reply::before {
+  content: '';
+  position: absolute;
+  left: -36px;
+  top: -20px;
+  width: 26px;
+  height: 42px;
+  border-left: 2px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+  border-bottom-left-radius: 12px;
+}
+
+.comment--reply .comment__avatar { width: 40px; height: 40px; }
+
+/* --- 사이드바 --- */
+.watch__ad {
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.watch__ad img { width: 100%; display: block; }
+
+/* 추천 영상 : 에피소드 아래, 가로 스크롤 카드 행 (스크롤바 숨김) */
+.watch__rec-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.watch__side-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.watch__rec-list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  cursor: grab;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE/Edge Legacy */
+}
+
+.watch__rec-list::-webkit-scrollbar { display: none; }
+.watch__rec-list.is-dragging { cursor: grabbing; user-select: none; }
+.watch__rec-list.is-dragging a { pointer-events: none; }
+.watch__rec-list img { -webkit-user-drag: none; user-select: none; }
+
+.watch__rec {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+}
+
+.watch__rec-thumb {
+  width: 100%;
+  height: 124px; /* 220 x 124 ≈ 16:9 */
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.watch__rec-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.watch__rec-body {
+  display: block;
+  min-width: 0;
+  padding-top: 10px;
+}
+
+.watch__rec-title {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.watch__rec-meta {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* --- 에피소드 패널 (드라마 전용) --- */
+.watch__episodes {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: var(--bg-surface);
+}
+
+.watch__episodes-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.watch__episodes-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 시즌 선택 드롭다운 */
+.watch__season-dropdown { position: relative; }
+
+.watch__season {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+
+.watch__season:hover,
+.watch__season[aria-expanded="true"] { background-color: rgba(255, 255, 255, 0.18); }
+
+.watch__season-chevron {
+  width: 12px;
+  height: 7px;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.watch__season[aria-expanded="true"] .watch__season-chevron { transform: rotate(180deg); }
+
+.watch__season-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 132px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background-color: var(--badge-official);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+
+.watch__season-dropdown.is-open .watch__season-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.watch__season-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: left;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.watch__season-option:hover,
+.watch__season-option:focus-visible {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.watch__season-option.is-selected { color: var(--text-primary); font-weight: 600; }
+
+.watch__season-option.is-selected::after {
+  content: '';
+  flex-shrink: 0;
+  width: 14px;
+  height: 10px;
+  background-color: var(--brand-primary);
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 82% 0, 38% 66%);
+}
+
+.watch__episode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.watch__episode-list::-webkit-scrollbar { display: none; }
+
+.watch__episode {
+  display: flex;
+  gap: 14px;
+}
+
+.watch__episode-thumb {
+  flex-shrink: 0;
+  width: 128px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.watch__episode-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.watch__episode-body { min-width: 0; }
+
+.watch__episode-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.watch__episode-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* --- 반응형 --- */
+@media (max-width: 1599px) {
+  .watch { padding: 120px 40px 60px; }
+  .watch__side { flex-basis: 400px; width: 400px; }
+}
+
+@media (max-width: 1023px) {
+  .watch {
+    flex-direction: column;
+    align-items: stretch; /* 컬럼 모드: 본문이 콘텐츠 폭으로 늘어나지 않게 */
+    gap: 24px;
+    padding: 110px 24px 48px;
+  }
+
+  /* main·side 를 투명 처리해 내부 그룹(col-a/discuss/episodes/추천/광고)을
+     .watch 의 직접 자식으로 만든다 → order 로 에피소드→추천→댓글 순서 배치 */
+  .watch__main,
+  .watch__side { display: contents; }
+
+  .watch__col-a { order: 1; }
+  .watch__episodes { order: 2; }    /* 영상·정보 다음 */
+  .watch__rec-section { order: 3; } /* 에피소드 아래 추천 영상 */
+  .watch__discuss { order: 4; }     /* 그 다음 댓글 */
+  .watch__ad { order: 5; }
+
+  /* 위쪽 간격은 .watch 의 gap 이 담당, 아래(댓글 입력)와는 붙지 않게 여백 유지 */
+  .watch__divider { margin: 0 0 24px; }
+}
+
+/* --------------------------------------------------------------------------
+   11-b. Auth Flow (단일 페이지 멀티스텝 위저드)
+   3개 단계를 한 페이지에서 가로 슬라이드 + 높이 모핑으로 부드럽게 전환한다.
+   -------------------------------------------------------------------------- */
+.auth-flow { position: relative; }
+
+/* 상단 내비 : 뒤로가기 + 진행바 + 단계 카운트 */
+.auth-flow__nav {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.auth-flow__back {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  /* 진행바 앞 간격 14px + 셰브론 시각정렬용 -2px */
+  margin: 0 14px 0 -2px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.auth-flow__back:hover,
+.auth-flow__back:focus-visible {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.auth-flow__back svg { width: 20px; height: 20px; display: block; }
+
+/* 1단계엔 이전 단계가 없으므로 뒤로가기 제거 → 진행바를 콘텐츠 좌측선에 정렬 */
+.auth-flow[data-step="1"] .auth-flow__back { display: none; }
+
+.auth-flow__progress {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.auth-flow__bar {
+  display: block;
+  width: 33.333%;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--brand-primary);
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-flow__count {
+  flex-shrink: 0;
+  margin-left: 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auth-flow__count .dim {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 뷰포트 : 높이 애니메이션 + 좌우 클립 */
+.auth-flow__viewport {
+  overflow: hidden;
+  transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 트랙 : 가로 슬라이드 */
+.auth-flow__track {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 각 단계 패널 */
+.auth-step {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* 비활성 단계는 화면 밖으로 밀려 클립되며, inert 로 상호작용·포커스에서 제외된다 */
+.auth-step[inert] { pointer-events: none; }
+
+/* 진입 단계 첫 요소(제목) 위 여백 정리 */
+.auth-step > .auth__head:first-child { margin-top: 0; }
+
+/* 약관 동의 인라인 에러 (단순 약관 / 필수 약관 미동의) */
+.auth__terms-error,
+.js-terms-error {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--field-error);
+}
+
+.auth__terms-error.is-visible,
+.js-terms-error.is-visible { display: flex; }
+
+.auth__terms-error svg,
+.js-terms-error svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.auth__terms-row.is-error label { color: var(--field-error); }
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-flow__viewport,
+  .auth-flow__track,
+  .auth-flow__bar,
+  .auth-flow__back { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive (태블릿 ≤1279px · 모바일 ≤767px)
+   시안은 1920px 데스크톱 기준. 아래 브레이크포인트에서 유동 재배치한다.
+   -------------------------------------------------------------------------- */
+
+/* ── 태블릿 이하: GNB 2행화(로고+유틸 / 가로 스크롤 카테고리) + 여백 축소 ── */
+@media (max-width: 1279px) {
+  .gnb {
+    min-width: 0;
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 14px 24px;
+  }
+
+  /* .gnb__left 를 투명 처리해 로고(h1)·네비를 .gnb 의 직접 flex 아이템으로 만든다
+     → order 로 [로고 · 유틸] 첫 행, [카테고리] 둘째 행 배치 */
+  .gnb__left { display: contents; }
+  .gnb__left h1 { order: 1; }
+  .gnb__utils { order: 2; gap: 18px; }
+
+  .gnb__nav {
+    order: 3;
+    flex: 1 0 100%;
+    min-width: 0;
+    gap: 26px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .gnb__nav::-webkit-scrollbar { display: none; }
+  .gnb__nav-link { flex-shrink: 0; white-space: nowrap; }
+
+  /* 섹션 좌우 여백 축소 + 풀블리드 스크롤 정렬 맞춤 */
+  .section,
+  .section--top,
+  .section--creator { padding-left: 24px; padding-right: 24px; }
+  .scroll-x { margin: 0 -24px; padding: 0 24px; }
+
+  .hero__content { left: 40px; }
+
+  .auth { padding: 130px 24px 64px; }
+
+  .footer { padding: 40px 24px; }
+  .footer__cols { gap: 40px; }
+}
+
+/* ── 모바일: 히어로 리플로우 + 타이포/카드/인증폼 축소 ── */
+@media (max-width: 767px) {
+  .gnb { padding: 10px 16px; }
+  .gnb__logo { font-size: 20px; }
+  .gnb__utils { gap: 12px; }
+  .gnb__upload { padding: 6px 14px; font-size: 13px; }
+  .gnb__nav { gap: 20px; }
+  .gnb__nav-link { font-size: 15px; }
+
+  /* Hero : 콘텐츠를 하단 고정으로 리플로우 */
+  .hero { height: 500px; }
+  .hero .swiper-pagination { bottom: 12px; }
+  .hero__nav { display: none; } /* 모바일은 스와이프 제스처 사용 */
+
+  /* 상세 히어로 : 시놉시스가 길어 고정 높이 대신 흐름 배치 */
+  .hero--detail { height: auto; }
+  .hero--detail .hero__content {
+    position: static;
+    max-width: 100%;
+    padding: 116px 16px 32px;
+  }
+  .hero__subscribe { font-size: 15px; line-height: 24px; padding: 4px 16px; }
+  .hero__synopsis { font-size: 15px; line-height: 24px; }
+  .hero__content {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 40px;
+    gap: 12px;
+  }
+  .hero__title { font-size: 32px; letter-spacing: -0.5px; }
+  .hero__desc { max-width: 100%; font-size: 15px; }
+  .hero__tags li { font-size: 13px; }
+  .hero__actions { flex-wrap: wrap; }
+  .hero__actions .btn { padding: 11px 22px; font-size: 15px; }
+
+  /* Sections */
+  .section { padding: 20px 16px; }
+  .section--top { padding: 32px 16px; gap: 24px; }
+  .section--creator { padding: 24px 16px; }
+  .section__title { font-size: 20px; }
+  .scroll-x { margin: 0 -16px; padding: 0 16px; }
+
+  /* Cards */
+  .video-list,
+  .poster-list { gap: 14px; }
+  .video-card { width: 220px; }
+  .video-card__thumb { height: 140px; }
+  .video-card__title { font-size: 16px; }
+  .poster-card { width: 150px; }
+  .poster-card__thumb { height: 200px; }
+  .poster-card__title { font-size: 16px; }
+
+  /* Rank */
+  .rank-list { gap: 14px; }
+  .rank-card { padding-left: 46px; }
+  .rank-card__num { top: 40px; font-size: 120px; letter-spacing: 8px; }
+
+  /* Creator */
+  .creator { width: 84px; }
+  .creator__avatar { width: 84px; height: 84px; }
+  .creator__name { font-size: 16px; }
+
+  /* Watch (드라마/영화) */
+  .watch { padding: 96px 16px 40px; gap: 20px; }
+  .watch__title { font-size: 22px; }
+  .watch__topbar-title { font-size: 16px; }
+  .watch__topbar-sub { font-size: 12px; }
+  .watch__play-center { width: 56px; height: 56px; }
+  .watch__progress { left: 16px; right: 16px; bottom: 50px; }
+  .watch__controls { left: 16px; right: 16px; bottom: 18px; gap: 18px; }
+  .watch__head { flex-direction: column; gap: 14px; }
+  .watch__comment-form .comment__avatar { width: 40px; height: 40px; }
+  .watch__rec { width: 180px; }
+  .watch__rec-thumb { height: 101px; } /* 180 x 101 ≈ 16:9 */
+  .comment--reply { margin-left: 40px; }
+
+  /* Player : 영상+레일이 화면을 꽉 채움, 정보는 영상 위 오버레이 유지 */
+  .player { padding: 96px 16px 16px; }
+  .player__stage { width: 100%; justify-content: center; gap: 12px; }
+  .player__video { width: calc(100% - 72px); }
+  .player__mute { top: 14px; left: 14px; width: 44px; height: 44px; }
+  .player__play { width: 64px; height: 64px; }
+  .player__info { left: 16px; right: 88px; bottom: 36px; gap: 12px; }
+  .player__title { font-size: 20px; }
+  .player__synopsis { font-size: 14px; line-height: 22px; }
+
+  /* Footer : 브랜드는 첫 행 전체, 링크 컬럼들은 줄바꿈 배치 */
+  .footer { padding: 32px 16px; }
+  .footer__cols { flex-wrap: wrap; gap: 28px 40px; }
+  .footer__brand { flex: 1 0 100%; margin-right: 0; }
+
+  /* Auth (로그인/회원가입) */
+  .auth { padding: 116px 16px 48px; }
+  .auth__title { font-size: 26px; }
+  .auth__subtitle { font-size: 14px; }
+  .terms-item { gap: 12px; }
+  .terms-item label { white-space: normal; }
+  .terms-item__txt { font-size: 13px; }
+}
