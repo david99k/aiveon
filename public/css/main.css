@@ -268,8 +268,8 @@ button {
   height: 12px;
 }
 
-.gnb__profile-wrap:hover .gnb__profile-pop,
-.gnb__profile-wrap:focus-within .gnb__profile-pop {
+.gnb__profile-wrap.is-open .gnb__profile-pop,
+.gnb__profile-wrap.is-open .gnb__usermenu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -300,6 +300,424 @@ button {
 
 .gnb__profile-pop-btn:hover,
 .gnb__profile-pop-btn:focus-visible { filter: brightness(1.08); }
+
+/* 로그인/비로그인 상태별 프로필 메뉴 노출 (데모 토글이 body.is-authed 전환) */
+body.is-authed .gnb__profile-pop { display: none; }
+body:not(.is-authed) .gnb__usermenu { display: none; }
+
+/* 로그인 후 유저 메뉴 : synergy kim / Premium + 마이페이지·크리에이터 전환·고객센터·로그아웃 */
+.gnb__usermenu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 10;
+  width: 244px;
+  padding: 8px;
+  border-radius: 14px;
+  background-color: var(--bg-page);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+
+/* 아바타와 메뉴 사이 간격을 잇는 투명 브릿지 */
+.gnb__usermenu::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.gnb__usermenu-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 14px;
+}
+
+.gnb__usermenu-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gnb__usermenu-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.gnb__usermenu-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.gnb__usermenu-plan { font-size: 13px; font-weight: 600; color: var(--brand-primary); }
+
+.gnb__usermenu-list {
+  display: flex;
+  flex-direction: column;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gnb__usermenu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  text-align: left;
+  transition: background-color 0.15s;
+}
+
+.gnb__usermenu-item:hover,
+.gnb__usermenu-item:focus-visible { background-color: rgba(255, 255, 255, 0.06); }
+.gnb__usermenu-item svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--text-secondary); }
+
+/* --- 데모: 로그인 상태 미리보기 토글 (우측 하단 상시 표시) --- */
+.authbar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 12px 9px 14px;
+  border-radius: 16px;
+  background-color: rgba(20, 20, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.authbar__info { display: flex; align-items: center; gap: 9px; }
+
+.authbar__dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.authbar__text { display: flex; flex-direction: column; line-height: 1.25; }
+.authbar__state { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.authbar__caption { font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
+
+.authbar__toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.18);
+  transition: background-color 0.2s;
+}
+
+.authbar__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: transform 0.2s;
+}
+
+body.is-authed .authbar__dot { background-color: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2); }
+body.is-authed .authbar__toggle { background-color: var(--brand-primary); }
+body.is-authed .authbar__knob { transform: translateX(20px); }
+
+@media (max-width: 767px) {
+  .authbar { right: 12px; bottom: 12px; gap: 10px; padding: 8px 10px 8px 12px; }
+  .authbar__caption { display: none; }
+}
+
+/* ============================================================
+   마이페이지 (회원정보) - Figma 657:7279
+   좌측 계정 사이드바 + 우측 회원정보 폼
+   ============================================================ */
+.mypage {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding-top: 85px;            /* 고정 GNB 클리어런스 */
+  min-height: 100vh;            /* 사이드바가 화면을 채우도록 */
+}
+
+/* --- 좌측 계정 사이드바 --- */
+.mypage__side {
+  flex: 0 0 260px;
+  padding: 40px 29px;
+  background-color: var(--bg-surface);
+}
+
+.mypage__profile { display: flex; align-items: center; gap: 11px; }
+.mypage__profile-avatar {
+  flex-shrink: 0;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.mypage__profile-name { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+.mypage__profile-plan { margin-top: 3px; font-size: 16px; font-weight: 500; color: #6d4fe0; }
+
+.mypage__side-edit {
+  display: block;
+  margin-top: 18px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.28px;
+  transition: color 0.15s;
+}
+.mypage__side-edit:hover { color: var(--text-primary); }
+
+.mypage__subscribe {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 26px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--brand-primary);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.28px;
+  color: var(--text-primary);
+  transition: filter 0.15s;
+}
+.mypage__subscribe:hover { filter: brightness(1.08); }
+
+.mypage__side-divider {
+  margin: 22px 0 6px;
+  border: 0;
+  height: 1px;
+  background-color: rgba(221, 221, 221, 0.2);
+}
+
+.mypage__side-nav { display: flex; flex-direction: column; }
+.mypage__side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.32px;
+  color: var(--text-primary);
+  transition: color 0.15s;
+}
+.mypage__side-nav a:hover { color: var(--brand-primary); }
+.mypage__side-nav-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* --- 우측 회원정보 폼 --- */
+.mypage__content {
+  flex: 1;
+  min-width: 0;
+  padding: 70px 40px 90px 106px;
+}
+
+.mypage__header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.mypage__avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+}
+.mypage__avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+.mypage__avatar-gear {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.mypage__avatar-gear img { width: 18px; height: 18px; display: block; }
+.mypage__identity { display: flex; flex-direction: column; gap: 5px; }
+.mypage__username { font-size: 24px; font-weight: 600; color: var(--text-primary); }
+.mypage__stats { display: flex; gap: 16px; font-size: 16px; color: rgba(255, 255, 255, 0.8); }
+
+.mypage__form { display: flex; flex-direction: column; gap: 20px; }
+
+.mypage__field { display: flex; align-items: center; }
+.mypage__field-label {
+  flex: 0 0 143px;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+.mypage__field-box {
+  flex: 0 1 585px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 60px;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+.mypage__field-value {
+  min-width: 0;
+  font-size: 16px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mypage__field-value--strong { font-weight: 600; }
+.mypage__field-change {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.15s;
+}
+.mypage__field-change:hover { color: var(--text-primary); }
+
+/* 구독 내용 : 박스 없이 텍스트만 (높이는 다른 필드와 동일하게) */
+.mypage__field--plain { min-height: 60px; }
+.mypage__field-plan {
+  padding-left: 24px;
+  font-size: 16px;
+  color: #d5c7ff;
+}
+
+.mypage__actions { display: flex; gap: 24px; margin-top: 62px; }
+.mypage__btn {
+  padding: 14px 64px;
+  border-radius: 100px;
+  font-size: 18px;
+  font-weight: 700;
+  transition: filter 0.15s, background-color 0.15s;
+}
+.mypage__btn--primary { background-color: var(--brand-primary); color: var(--text-primary); }
+.mypage__btn--primary:hover { filter: brightness(1.08); }
+.mypage__btn--cancel { background-color: #dedede; color: #acacac; font-weight: 600; }
+.mypage__btn--cancel:hover { background-color: #d2d2d2; }
+
+/* 마이페이지: 사이드바가 푸터까지 이어지도록 푸터 상단 여백 제거 */
+body.is-mypage .footer { margin-top: 0; }
+
+/* --- 마이페이지 서브페이지 공통 : 페이지 타이틀 --- */
+.mypage__page-title {
+  margin-bottom: 28px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* --- 즐겨찾기 : 세로 포스터 카드 그리드 --- */
+.fav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px 20px;
+}
+.fav-grid .poster-card { width: 100%; }
+.fav-grid .poster-card__thumb { height: auto; aspect-ratio: 253 / 337; }
+
+/* --- 자주하는 질문 : 검색 + 칩 + 아코디언 --- */
+.faq__search { position: relative; max-width: 476px; margin-bottom: 20px; }
+.faq__search-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 52px 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background-color: var(--bg-surface);
+  font-size: 15px;
+  color: var(--text-primary);
+}
+.faq__search-input::placeholder { color: var(--text-secondary); }
+.faq__search-input:focus { outline: none; border-color: var(--brand-primary); }
+.faq__search-btn { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); display: flex; }
+.faq__search-btn img { width: 22px; height: 22px; }
+
+.faq__chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+.faq__chip {
+  padding: 9px 16px;
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+.faq__chip:hover { background-color: var(--badge-official); }
+
+.faq__list { display: flex; flex-direction: column; gap: 16px; }
+.faq__item { border-radius: 12px; background-color: var(--bg-surface); overflow: hidden; }
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 24px 28px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+  text-align: left;
+}
+.faq__chevron { flex-shrink: 0; width: 14px; height: 8px; color: var(--text-secondary); transition: transform 0.2s ease; }
+.faq__item.is-open .faq__chevron { transform: rotate(180deg); }
+
+.faq__a {
+  display: none;
+  padding: 0 28px 26px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+}
+.faq__item.is-open .faq__a { display: block; }
+.faq__a p { margin: 0; }
+.faq__a-head { margin-top: 18px; color: var(--text-primary); font-weight: 600; }
+.faq__a ul { margin: 6px 0 0; padding: 0; list-style: none; }
+.faq__a li { position: relative; padding-left: 15px; margin-top: 5px; }
+.faq__a li::before { content: '•'; position: absolute; left: 2px; color: rgba(255, 255, 255, 0.5); }
+
+/* --- 반응형 --- */
+@media (max-width: 1023px) {
+  .mypage { flex-direction: column; padding-top: 66px; min-height: 0; }
+  .mypage__side { flex-basis: auto; }
+  .mypage__side-nav { flex-direction: row; flex-wrap: wrap; }
+  .mypage__side-nav a { padding: 10px 0; margin-right: 24px; }
+  .mypage__content { padding: 40px 24px 64px; }
+  .mypage__field-box { flex-basis: auto; flex-grow: 1; }
+}
+
+@media (max-width: 600px) {
+  .mypage__field { flex-direction: column; align-items: stretch; gap: 8px; }
+  .mypage__field-label { flex-basis: auto; }
+  .mypage__field-plan { padding-left: 0; }
+  .mypage__actions { margin-top: 40px; }
+  .mypage__btn { flex: 1; padding: 14px 0; text-align: center; }
+}
 
 /* --------------------------------------------------------------------------
    4. Hero
@@ -1828,6 +2246,70 @@ body.page-player { overflow: hidden; }
 
 .comment__more img { width: 4px; height: 20px; display: block; }
 
+/* 더보기(⋮) 드롭다운 : 시즌 드롭다운과 동일 톤(팝오버 서피스) */
+.comment__menu {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 128px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background-color: var(--badge-official);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+
+.comment.is-menu-open .comment__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.comment__menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.comment__menu-item:hover,
+.comment__menu-item:focus-visible {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.comment__menu-item--delete { color: var(--field-error); }
+
+.comment__menu-item--delete:hover,
+.comment__menu-item--delete:focus-visible {
+  color: var(--field-error);
+  background-color: rgba(241, 96, 99, 0.12);
+}
+
+/* 노출 규칙 : 기본(타인 댓글)=신고하기만 / 내 댓글(.is-mine)=수정·삭제만 */
+.comment__menu-item--edit,
+.comment__menu-item--delete { display: none; }
+
+.comment.is-mine .comment__menu-item--edit,
+.comment.is-mine .comment__menu-item--delete { display: flex; }
+
+.comment.is-mine .comment__menu-item--report { display: none; }
+
 /* 댓글 입력 */
 .player__comments-form {
   display: flex;
@@ -2318,30 +2800,28 @@ body.page-player { overflow: hidden; }
   color: var(--text-primary);
 }
 
+/* 데스크톱: 이벤트 배너 아래 세로 나열 (썸네일 좌 + 텍스트 우, YouTube 사이드바형).
+   태블릿·모바일(≤1023)에서는 가로 스크롤 카드로 전환된다. */
 .watch__rec-list {
   display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  cursor: grab;
-  scrollbar-width: none;      /* Firefox */
-  -ms-overflow-style: none;   /* IE/Edge Legacy */
+  flex-direction: column;
+  gap: 14px;
 }
 
-.watch__rec-list::-webkit-scrollbar { display: none; }
 .watch__rec-list.is-dragging { cursor: grabbing; user-select: none; }
 .watch__rec-list.is-dragging a { pointer-events: none; }
 .watch__rec-list img { -webkit-user-drag: none; user-select: none; }
 
 .watch__rec {
-  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  width: 220px;
+  gap: 12px;
+  width: 100%;
 }
 
 .watch__rec-thumb {
-  width: 100%;
-  height: 124px; /* 220 x 124 ≈ 16:9 */
+  flex-shrink: 0;
+  width: 180px;
+  height: 101px; /* 180 x 101 ≈ 16:9 */
   border-radius: var(--radius-sm);
   overflow: hidden;
   background-color: var(--bg-surface);
@@ -2354,19 +2834,18 @@ body.page-player { overflow: hidden; }
 }
 
 .watch__rec-body {
-  display: block;
+  flex: 1;
   min-width: 0;
-  padding-top: 10px;
 }
 
 .watch__rec-title {
-  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   color: var(--text-primary);
 }
 
@@ -2534,6 +3013,119 @@ body.page-player { overflow: hidden; }
   color: var(--text-secondary);
 }
 
+/* --- Live 채널 패널 (라이브 페이지) : 에피소드 패널과 동일 톤, 항목은 썸네일+제목+시간 --- */
+.watch__live-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: var(--bg-surface);
+}
+
+.watch__live-title {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.watch__live-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: 468px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+.watch__live-list::-webkit-scrollbar { width: 6px; }
+.watch__live-list::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.watch__live-item { display: flex; gap: 14px; }
+
+.watch__live-thumb {
+  flex-shrink: 0;
+  width: 128px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.watch__live-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.watch__live-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.watch__live-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.watch__live-time { font-size: 13px; color: var(--text-secondary); }
+
+/* 정보 영역 : 시청자수 + 설명 + 해시태그 (시놉시스 대체) */
+.watch__live-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.watch__live-viewers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.watch__live-viewers strong { font-weight: 700; }
+
+.watch__live-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--badge-new);
+  box-shadow: 0 0 0 4px rgba(230, 0, 0, 0.18);
+}
+
+.watch__live-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.watch__hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.watch__hashtags a {
+  font-size: 15px;
+  color: var(--brand-primary);
+  transition: color 0.15s;
+}
+
+.watch__hashtags a:hover { color: var(--text-primary); }
+
 /* --- 반응형 --- */
 @media (max-width: 1599px) {
   .watch { padding: 120px 40px 60px; }
@@ -2555,6 +3147,7 @@ body.page-player { overflow: hidden; }
 
   .watch__col-a { order: 1; }
   .watch__episodes { order: 2; }    /* 영상·정보 다음 */
+  .watch__live-panel { order: 2; }  /* 라이브: 영상·정보 다음 Live 채널 */
   .watch__rec-section { order: 3; } /* 에피소드 아래 추천 영상 */
   .watch__discuss { order: 4; }     /* 그 다음 댓글 */
   .watch__ad { order: 5; }
@@ -2569,6 +3162,25 @@ body.page-player { overflow: hidden; }
   .player__rail-btn--more img { width: 3px; height: 16px; }
   .player__rail-label { font-size: 12px; line-height: 22px; }
   .player__rail-thumb { width: 48px; height: 48px; }
+
+  /* 추천 영상 : 태블릿·모바일에선 가로 스크롤 카드로 전환 (썸네일 위 + 텍스트 아래) */
+  .watch__rec-list {
+    flex-direction: row;
+    gap: 16px;
+    overflow-x: auto;
+    cursor: grab;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .watch__rec-list::-webkit-scrollbar { display: none; }
+  .watch__rec {
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 0;
+    width: 200px;
+  }
+  .watch__rec-thumb { width: 100%; height: 113px; } /* 200 x 113 ≈ 16:9 */
+  .watch__rec-body { padding-top: 10px; }
 }
 
 /* --------------------------------------------------------------------------

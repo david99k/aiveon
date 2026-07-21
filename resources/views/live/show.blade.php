@@ -2,14 +2,13 @@
 
 @section('title', $video['title'] . ' · AIVEON')
 
-{{-- 재생 페이지: 푸터 제외 (Figma 338:5601 / 484:4617) --}}
+{{-- 라이브 시청 페이지: 푸터 제외 (Figma "Main - 재생버튼 클릭시 - 라이브") --}}
 @section('hide-footer', '1')
 
 @section('content')
     <section class="watch">
         {{-- 좌측 : 플레이어 + 정보 + 댓글 --}}
         <div class="watch__main">
-            {{-- 영상 + 정보 (모바일/태블릿에서 이 그룹 다음에 에피소드가 온다) --}}
             <div class="watch__col-a">
             <div class="watch__player">
                 <video class="js-watch-video" src="{{ asset($video['source']) }}"
@@ -17,10 +16,10 @@
                 <div class="watch__player-grad"></div>
 
                 <div class="watch__topbar">
-                    <a href="{{ route('detail') }}" class="watch__back" aria-label="뒤로 가기"><img src="{{ asset('images/watch/ic_back.svg') }}" alt=""></a>
+                    <a href="{{ route('main') }}" class="watch__back" aria-label="뒤로 가기"><img src="{{ asset('images/watch/ic_back.svg') }}" alt=""></a>
                     <div>
-                        <p class="watch__topbar-title">{{ $video['title'] }}</p>
-                        <p class="watch__topbar-sub">{{ $video['subtitle'] }}</p>
+                        <p class="watch__topbar-title">{{ $video['topbarTitle'] }}</p>
+                        <p class="watch__topbar-sub">{{ $video['topbarSub'] }}</p>
                     </div>
                 </div>
 
@@ -52,9 +51,6 @@
 
             <div class="watch__head">
                 <div>
-                    @if (!empty($video['badge']))
-                        <span class="hero__badge">{{ $video['badge'] }}</span>
-                    @endif
                     <h2 class="watch__title">{{ $video['title'] }}</h2>
                 </div>
                 <div class="watch__actions">
@@ -86,7 +82,14 @@
                     @endforeach
                 </div>
 
-                <p class="watch__synopsis">{!! nl2br(e($video['synopsis'])) !!}</p>
+                {{-- 라이브 : 시청자수 + 설명 + 해시태그 (시청 페이지의 시놉시스 자리) --}}
+                <div class="watch__live-meta">
+                    <p class="watch__live-viewers"><span class="watch__live-dot" aria-hidden="true"></span>현재 <strong>{{ $video['viewers'] }}명</strong> 시청중</p>
+                    <p class="watch__live-desc">{{ $video['description'] }}</p>
+                    <p class="watch__hashtags">
+                        @foreach ($video['hashtags'] as $tag)<a href="#">#{{ $tag }}</a>@endforeach
+                    </p>
+                </div>
             </div>
 
             </div>{{-- /.watch__col-a --}}
@@ -131,37 +134,22 @@
             </div>{{-- /.watch__discuss --}}
         </div>
 
-        {{-- 우측 사이드바 : 에피소드(드라마) + 광고 + 추천 영상 --}}
+        {{-- 우측 사이드바 : Live 채널 + 광고 + 추천 영상 --}}
         <aside class="watch__side">
-            @if ($isDrama && count($episodes))
-                <section class="watch__episodes" aria-label="에피소드 목록">
-                    <div class="watch__episodes-head">
-                        <h3 class="watch__episodes-title">에피소드</h3>
-                        <div class="watch__season-dropdown">
-                            <button type="button" class="watch__season js-season-toggle" aria-haspopup="true" aria-expanded="false">
-                                <span class="js-season-label">{{ $seasons[0] ?? '시즌 1' }}</span>
-                                <svg class="watch__season-chevron" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="watch__season-menu js-season-menu" role="menu" aria-label="시즌 선택">
-                                @foreach ($seasons ?? ['시즌 1', '시즌 2'] as $i => $season)
-                                    <button type="button" class="watch__season-option js-season-option{{ $i === 0 ? ' is-selected' : '' }}" role="menuitemradio" aria-checked="{{ $i === 0 ? 'true' : 'false' }}" data-season="{{ $i + 1 }}">{{ $season }}</button>
-                                @endforeach
+            <section class="watch__live-panel" aria-label="라이브 채널 목록">
+                <h3 class="watch__live-title">Live 채널</h3>
+                <ul class="watch__live-list">
+                    @foreach ($liveChannels as $ch)
+                        <li class="watch__live-item">
+                            <a href="{{ route('live') }}" class="watch__live-thumb"><img src="{{ asset($ch['thumb']) }}" alt="" loading="lazy"></a>
+                            <div class="watch__live-body">
+                                <p class="watch__live-name">{{ $ch['title'] }}</p>
+                                <p class="watch__live-time">{{ $ch['time'] }}</p>
                             </div>
-                        </div>
-                    </div>
-                    <ul class="watch__episode-list">
-                        @foreach ($episodes as $ep)
-                            <li class="watch__episode">
-                                <a href="{{ $ep['url'] }}" class="watch__episode-thumb"><img src="{{ asset($ep['thumb']) }}" alt="" loading="lazy"></a>
-                                <div class="watch__episode-body">
-                                    <p class="watch__episode-title">{{ $ep['title'] }}</p>
-                                    <p class="watch__episode-desc">{{ $ep['desc'] }}</p>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                </section>
-            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
 
             {{-- 이벤트 배너(광고) : 추천 영상 위 --}}
             <a href="#" class="watch__ad" aria-label="광고">

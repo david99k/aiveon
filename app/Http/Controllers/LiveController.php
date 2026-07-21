@@ -5,45 +5,43 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 
 /**
- * 드라마/영화 재생 페이지 (재생버튼 클릭 시 진입).
+ * AI 라이브 & 채널 페이지 (GNB "AI 라이브 & 채널" 클릭 진입).
  *
- * Figma: Main - 재생버튼 클릭시 - 드라마(338:5601) / 영화(484:4617)
- *  - drama : 회차형 콘텐츠. 우측 사이드바에 에피소드 패널 노출.
- *  - movie : 영화 등 1편짜리 콘텐츠. 에피소드 패널 없음.
- *
- * 실서비스 연동 시 {slug} 기반 조회로 교체하고, 콘텐츠의 회차 여부에 따라
- * 두 타입 중 하나로 라우팅하세요.
+ * Figma: Main - 재생버튼 클릭시 - 라이브.
+ * 시청(watch) 페이지와 동일한 레이아웃을 재사용하되,
+ *  - 우측 사이드바의 "에피소드" 패널 → "Live 채널" 실시간 방송 목록
+ *  - 정보 영역 : 시놉시스 대신 "현재 N명 시청중" + 설명 + 해시태그
+ * 실서비스 연동 시 실제 라이브 스트림/시청자수/채널 목록으로 교체하세요.
  */
-class WatchController
+class LiveController
 {
-    public function show(string $type = 'drama'): View
+    public function show(): View
     {
-        $isDrama = $type !== 'movie';
-
-        return view('watch.show', [
-            'isDrama' => $isDrama,
+        return view('live.show', [
             'video' => [
-                'title' => $isDrama ? '빛이 빛날 때' : 'THE BETA',
-                'subtitle' => $isDrama ? '1화 · 빛의 시작' : '영화 · 본편',
-                'badge' => $isDrama ? 'OFFICIAL' : null,
-                'source' => 'videos/drama01.mp4', // 테스트 영상(16:9) - 드라마·영화 공통, 실서비스에서 교체
-                'poster' => $isDrama ? 'images/main/hero_main.jpg' : 'images/main/thumb_wide_beta.jpg',
+                'title' => '오늘의 주식 전망',
+                'topbarTitle' => '오늘의 주식 전망',
+                'topbarSub' => '실시간 라이브',
+                // 테스트 영상(16:9). 실서비스에서 실제 라이브 스트림으로 교체.
+                'source' => 'videos/drama01.mp4',
+                'poster' => 'images/live/stream_stock.jpg',
                 'tags' => ['2026', '드라마', '멜로'],
                 'ratings' => ['19+', '15+'],
-                'synopsis' => ($isDrama ? '<빛이 빛날 때>' : '<THE BETA>') . "는 각자의 가슴속에 깊은 상처와 어둠을 품고 살아가는 인물들이 서로의 삶에 스며들어 따뜻한 위로와 희망이 되어주는 힐링 휴먼 로맨스 드라마입니다.\n\"당신의 하루에, 가장 따뜻한 빛이 되기를\"이라는 메인 카피처럼, 치열하고 삭막한 현실 속에서 길을 잃고 지친 사람들이 어떻게 서로를 구원하고 치유하는지를 섬세한 시선으로 그려냅니다. 사랑하는 사람의 품에 기대어 비로소 평안을 찾은 두 남녀 주인공을 중심으로, 저마다의 사연과 삶의 무게를 짊어진 다양한 주변 인물들의 이야기가 옴니버스처럼 따스하게 교차합니다.",
+                'viewers' => '1,034',
+                'description' => '오늘의 주식 전망에 대해서 이야기 해보아요',
+                'hashtags' => ['주식시장', '주식', '대한민국주식'],
             ],
             'channel' => [
                 'name' => '거스구스',
                 'avatar' => 'images/player/avatar_gusgus.png',
-                'following' => !$isDrama, // 드라마 화면은 미팔로우(팔로우 버튼) 상태 시안
+                'following' => true,
             ],
             'aiTools' => [
                 ['icon' => 'images/player/ai_logo1.png', 'name' => 'AI 도구 1', 'light' => false],
                 ['icon' => 'images/player/ai_logo2.png', 'name' => 'AI 도구 2', 'light' => false],
                 ['icon' => 'images/player/ai_logo3.png', 'name' => 'AI 도구 3', 'light' => true],
             ],
-            'seasons' => ['시즌 1', '시즌 2'],
-            'episodes' => $isDrama ? $this->episodes() : [],
+            'liveChannels' => $this->liveChannels(),
             'recommended' => $this->recommended(),
             'comments' => $this->comments(),
             // 로그인 여부 : 인증 연동 시 auth()->check() 로 교체. 시안은 로그인 상태 기준.
@@ -51,15 +49,17 @@ class WatchController
         ]);
     }
 
-    /** @return array<int, array<string, string>> */
-    private function episodes(): array
+    /** 우측 "Live 채널" 실시간 방송 목록 @return array<int, array<string, string>> */
+    private function liveChannels(): array
     {
-        return array_map(fn (int $n) => [
-            'title' => "{$n}화",
-            'desc' => '"당신의 하루에, 가장 따뜻한 빛이 되기를"이라는 메인 카피처럼, 치열하고 삭막한 현실 속에서 길을 잃고 지친 사람들이 어떻게 서로...',
-            'thumb' => 'images/main/hero_main.jpg',
-            'url' => route('watch', 'drama'),
-        ], range(1, 6));
+        return [
+            ['title' => 'AI가 바꾸는 미래 지금 시작됩니다.!', 'time' => '15:23', 'thumb' => 'images/live/ch_ai.jpg'],
+            ['title' => '오늘의 주식 전망 : 실시간 분석 & 대응 전략', 'time' => '15:23', 'thumb' => 'images/live/ch_stock.jpg'],
+            ['title' => '새로운 기술로 혁신을 이끄는 당신의 파트너', 'time' => '15:24', 'thumb' => 'images/live/ch_qa.jpg'],
+            ['title' => '데이터 기반 의사결정으로 경쟁력 강화하기', 'time' => '15:24', 'thumb' => 'images/live/ch_ai.jpg'],
+            ['title' => 'FPS 게임 시작', 'time' => '15:25', 'thumb' => 'images/live/ch_game.jpg'],
+            ['title' => '미래를 예측하는 스마트한 비즈니스 솔루션', 'time' => '15:25', 'thumb' => 'images/live/ch_stock.jpg'],
+        ];
     }
 
     /** @return array<int, array<string, string>> */

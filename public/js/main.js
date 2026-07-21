@@ -1007,6 +1007,175 @@
         update(); // 새로고침 시 스크롤 위치 반영
     }
 
+    /**
+     * 댓글 더보기(⋮) 메뉴.
+     * ⋮ 버튼 클릭 시 해당 댓글의 옵션 메뉴를 토글한다. 메뉴 항목 노출은
+     * CSS 가 .is-mine(내 댓글) 기준으로 제어한다(내 댓글=수정·삭제, 타인=신고하기).
+     * 한 번에 하나만 열리며 바깥 클릭·Esc 로 닫힌다.
+     * 실제 수정/삭제/신고 동작은 백엔드 연동 지점이다.
+     */
+    function initCommentMenu() {
+        var buttons = document.querySelectorAll('.js-comment-more');
+        if (!buttons.length) { return; }
+
+        function closeAll(except) {
+            Array.prototype.forEach.call(buttons, function (btn) {
+                var comment = btn.closest('.comment');
+                if (!comment || comment === except) { return; }
+                comment.classList.remove('is-menu-open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        Array.prototype.forEach.call(buttons, function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var comment = btn.closest('.comment');
+                if (!comment) { return; }
+                var willOpen = !comment.classList.contains('is-menu-open');
+                closeAll(comment);
+                comment.classList.toggle('is-menu-open', willOpen);
+                btn.setAttribute('aria-expanded', String(willOpen));
+            });
+        });
+
+        // 메뉴 항목 선택 : 시안에서는 닫기만 (실제 동작은 백엔드 연동)
+        Array.prototype.forEach.call(document.querySelectorAll('.comment__menu-item'), function (item) {
+            item.addEventListener('click', function () { closeAll(null); });
+        });
+
+        // 바깥 클릭 / Esc 로 닫기
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.comment__menu, .js-comment-more')) { closeAll(null); }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { closeAll(null); }
+        });
+    }
+
+    /*
+     * 로그인 상태 데모.
+     * - 프로필 클릭 시 상태별 메뉴(비로그인=로그인 유도 / 로그인=유저 메뉴) 표시
+     * - 우측 하단 토글로 로그인/비로그인 전환 + 현재 상태 상시 표시 (localStorage 유지)
+     * 실서비스에서는 서버 인증 상태로 body.is-authed 를 정하고 이 토글은 제거하면 된다.
+     */
+    function initAuthDemo() {
+        var KEY = 'aiveon-demo-auth';
+        var body = document.body;
+        var wrap = document.querySelector('.gnb__profile-wrap');
+
+        var ICON = {
+            user: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+            swap: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 8.5h13m0 0-3.2-3.2M20 8.5l-3.2 3.2M17 15.5H4m0 0 3.2-3.2M4 15.5l3.2 3.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            help: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.4 2.2c-.7.35-1 .85-1 1.5v.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1" fill="currentColor"/></svg>',
+            logout: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9 8.5 5.5 12 9 15.5M5.5 12H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        };
+
+        // 아바타 경로 (프리뷰=상대경로, 블레이드=asset() 절대경로 모두 대응)
+        var avatarImg = wrap ? wrap.querySelector('.gnb__profile img') : null;
+        var guestSrc = '', duckSrc = '';
+        if (avatarImg) {
+            var cur = avatarImg.getAttribute('src') || '';
+            var i = cur.indexOf('images/');
+            var base = i >= 0 ? cur.slice(0, i) : '';
+            guestSrc = base + 'images/common/default_icon.png';
+            duckSrc = base + 'images/common/avatar_user.jpg';
+        }
+
+        // 마이페이지 링크 : 정적 프리뷰(.html)면 preview-mypage.html, 실앱이면 /mypage
+        var mypageUrl = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage';
+
+        // 로그인 후 유저 메뉴 주입 (마크업에 이미 있으면 건너뜀)
+        if (wrap && !wrap.querySelector('.gnb__usermenu')) {
+            var menu = document.createElement('div');
+            menu.className = 'gnb__usermenu';
+            menu.setAttribute('role', 'menu');
+            menu.setAttribute('aria-label', '계정 메뉴');
+            menu.innerHTML =
+                '<div class="gnb__usermenu-head">' +
+                    '<img class="gnb__usermenu-avatar" src="' + duckSrc + '" alt="">' +
+                    '<div class="gnb__usermenu-id"><strong class="gnb__usermenu-name">synergy kim</strong><span class="gnb__usermenu-plan">Premium</span></div>' +
+                '</div>' +
+                '<ul class="gnb__usermenu-list">' +
+                    '<li><a href="' + mypageUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.user + '마이페이지</a></li>' +
+                    '<li><a href="#" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 전환</a></li>' +
+                    '<li><a href="#" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
+                    '<li><button type="button" class="gnb__usermenu-item js-demo-logout" role="menuitem">' + ICON.logout + '로그아웃</button></li>' +
+                '</ul>';
+            wrap.appendChild(menu);
+        }
+
+        // 우측 하단 토글바 주입
+        var bar = document.createElement('div');
+        bar.className = 'authbar';
+        bar.setAttribute('aria-label', '로그인 상태 미리보기 토글');
+        bar.innerHTML =
+            '<span class="authbar__info"><span class="authbar__dot"></span>' +
+            '<span class="authbar__text"><span class="authbar__state"></span><span class="authbar__caption">미리보기 · 로그인 전환</span></span></span>' +
+            '<button type="button" class="authbar__toggle js-auth-toggle" role="switch" aria-checked="false" aria-label="로그인 상태 전환"><span class="authbar__knob"></span></button>';
+        body.appendChild(bar);
+        var stateEl = bar.querySelector('.authbar__state');
+        var toggleEl = bar.querySelector('.js-auth-toggle');
+
+        function apply(authed) {
+            body.classList.toggle('is-authed', authed);
+            if (avatarImg) { avatarImg.setAttribute('src', authed ? duckSrc : guestSrc); }
+            stateEl.textContent = authed ? '로그인 상태' : '비로그인 상태';
+            toggleEl.setAttribute('aria-checked', String(authed));
+        }
+
+        var authed = false;
+        try { authed = localStorage.getItem(KEY) === '1'; } catch (e) {}
+        apply(authed);
+
+        function setState(next) {
+            authed = next;
+            try { localStorage.setItem(KEY, next ? '1' : '0'); } catch (e) {}
+            apply(next);
+            if (wrap) { wrap.classList.remove('is-open'); }
+        }
+
+        toggleEl.addEventListener('click', function () { setState(!authed); });
+
+        // 프로필 아바타 클릭 → 상태별 메뉴 열기/닫기
+        if (wrap) {
+            var avatarBtn = wrap.querySelector('.gnb__profile');
+            if (avatarBtn) {
+                avatarBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    wrap.classList.toggle('is-open');
+                });
+            }
+            // 로그아웃(유저 메뉴) → 비로그인으로 전환 (데모)
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.js-demo-logout')) { e.preventDefault(); setState(false); }
+            });
+            // 바깥 클릭 / Esc 로 닫기
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.gnb__profile-wrap')) { wrap.classList.remove('is-open'); }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') { wrap.classList.remove('is-open'); }
+            });
+        }
+    }
+
+    /* 자주하는 질문 아코디언 : 질문 클릭 시 해당 항목 펼치기/접기 */
+    function initFaq() {
+        var toggles = document.querySelectorAll('.js-faq-toggle');
+        if (!toggles.length) { return; }
+        Array.prototype.forEach.call(toggles, function (btn) {
+            btn.addEventListener('click', function () {
+                var item = btn.closest('.faq__item');
+                if (!item) { return; }
+                var willOpen = !item.classList.contains('is-open');
+                item.classList.toggle('is-open', willOpen);
+                btn.setAttribute('aria-expanded', String(willOpen));
+            });
+        });
+    }
+
     function init() {
         var lists = document.querySelectorAll('[data-scroll-x]');
 
@@ -1024,6 +1193,9 @@
         initPlayerFeed();
         initWatchVideo();
         initWatchSeason();
+        initCommentMenu();
+        initAuthDemo();
+        initFaq();
     }
 
     if (document.readyState === 'loading') {

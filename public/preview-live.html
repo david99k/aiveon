@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>오늘의 주식 전망 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/live/show.blade.php 정적 재현.
+        GNB "AI 라이브 & 채널" 클릭 시 진입. (Figma "Main - 재생버튼 클릭시 - 라이브")
+        시청(watch) 레이아웃 재사용 + 우측 "Live 채널" 패널 + 시청자수/해시태그.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="#" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="#" class="gnb__nav-link">AI BL</a>
+                    <a href="#" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="#" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <button type="button" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </button>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="watch">
+            <!-- 좌측 : 플레이어 + 정보 + 댓글 -->
+            <div class="watch__main">
+                <div class="watch__col-a">
+                <div class="watch__player">
+                    <video class="js-watch-video" src="videos/drama01.mp4" poster="images/live/stream_stock.jpg" playsinline preload="metadata"></video>
+                    <div class="watch__player-grad"></div>
+
+                    <div class="watch__topbar">
+                        <a href="preview.html" class="watch__back" aria-label="뒤로 가기"><img src="images/watch/ic_back.svg" alt=""></a>
+                        <div>
+                            <p class="watch__topbar-title">오늘의 주식 전망</p>
+                            <p class="watch__topbar-sub">실시간 라이브</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="watch__play-center" aria-label="재생">
+                        <img src="images/player/ic_play.svg" alt="">
+                    </button>
+
+                    <div class="watch__progress" role="progressbar" aria-label="재생 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span class="watch__progress-fill" style="width: 0%"></span>
+                    </div>
+
+                    <div class="watch__controls">
+                        <button type="button" class="watch__ctrl watch__ctrl--play js-watch-play" aria-label="재생/일시정지">
+                            <img src="images/watch/ic_play_sm.svg" alt="">
+                        </button>
+                        <div class="watch__volume">
+                            <button type="button" class="watch__ctrl watch__ctrl--mute js-watch-mute" aria-label="음소거" aria-pressed="false">
+                                <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3Z" fill="currentColor"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                <svg class="icon-muted" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3Z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                            </button>
+                            <input type="range" class="watch__volume-slider js-watch-volume" min="0" max="1" step="0.05" value="1" aria-label="음량 조절">
+                        </div>
+                        <span class="watch__time js-watch-time">0:00 / 0:00</span>
+                        <button type="button" class="watch__ctrl watch__ctrl--full js-watch-full" aria-label="전체화면">
+                            <img src="images/watch/ic_expand.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="watch__head">
+                    <div>
+                        <h2 class="watch__title">오늘의 주식 전망</h2>
+                    </div>
+                    <div class="watch__actions">
+                        <a href="#" class="btn btn--ghost btn--icon">공유하기 <img src="images/common/ic_share.svg" alt=""></a>
+                        <a href="#" class="btn btn--ghost btn--icon">저장하기 <img src="images/common/ic_bookmark.svg" alt=""></a>
+                    </div>
+                </div>
+
+                <div class="watch__info">
+                    <div class="player__channel">
+                        <a href="#" class="player__channel-avatar"><img src="images/player/avatar_gusgus.png" alt=""></a>
+                        <a href="#" class="player__channel-name">거스구스</a>
+                        <button type="button" class="player__follow">팔로잉</button>
+                    </div>
+
+                    <ul class="hero__tags">
+                        <li>2026</li>
+                        <li>드라마</li>
+                        <li>멜로</li>
+                        <li class="tag--age19">19+</li>
+                        <li class="tag--age15">15+</li>
+                    </ul>
+
+                    <div class="player__ai">
+                        <a href="#" class="player__ai-label">사용 AI &nbsp;&gt;</a>
+                        <span class="player__ai-chip"><img src="images/player/ai_logo1.png" alt="AI 도구 1"></span>
+                        <span class="player__ai-chip"><img src="images/player/ai_logo2.png" alt="AI 도구 2"></span>
+                        <span class="player__ai-chip player__ai-chip--light"><img src="images/player/ai_logo3.png" alt="AI 도구 3"></span>
+                    </div>
+
+                    <!-- 라이브 : 시청자수 + 설명 + 해시태그 (시청 페이지의 시놉시스 자리) -->
+                    <div class="watch__live-meta">
+                        <p class="watch__live-viewers"><span class="watch__live-dot" aria-hidden="true"></span>현재 <strong>1,034명</strong> 시청중</p>
+                        <p class="watch__live-desc">오늘의 주식 전망에 대해서 이야기 해보아요</p>
+                        <p class="watch__hashtags"><a href="#">#주식시장</a><a href="#">#주식</a><a href="#">#대한민국주식</a></p>
+                    </div>
+                </div>
+
+                </div><!-- /.watch__col-a -->
+
+                <!-- 댓글 영역 -->
+                <div class="watch__discuss">
+                <div class="watch__divider"></div>
+
+                <div class="watch__comment-form">
+                    <span class="comment__avatar"><img src="images/main/creator_profile_04.jpg" alt=""></span>
+                    <textarea class="watch__comment-input" placeholder="댓글 추가..." aria-label="댓글 입력"></textarea>
+                </div>
+                <div class="player__comments-actions">
+                    <button type="button" class="player__comments-cancel">취소</button>
+                    <button type="button" class="player__comments-submit">댓글</button>
+                </div>
+
+                <ul class="watch__comments">
+                    <li class="comment is-mine">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_05.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_02.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_07.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_03.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_04.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_05.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment comment--reply">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_02.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
+                            <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                </ul>
+                </div><!-- /.watch__discuss -->
+            </div>
+
+            <!-- 우측 사이드바 : Live 채널 + 광고 + 추천 영상 -->
+            <aside class="watch__side">
+                <section class="watch__live-panel" aria-label="라이브 채널 목록">
+                    <h3 class="watch__live-title">Live 채널</h3>
+                    <ul class="watch__live-list">
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_ai.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">AI가 바꾸는 미래 지금 시작됩니다.!</p><p class="watch__live-time">15:23</p></div></li>
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_stock.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">오늘의 주식 전망 : 실시간 분석 &amp; 대응 전략</p><p class="watch__live-time">15:23</p></div></li>
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_qa.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">새로운 기술로 혁신을 이끄는 당신의 파트너</p><p class="watch__live-time">15:24</p></div></li>
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_ai.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">데이터 기반 의사결정으로 경쟁력 강화하기</p><p class="watch__live-time">15:24</p></div></li>
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_game.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">FPS 게임 시작</p><p class="watch__live-time">15:25</p></div></li>
+                        <li class="watch__live-item"><a href="preview-live.html" class="watch__live-thumb"><img src="images/live/ch_stock.jpg" alt="" loading="lazy"></a><div class="watch__live-body"><p class="watch__live-name">미래를 예측하는 스마트한 비즈니스 솔루션</p><p class="watch__live-time">15:25</p></div></li>
+                    </ul>
+                </section>
+
+                <!-- 이벤트 배너(광고) : 추천 영상 위 -->
+                <a href="#" class="watch__ad" aria-label="광고">
+                    <img src="images/watch/ad_banner.jpg" alt="FAITH THROUGH HARDSHIP - BORCELLE CHURCH 광고">
+                </a>
+
+                <!-- 추천 영상 : PC=이벤트 배너 아래 세로 나열 · 모바일=가로 스크롤 -->
+                <section class="watch__rec-section">
+                    <h3 class="watch__side-title">추천 영상</h3>
+                    <ul class="watch__rec-list" data-scroll-x tabindex="0" role="region" aria-label="추천 영상">
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">궁의 어둠, 달의 노래</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_beta.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">THE BETA</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">궁의 어둠, 달의 노래</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">알고리즘 러브</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">궁의 어둠, 달의 노래</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">알고리즘 러브</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    <li><a href="preview-detail.html" class="watch__rec"><span class="watch__rec-thumb"><img src="images/main/thumb_wide_beta.jpg" alt="" loading="lazy"></span><span class="watch__rec-body"><span class="watch__rec-title">THE BETA</span><span class="watch__rec-meta">크리에이터 · 조회수 12만</span></span></a></li>
+                    </ul>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

@@ -41,7 +41,7 @@ class MainController
             ['label' => 'AI 애니메이션', 'url' => '#'],
             ['label' => 'AI BL', 'url' => '#'],
             ['label' => 'AI 숏폼 드라마', 'url' => '#'],
-            ['label' => 'AI 라이브 & 채널', 'url' => '#'],
+            ['label' => 'AI 라이브 & 채널', 'url' => route('live')],
             ['label' => '성인 19+', 'url' => '#'],
         ];
     }
@@ -104,7 +104,7 @@ class MainController
     {
         return [
             $this->video('AI의 침공', 'images/main/thumb_wide_invasion.jpg', isPremium: true),
-            $this->video('빛이 빛날때', 'images/main/hero_main.jpg'),
+            $this->video('아기 고양이의 모험', 'images/main/garo_img01.jpg'),
             $this->video('네모의 꿈', 'images/main/thumb_wide_nemo.jpg'),
             $this->video('AI 코드 : 인간의 경계', 'images/main/thumb_wide_aicode.jpg'),
             $this->video('알고리즘 러브', 'images/main/thumb_wide_algorithm.jpg'),
@@ -121,8 +121,8 @@ class MainController
         return [
             $this->video('영상 타이틀', 'images/main/poster_03.jpg', url: $player),
             $this->video('그 계정, 우리가 사랑한 시간', 'images/main/poster_01.jpg', isNew: true, url: $player),
-            $this->video('영상 타이틀', 'images/main/poster_04.jpg', url: $player),
-            $this->video('영상 타이틀', 'images/main/poster_04.jpg', url: $player),
+            $this->video('아기 고양이의 모험', 'images/main/poster_05.jpg', url: $player),
+            $this->video('한 소녀의 피클볼 도전기', 'images/main/poster_06.jpg', url: $player),
             $this->video('영상 타이틀', 'images/main/poster_01.jpg', url: $player),
             $this->video('영상 타이틀', 'images/main/poster_03.jpg', url: $player),
         ];
@@ -138,9 +138,9 @@ class MainController
             $this->video('영상 타이틀', 'images/main/poster_02.jpg', url: $player),
             $this->video('영상 타이틀', 'images/main/poster_03.jpg', isPremium: true, url: $player),
             $this->video('영상 타이틀', 'images/main/poster_04.jpg', isPremium: true, url: $player),
-            $this->video('영상 타이틀', 'images/main/poster_02.jpg', isPremium: true, url: $player),
+            $this->video('아기 고양이의 모험', 'images/main/poster_05.jpg', isNew: true, url: $player),
             $this->video('영상 타이틀', 'images/main/poster_04.jpg', isPremium: true, url: $player),
-            $this->video('영상 타이틀', 'images/main/poster_02.jpg', isPremium: true, url: $player),
+            $this->video('한 소녀의 피클볼 도전기', 'images/main/poster_06.jpg', isNew: true, url: $player),
         ];
     }
 
@@ -166,7 +166,7 @@ class MainController
             $this->video('당신이 잠들어 있을 때', 'images/main/thumb_wide_sleep.jpg'),
             $this->video('빛이 빛날때', 'images/main/thumb_wide_cooking.jpg'),
             $this->video('빛이 빛날때', 'images/main/thumb_wide_family.jpg'),
-            $this->video('빛이 빛날때', 'images/main/thumb_wide_sleep.jpg'),
+            $this->video('한 소녀의 피클볼 도전기', 'images/main/garo_img02.jpg'),
             $this->video('빛이 빛날때', 'images/main/thumb_wide_invasion.jpg'),
             $this->video('빛이 빛날때', 'images/main/thumb_wide_algorithm.jpg'),
         ];

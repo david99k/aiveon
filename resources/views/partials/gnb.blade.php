@@ -7,7 +7,7 @@
         ['label' => 'AI 애니메이션', 'url' => '#'],
         ['label' => 'AI BL', 'url' => '#'],
         ['label' => 'AI 숏폼 드라마', 'url' => '#'],
-        ['label' => 'AI 라이브 & 채널', 'url' => '#'],
+        ['label' => 'AI 라이브 & 채널', 'url' => route('live')],
         ['label' => '성인 19+', 'url' => '#'],
     ];
 

@@ -18,6 +18,8 @@ class PlayerController
         return view('player.show', [
             'shorts' => $this->shorts(),
             'comments' => $this->comments(),
+            // 로그인 여부 : 인증 연동 시 auth()->check() 로 교체. 시안은 로그인 상태 기준.
+            'isLoggedIn' => true,
         ]);
     }
 
@@ -80,11 +82,17 @@ class PlayerController
     {
         $avatars = ['creator_profile_05', 'creator_profile_04', 'creator_profile_02', 'creator_profile_07', 'creator_profile_03'];
 
-        return array_map(fn (string $avatar) => [
+        $comments = array_map(fn (string $avatar) => [
             'user' => 'User3325421',
             'date' => '2026.07.08',
             'text' => '너무 슬퍼요 재미있을줄 알았는데 밤새...',
             'avatar' => "images/main/{$avatar}.jpg",
+            'is_mine' => false, // 내 댓글 여부 : 인증 연동 시 작성자==현재 유저로 판정
         ], $avatars);
+
+        // 시안 : 첫 댓글을 '내 댓글'로 표시해 더보기 메뉴(수정/삭제) 노출을 시연
+        $comments[0]['is_mine'] = true;
+
+        return $comments;
     }
 }

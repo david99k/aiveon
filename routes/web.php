@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DetailController;
+use App\Http\Controllers\LiveController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\MypageController;
 use App\Http\Controllers\PlayerController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,15 @@ Route::get('/player/{slug?}', [PlayerController::class, 'show'])->name('player')
 Route::get('/watch/{type?}', [App\Http\Controllers\WatchController::class, 'show'])
     ->whereIn('type', ['drama', 'movie'])
     ->name('watch');
+
+/* AI 라이브 & 채널 (GNB "AI 라이브 & 채널" 클릭 진입) - 실시간 방송 시청 */
+Route::get('/live', [LiveController::class, 'show'])->name('live');
+
+/* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
+Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
+/* 마이페이지 사이드바 진입 - 즐겨찾기 / 자주하는 질문 */
+Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('favorites');
+Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
 
 /*
  * 로그인 / 회원가입 (단일 페이지 3단계 온보딩).

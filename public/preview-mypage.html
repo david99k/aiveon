@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>마이페이지 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/mypage/show.blade.php 정적 재현.
+        로그인 후 우측 프로필 메뉴 "마이페이지" 클릭 시 진입. (Figma 657:7279)
+        좌측 계정 사이드바 + 우측 회원정보 폼.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="#" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="#" class="gnb__nav-link">AI BL</a>
+                    <a href="#" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="#" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <button type="button" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </button>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 계정 사이드바 -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="#" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">즐겨찾기</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">크리에이터</a>
+                        <a href="preview-faq.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_faq.svg" alt="">자주하는 질문</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_inquiry.svg" alt="">1:1 문의</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_notice.svg" alt="">공지사항</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_event.svg" alt="">이벤트</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 회원정보 폼 -->
+                <div class="mypage__content">
+                    <div class="mypage__header">
+                        <div class="mypage__avatar-wrap">
+                            <img class="mypage__avatar" src="images/common/avatar_user.jpg" alt="프로필 이미지">
+                            <button type="button" class="mypage__avatar-gear" aria-label="프로필 이미지 변경">
+                                <img src="images/mypage/ic_setting.svg" alt="">
+                            </button>
+                        </div>
+                        <div class="mypage__identity">
+                            <strong class="mypage__username">User1555846</strong>
+                            <div class="mypage__stats">
+                                <span>게시물 10</span>
+                                <span>구독자 36만</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mypage__form">
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">닉네임</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">synergy_on</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">비번</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">*************</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">이메일</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">abc****@gmail.com</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">전화번호</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">010-****-88777</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+
+                        <div class="mypage__field mypage__field--plain">
+                            <span class="mypage__field-label">구독 내용</span>
+                            <span class="mypage__field-plan">Free</span>
+                        </div>
+                    </div>
+
+                    <div class="mypage__actions">
+                        <button type="button" class="mypage__btn mypage__btn--primary">완료</button>
+                        <button type="button" class="mypage__btn mypage__btn--cancel">취소</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul>
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">채용</a></li>
+                        <li><a href="#">뉴스룸</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                        <li><a href="#">정산정책</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul>
+                        <li><a href="#">고객센터</a></li>
+                        <li><a href="#">크리에이터 지원센터</a></li>
+                        <li><a href="#">공지사항</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>자주하는 질문 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/mypage/faq.blade.php 정적 재현.
+        마이페이지 좌측 사이드바 "자주하는 질문" 클릭 시 진입. (Figma 699:8180)
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="#" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="#" class="gnb__nav-link">AI BL</a>
+                    <a href="#" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="#" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <button type="button" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </button>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 계정 사이드바 -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">즐겨찾기</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">크리에이터</a>
+                        <a href="preview-faq.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_faq.svg" alt="">자주하는 질문</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_inquiry.svg" alt="">1:1 문의</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_notice.svg" alt="">공지사항</a>
+                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_event.svg" alt="">이벤트</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : 검색 + 필터 칩 + 아코디언 -->
+                <div class="mypage__content">
+                    <h2 class="mypage__page-title">자주하는 질문</h2>
+
+                    <div class="faq__search">
+                        <input type="text" class="faq__search-input" placeholder="검색어를 입력하세요" aria-label="자주하는 질문 검색">
+                        <button type="button" class="faq__search-btn" aria-label="검색">
+                            <img src="images/common/ic_search.svg" alt="">
+                        </button>
+                    </div>
+
+                    <div class="faq__chips">
+                        <button type="button" class="faq__chip">로그인이 안돼요</button>
+                        <button type="button" class="faq__chip">프리미엄 구독은 어떻게 하나요?</button>
+                        <button type="button" class="faq__chip">크리에이터로 전환하는방법</button>
+                        <button type="button" class="faq__chip">결제수단 변경은 어떻게 하나요?</button>
+                    </div>
+
+                    <ul class="faq__list">
+                        <li class="faq__item">
+                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
+                                <span class="faq__q-text">아이디 변경은 어떻게 하나요?</span>
+                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="faq__a"><p>아이디는 회원 식별을 위한 고유 정보로 변경이 불가능합니다. 다른 아이디 사용을 원하시면 새로 가입해 주세요.</p></div>
+                        </li>
+                        <li class="faq__item is-open">
+                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="true">
+                                <span class="faq__q-text">닉네임 변경은 어떻게 진행이 되나요?</span>
+                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="faq__a">
+                                <p>회원님의 닉네임은 언제든지 자유롭게 변경하실 수 있습니다. 단, 변경 이후 7일 동안은 새로운 닉네임으로 다시 변경하실 수 없으니 유의해 주시기 바랍니다.</p>
+                                <p class="faq__a-head">■ 닉네임 변경 방법</p>
+                                <ul>
+                                    <li>경로: [마이페이지] &gt; [내 정보 수정] &gt; [닉네임 설정]</li>
+                                    <li>원하시는 닉네임을 입력하신 후 [저장] 버튼을 누르시면 즉시 반영됩니다.</li>
+                                </ul>
+                                <p class="faq__a-head">■ 닉네임 변경 시 유의사항</p>
+                                <ul>
+                                    <li>7일 재변경 제한: 닉네임을 변경한 시점으로부터 7일(168시간) 동안은 다른 닉네임으로 다시 변경할 수 없습니다.</li>
+                                    <li>7일이 경과한 이후에는 횟수 제한 없이 다시 자유롭게 변경이 가능합니다.</li>
+                                    <li>해당 7일 재변경 제한 기간 외에 닉네임 변경과 관련된 별도의 추가 제약이나 조건은 없습니다.</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="faq__item">
+                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
+                                <span class="faq__q-text">비밀번호 변경을 하고 싶어요</span>
+                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="faq__a"><p>[마이페이지] &gt; [내 정보 수정] &gt; [비밀번호] 에서 변경하실 수 있습니다. 보안을 위해 영문·숫자·특수문자를 조합해 주세요.</p></div>
+                        </li>
+                        <li class="faq__item">
+                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
+                                <span class="faq__q-text">닉네임 변경은 어떻게 진행이 되나요?</span>
+                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="faq__a">
+                                <p>회원님의 닉네임은 언제든지 자유롭게 변경하실 수 있습니다. 단, 변경 이후 7일 동안은 새로운 닉네임으로 다시 변경하실 수 없으니 유의해 주시기 바랍니다.</p>
+                                <p class="faq__a-head">■ 닉네임 변경 방법</p>
+                                <ul>
+                                    <li>경로: [마이페이지] &gt; [내 정보 수정] &gt; [닉네임 설정]</li>
+                                    <li>원하시는 닉네임을 입력하신 후 [저장] 버튼을 누르시면 즉시 반영됩니다.</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>
