@@ -3,7 +3,7 @@
     /* 컨트롤러가 $gnbMenus를 넘기지 않는 페이지에서도 기본 메뉴가 나오도록 폴백 */
     $gnbMenus = $gnbMenus ?? [
         ['label' => '추천', 'url' => route('main'), 'active' => true],
-        ['label' => 'AI 쇼츠', 'url' => '#'],
+        ['label' => 'AI 쇼츠', 'url' => route('category', 'shorts')],
         ['label' => 'AI 애니메이션', 'url' => route('category', 'animation')],
         ['label' => 'AI BL', 'url' => route('category', 'bl')],
         ['label' => 'AI 숏폼 드라마', 'url' => route('category', 'shortform')],

@@ -31,7 +31,7 @@ Route::get('/search/results', [SearchController::class, 'results'])->name('searc
 
 /* 카테고리 (GNB 메뉴 클릭 진입) - 메인 레이아웃 재사용 (animation/bl/shortform/adult) */
 Route::get('/category/{slug}', [MainController::class, 'category'])
-    ->whereIn('slug', ['animation', 'bl', 'shortform', 'adult'])
+    ->whereIn('slug', ['shorts', 'animation', 'bl', 'shortform', 'adult'])
     ->name('category');
 
 /* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */

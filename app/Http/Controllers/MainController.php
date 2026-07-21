@@ -39,17 +39,40 @@ class MainController
     public function category(string $slug): View
     {
         $config = [
-            'animation' => ['active' => 'AI 애니메이션', 'hero' => true, 'age19' => false],
-            'bl' => ['active' => 'AI BL', 'hero' => true, 'age19' => false],
-            'shortform' => ['active' => 'AI 숏폼 드라마', 'hero' => false, 'age19' => false],
-            'adult' => ['active' => '성인 19+', 'hero' => false, 'age19' => true],
+            'shorts' => ['active' => 'AI 쇼츠', 'age19' => false],
+            'animation' => ['active' => 'AI 애니메이션', 'age19' => false],
+            'bl' => ['active' => 'AI BL', 'age19' => false],
+            'shortform' => ['active' => 'AI 숏폼 드라마', 'age19' => false],
+            'adult' => ['active' => '성인 19+', 'age19' => true],
         ][$slug];
+
+        // 카테고리별 전용 히어로 (독립 페이지 — 이미지/타이틀이 다름). 쇼츠·숏폼·19+ 는 히어로 없음.
+        $heroes = [
+            'animation' => [[
+                'badge' => 'PREMIUM',
+                'title' => '당신이 잠들어 있을 때',
+                'tags' => ['2026', '애니메이션', '가족'],
+                'description' => "포근한 밤을 지켜주는 잠들기 전 이야기\nAI 오리지널 힐링 애니메이션",
+                'image' => 'images/main/hero_animation.jpg',
+                'play_url' => route('watch', 'movie'),
+                'detail_url' => route('detail'),
+            ]],
+            'bl' => [[
+                'badge' => 'PREMIUM',
+                'title' => '서로의 계절',
+                'tags' => ['2026', 'BL', '로맨스'],
+                'description' => "우리가 사랑했던 그 여름날의 이야기\nAI 오리지널 BL 로맨스",
+                'image' => 'images/main/hero_bl.jpg',
+                'play_url' => route('watch', 'drama'),
+                'detail_url' => route('detail'),
+            ]],
+        ][$slug] ?? [];
 
         $age19 = $config['age19'];
 
         return view('main.index', [
             'gnbMenus' => $this->gnbMenus($config['active']),
-            'heroes' => $config['hero'] ? $this->heroes() : [],
+            'heroes' => $heroes,
             'recommended' => $this->mark($this->recommended(), $age19),
             'watching' => $this->mark($this->watching(), $age19),
             'topList' => $this->mark($this->topList(), $age19),
@@ -79,7 +102,7 @@ class MainController
     {
         $menus = [
             ['label' => '추천', 'url' => route('main')],
-            ['label' => 'AI 쇼츠', 'url' => '#'],
+            ['label' => 'AI 쇼츠', 'url' => route('category', 'shorts')],
             ['label' => 'AI 애니메이션', 'url' => route('category', 'animation')],
             ['label' => 'AI BL', 'url' => route('category', 'bl')],
             ['label' => 'AI 숏폼 드라마', 'url' => route('category', 'shortform')],
