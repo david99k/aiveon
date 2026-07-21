@@ -46,6 +46,21 @@ class MainController
             'adult' => ['active' => '성인 19+', 'age19' => true],
         ][$slug];
 
+        // 쇼츠·숏폼 : 세로 이미지 전용 콘텐츠 → 모든 행이 세로 포스터 카드 (Sub - AI 쇼츠 / AI 숏폼 드라마)
+        if (in_array($slug, ['shorts', 'shortform'], true)) {
+            return view('main.vertical', [
+                'pageTitle' => $config['active'] . ' · AIVEON',
+                'gnbMenus' => $this->gnbMenus($config['active']),
+                'recommended' => $this->posterRow(),
+                'topList' => $this->topList(),
+                'newNew' => $this->posterRow(premium: false, new: true),
+                'newPremium' => $this->newPosters(),
+                'creators' => $this->creators(),
+                'family' => $this->posterRow(),
+                'discover' => $this->posterRow(),
+            ]);
+        }
+
         // 카테고리별 전용 히어로 (독립 페이지 — 이미지/타이틀이 다름). 쇼츠·숏폼·19+ 는 히어로 없음.
         $heroes = [
             'animation' => [[
@@ -82,6 +97,23 @@ class MainController
             'family' => $this->mark($this->family(), $age19),
             'discover' => $this->mark($this->discover(), $age19),
         ]);
+    }
+
+    /** 쇼츠·숏폼용 세로 포스터 카드 행 @return array<int, array<string, mixed>> */
+    private function posterRow(bool $premium = true, bool $new = false): array
+    {
+        $imgs = ['poster_03', 'poster_01', 'poster_04', 'poster_05', 'poster_06', 'poster_02', 'poster_03'];
+        $player = route('player');
+
+        return array_map(fn (string $img) => [
+            'title' => '영상 타이틀',
+            'creator' => '크리에이터',
+            'views' => '12만',
+            'thumb' => 'images/main/' . $img . '.jpg',
+            'is_premium' => $premium,
+            'is_new' => $new,
+            'url' => $player,
+        ], $imgs);
     }
 
     /** 19+ 페이지 : 모든 카드에 age19 플래그 부여 (컴포넌트가 19 배지 렌더) */
