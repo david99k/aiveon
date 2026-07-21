@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>검색 · AIVEON (QA 프리뷰)</title>
+    <!-- [QA 전용] resources/views/search/index.blade.php 정적 재현. GNB 검색 아이콘 클릭 진입. (Figma 498:2967) -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="#" class="gnb__nav-link">AI 쇼츠</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">AI 애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">AI BL</a>
+                    <a href="preview-category-shortform.html" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="#" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true"><img src="images/common/default_icon.png" alt=""></a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="search-page">
+                <div class="search-page__inner">
+                    <form class="search-box" action="preview-search-results.html" method="get" role="search">
+                        <input type="text" name="q" class="search-box__input" placeholder="검색어를 입력하세요" aria-label="검색어 입력" autocomplete="off">
+                        <button type="submit" class="search-box__btn" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></button>
+                    </form>
+
+                    <div class="search-block">
+                        <div class="search-block__head">
+                            <h2 class="search-block__title">최근 검색어</h2>
+                            <button type="button" class="search-block__clear">검색어 초기화</button>
+                        </div>
+                        <div class="search-chips">
+                            <a href="preview-search-results.html" class="search-chip">쉬는 시간</a>
+                            <a href="preview-search-results.html" class="search-chip">snow</a>
+                            <a href="preview-search-results.html" class="search-chip">너의 AI로부터</a>
+                            <a href="preview-search-results.html" class="search-chip">너의 AI로부터</a>
+                            <a href="preview-search-results.html" class="search-chip">너의 AI로부터</a>
+                        </div>
+                    </div>
+
+                    <div class="search-block">
+                        <h2 class="search-block__title">인기 검색어</h2>
+                        <ol class="search-rank-list">
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">1</span><span class="search-rank__text">쉬는 시간</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">2</span><span class="search-rank__text">내 달콤한 약혼녀는 암살자다</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">3</span><span class="search-rank__text">마미적반공 : 엄마의 반격</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">4</span><span class="search-rank__text">도도와 두두의 달빛도토리섬 대모험</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">5</span><span class="search-rank__text">단편 달에 뜨는 시간</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">6</span><span class="search-rank__text">내 달콤한 약혼녀는 암살자다</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">7</span><span class="search-rank__text">마미적반공 : 엄마의 반격</span></a></li>
+                            <li><a href="preview-search-results.html" class="search-rank"><span class="search-rank__num">8</span><span class="search-rank__text">도도와 두두의 달빛도토리섬 대모험</span></a></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="js/main.js" defer></script>
+</body>
+</html>

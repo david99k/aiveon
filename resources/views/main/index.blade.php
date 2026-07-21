@@ -3,8 +3,12 @@
 @section('title', 'AIVEON')
 
 @section('content')
-    {{-- 히어로 슬라이더 --}}
-    @include('partials.hero', ['heroes' => $heroes])
+    {{-- 히어로 슬라이더 (카테고리 페이지 중 숏폼·19+ 는 히어로 없이 상단 여백) --}}
+    @if (!empty($heroes))
+        @include('partials.hero', ['heroes' => $heroes])
+    @else
+        <div class="cat-top-gap"></div>
+    @endif
 
     {{-- 추천 영상 --}}
     <x-video-row title="추천 영상" :items="$recommended" />

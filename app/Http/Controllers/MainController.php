@@ -32,18 +32,62 @@ class MainController
         ]);
     }
 
-    /** @return array<int, array<string, mixed>> */
-    private function gnbMenus(): array
+    /**
+     * 카테고리 페이지 (GNB 메뉴 클릭). 메인 레이아웃(main.index) 재사용.
+     * animation/bl = 히어로 + 행들, shortform/adult = 히어로 없음, adult = 모든 타이틀 19 배지.
+     */
+    public function category(string $slug): View
     {
-        return [
-            ['label' => '추천', 'url' => '#', 'active' => true],
+        $config = [
+            'animation' => ['active' => 'AI 애니메이션', 'hero' => true, 'age19' => false],
+            'bl' => ['active' => 'AI BL', 'hero' => true, 'age19' => false],
+            'shortform' => ['active' => 'AI 숏폼 드라마', 'hero' => false, 'age19' => false],
+            'adult' => ['active' => '성인 19+', 'hero' => false, 'age19' => true],
+        ][$slug];
+
+        $age19 = $config['age19'];
+
+        return view('main.index', [
+            'gnbMenus' => $this->gnbMenus($config['active']),
+            'heroes' => $config['hero'] ? $this->heroes() : [],
+            'recommended' => $this->mark($this->recommended(), $age19),
+            'watching' => $this->mark($this->watching(), $age19),
+            'topList' => $this->mark($this->topList(), $age19),
+            'newPosters' => $this->mark($this->newPosters(), $age19),
+            'creatorSectionTitle' => 'AIVEON TOP6',
+            'creators' => $this->creators(),
+            'family' => $this->mark($this->family(), $age19),
+            'discover' => $this->mark($this->discover(), $age19),
+        ]);
+    }
+
+    /** 19+ 페이지 : 모든 카드에 age19 플래그 부여 (컴포넌트가 19 배지 렌더) */
+    private function mark(array $items, bool $age19): array
+    {
+        if (! $age19) {
+            return $items;
+        }
+
+        return array_map(function (array $it) {
+            $it['age19'] = true;
+            return $it;
+        }, $items);
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function gnbMenus(string $active = '추천'): array
+    {
+        $menus = [
+            ['label' => '추천', 'url' => route('main')],
             ['label' => 'AI 쇼츠', 'url' => '#'],
-            ['label' => 'AI 애니메이션', 'url' => '#'],
-            ['label' => 'AI BL', 'url' => '#'],
-            ['label' => 'AI 숏폼 드라마', 'url' => '#'],
+            ['label' => 'AI 애니메이션', 'url' => route('category', 'animation')],
+            ['label' => 'AI BL', 'url' => route('category', 'bl')],
+            ['label' => 'AI 숏폼 드라마', 'url' => route('category', 'shortform')],
             ['label' => 'AI 라이브 & 채널', 'url' => route('live')],
-            ['label' => '성인 19+', 'url' => '#'],
+            ['label' => '성인 19+', 'url' => route('category', 'adult')],
         ];
+
+        return array_map(fn (array $m) => $m + ['active' => $m['label'] === $active], $menus);
     }
 
     /**

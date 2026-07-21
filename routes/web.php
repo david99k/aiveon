@@ -6,6 +6,7 @@ use App\Http\Controllers\LiveController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainController::class, 'index'])->name('main');
@@ -23,6 +24,15 @@ Route::get('/watch/{type?}', [App\Http\Controllers\WatchController::class, 'show
 
 /* AI 라이브 & 채널 (GNB "AI 라이브 & 채널" 클릭 진입) - 실시간 방송 시청 */
 Route::get('/live', [LiveController::class, 'show'])->name('live');
+
+/* 검색 (GNB 검색 아이콘 클릭 진입) - 검색 페이지 + 결과/결과없음 */
+Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search/results', [SearchController::class, 'results'])->name('search.results');
+
+/* 카테고리 (GNB 메뉴 클릭 진입) - 메인 레이아웃 재사용 (animation/bl/shortform/adult) */
+Route::get('/category/{slug}', [MainController::class, 'category'])
+    ->whereIn('slug', ['animation', 'bl', 'shortform', 'adult'])
+    ->name('category');
 
 /* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');

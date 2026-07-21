@@ -18,7 +18,7 @@
         </figure>
 
         <div class="video-card__info">
-            <strong class="video-card__title">{{ $item['title'] ?? '' }}</strong>
+            <strong class="video-card__title">{{ $item['title'] ?? '' }}@if (!empty($item['age19']))<span class="badge-age19">19</span>@endif</strong>
             <span class="video-card__meta">{{ $item['creator'] ?? '크리에이터' }} · 조회수 {{ $item['views'] ?? '0' }}</span>
         </div>
     </a>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AIVEON (QA 프리뷰)</title>
+    <title>AI 숏폼 드라마 · AIVEON (QA 프리뷰)</title>
     <!--
         [QA 전용] resources/views 블레이드 출력 결과를 정적으로 재현한 파일입니다.
         실제 마크업의 원본은 블레이드 템플릿이며, 이 파일은 브라우저 확인용입니다.
@@ -28,17 +28,19 @@
             <div class="gnb__left">
                 <h1><a href="#" class="gnb__logo">AIVEON</a></h1>
                 <nav class="gnb__nav" aria-label="주 메뉴">
-                    <a href="#" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
                     <a href="#" class="gnb__nav-link">AI 쇼츠</a>
                     <a href="preview-category-animation.html" class="gnb__nav-link">AI 애니메이션</a>
                     <a href="preview-category-bl.html" class="gnb__nav-link">AI BL</a>
-                    <a href="preview-category-shortform.html" class="gnb__nav-link">AI 숏폼 드라마</a>
+                    <a href="preview-category-shortform.html" class="gnb__nav-link is-active" aria-current="page">AI 숏폼 드라마</a>
                     <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
                     <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
                 </nav>
             </div>
             <div class="gnb__utils">
-                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
+                    <img src="images/common/ic_search.svg" alt="">
+                </a>
                 <a href="#" class="gnb__upload">업로드 +</a>
 
                 <!-- 프로필 : 아이콘 호버 시 로그인 유도 팝업 노출 (로그인 전) -->
@@ -55,78 +57,7 @@
         </header>
 
         <main id="content" class="content">
-            <!-- 히어로 : Swiper 슬라이드 (3개 콘텐츠, 5초 자동재생 + 루프) -->
-            <section class="hero swiper js-hero-swiper" aria-label="추천 콘텐츠 슬라이드">
-                <div class="swiper-wrapper">
-                    <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main.jpg" alt="">
-                        </div>
-                        <div class="hero__content">
-                            <span class="hero__badge">OFFICIAL</span>
-                            <h2 class="hero__title">빛이 빛날 때</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>드라마</li>
-                                <li>멜로</li>
-                            </ul>
-                            <p class="hero__desc">AI가 그려낸 새로운 빛의 이야기<br>공식 오리지널 시리즈 단독 공개</p>
-                            <div class="hero__actions">
-                                <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
-                                <a href="preview-detail.html" class="btn btn--ghost">상세보기</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main02.jpg" alt="" loading="lazy">
-                        </div>
-                        <div class="hero__content">
-                            <span class="hero__badge hero__badge--premium">PREMIUM</span>
-                            <h2 class="hero__title">궁의 어둠, 달의 노래</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>사극</li>
-                                <li>판타지</li>
-                            </ul>
-                            <p class="hero__desc">어둠에 잠긴 궁, 달빛으로 깨어나는 노래<br>AI 오리지널 대서사시</p>
-                            <div class="hero__actions">
-                                <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
-                                <a href="preview-detail.html" class="btn btn--ghost">상세보기</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main03.jpg" alt="" loading="lazy">
-                        </div>
-                        <div class="hero__content">
-                            <span class="hero__badge hero__badge--new">NEW</span>
-                            <h2 class="hero__title">AI 코드 : 인간의 경계</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>SF</li>
-                                <li>스릴러</li>
-                            </ul>
-                            <p class="hero__desc">인간과 AI, 그 경계가 무너지는 순간<br>화제의 신작 시리즈</p>
-                            <div class="hero__actions">
-                                <a href="preview-watch-movie.html" class="btn btn--primary">바로재생</a>
-                                <a href="preview-detail.html" class="btn btn--ghost">상세보기</a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="hero__pagination swiper-pagination"></div>
-                <button type="button" class="hero__nav hero__nav--prev" aria-label="이전 콘텐츠">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <button type="button" class="hero__nav hero__nav--next" aria-label="다음 콘텐츠">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-            </section>
+            <div class="cat-top-gap"></div>
 
             <section class="section">
                 <h2 class="section__title">추천 영상</h2>

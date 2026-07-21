@@ -701,6 +701,75 @@ body.is-mypage .footer { margin-top: 0; }
 .faq__a li { position: relative; padding-left: 15px; margin-top: 5px; }
 .faq__a li::before { content: '•'; position: absolute; left: 2px; color: rgba(255, 255, 255, 0.5); }
 
+/* --------------------------------------------------------------------------
+   검색 (검색 페이지 / 결과 / 결과 없음)
+   -------------------------------------------------------------------------- */
+.search-box { position: relative; }
+.search-box__input {
+  width: 100%;
+  height: 52px;
+  padding: 0 52px 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background-color: var(--bg-surface);
+  font-size: 15px;
+  color: var(--text-primary);
+}
+.search-box__input::placeholder { color: var(--text-secondary); }
+.search-box__input:focus { outline: none; border-color: var(--brand-primary); }
+.search-box__btn { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); display: flex; }
+.search-box__btn img { width: 22px; height: 22px; }
+
+/* 검색 페이지 (인기/최근 검색어) */
+.search-page { min-height: calc(100vh - 85px); padding: 125px 24px 80px; display: flex; justify-content: center; }
+.search-page__inner { width: 100%; max-width: 600px; }
+.search-block { margin-top: 30px; }
+.search-block__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.search-block__title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.search-block__clear { font-size: 13px; color: var(--text-secondary); transition: color 0.15s; }
+.search-block__clear:hover { color: var(--text-primary); }
+.search-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.search-chip {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  font-size: 13px;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+.search-chip:hover { background-color: var(--badge-official); }
+.search-rank-list { display: flex; flex-direction: column; margin-top: 2px; }
+.search-rank { display: flex; align-items: center; gap: 14px; padding: 9px 0; font-size: 15px; color: var(--text-primary); transition: color 0.15s; }
+.search-rank:hover { color: var(--brand-primary); }
+.search-rank__num { flex-shrink: 0; width: 18px; font-weight: 700; color: var(--brand-primary); }
+
+/* 검색 결과 / 결과 없음 */
+.search-results { padding: 125px 0 80px; }
+.search-box--top { max-width: 470px; margin: 0 auto 40px; }
+.search-none { text-align: center; margin: 8px 0 56px; }
+.search-none__title { font-size: 20px; color: var(--text-primary); }
+.search-none__title strong { color: var(--brand-primary); font-weight: 700; }
+.search-none__sub { margin-top: 10px; font-size: 16px; color: var(--text-secondary); }
+.search-row-title { display: flex; align-items: center; gap: 10px; }
+.search-row-count { font-size: 16px; font-weight: 500; color: var(--brand-primary); }
+
+/* 카테고리(히어로 없는 숏폼·19+) 상단 GNB 여백 */
+.cat-top-gap { height: 92px; }
+
+/* Main - 19+ : 모든 카드 타이틀 뒤 19 배지 */
+.badge-age19 {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background-color: var(--badge-new);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #fff;
+  vertical-align: middle;
+}
+
 /* --- 반응형 --- */
 @media (max-width: 1023px) {
   .mypage { flex-direction: column; padding-top: 66px; min-height: 0; }
