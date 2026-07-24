@@ -19,6 +19,12 @@
 !/.env.example
 /storage/*.key
 
+# FTP 배포 로컬 도구 (비밀번호 파일은 절대 커밋/푸시 금지)
+/ftp-pass.txt
+/ftp정보.txt
+/deploy-ftp.ps1
+/deploy-ftp.bat
+
 # OS / 에디터
 .DS_Store
 Thumbs.db

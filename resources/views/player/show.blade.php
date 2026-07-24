@@ -96,36 +96,39 @@
         {{-- 댓글 패널 : 댓글 버튼 클릭 시 오른쪽에서 슬라이드 인 (Figma 498:2734) --}}
         <aside class="player__comments" id="player-comments" aria-label="댓글" aria-hidden="true">
             <div class="player__comments-head">
-                <h3 class="player__comments-title">댓글</h3>
+                <h3 class="player__comments-title">댓글<span class="player__comments-count">{{ count($shorts[0]['commentList'] ?? []) }}</span></h3>
                 <button type="button" class="player__comments-close js-comments-close" aria-label="댓글 닫기">
                     <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                 </button>
             </div>
 
-            <ul class="player__comments-list">
-                @foreach ($comments as $comment)
-                    <li class="comment{{ !empty($comment['is_mine']) ? ' is-mine' : '' }}">
-                        <span class="comment__avatar"><img src="{{ asset($comment['avatar']) }}" alt=""></span>
-                        <div class="comment__body">
-                            <div class="comment__meta"><span class="comment__name">{{ $comment['user'] }}</span><span class="comment__date">{{ $comment['date'] }}</span></div>
-                            <p class="comment__text">{{ $comment['text'] }}</p>
-                            <div class="comment__actions">
-                                <button type="button"><img src="{{ asset('images/player/ic_heart.svg') }}" alt="">좋아요</button>
-                                <button type="button">답글</button>
+            {{-- 슬라이드별 댓글 목록 : 활성 영상 것만 표시(JS player:slidechange 로 전환) --}}
+            @foreach ($shorts as $si => $short)
+                <ul class="player__comments-list" data-comments-for="{{ $si }}" data-count="{{ count($short['commentList'] ?? []) }}" @if ($si > 0) hidden @endif>
+                    @foreach ($short['commentList'] ?? [] as $comment)
+                        <li class="comment{{ !empty($comment['is_mine']) ? ' is-mine' : '' }}">
+                            <span class="comment__avatar"><img src="{{ asset($comment['avatar']) }}" alt=""></span>
+                            <div class="comment__body">
+                                <div class="comment__meta"><span class="comment__name">{{ $comment['user'] }}</span><span class="comment__date">{{ $comment['date'] }}</span></div>
+                                <p class="comment__text">{{ $comment['text'] }}</p>
+                                <div class="comment__actions">
+                                    <button type="button"><img src="{{ asset('images/player/ic_heart.svg') }}" alt="">좋아요</button>
+                                    <button type="button">답글</button>
+                                </div>
                             </div>
-                        </div>
-                        @if ($isLoggedIn)
-                            {{-- 더보기 : 내 댓글=수정·삭제, 타인 댓글=신고하기 (노출은 .is-mine 기준 CSS 제어) --}}
-                            <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="{{ asset('images/player/ic_more.svg') }}" alt=""></button>
-                            <div class="comment__menu" role="menu">
-                                <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
-                                <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
-                                <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
-                            </div>
-                        @endif
-                    </li>
-                @endforeach
-            </ul>
+                            @if ($isLoggedIn)
+                                {{-- 더보기 : 내 댓글=수정·삭제, 타인 댓글=신고하기 (노출은 .is-mine 기준 CSS 제어) --}}
+                                <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="{{ asset('images/player/ic_more.svg') }}" alt=""></button>
+                                <div class="comment__menu" role="menu">
+                                    <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                                    <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                                    <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                                </div>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endforeach
 
             <div class="player__comments-form">
                 <span class="comment__avatar"><img src="{{ asset('images/main/creator_profile_04.jpg') }}" alt=""></span>

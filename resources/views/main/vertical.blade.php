@@ -4,7 +4,12 @@
 
 {{-- 쇼츠·숏폼 : 히어로 없이 세로 포스터 카드 위주 (Sub - AI 쇼츠 / AI 숏폼 드라마) --}}
 @section('content')
-    <div class="cat-top-gap"></div>
+    {{-- 상단 세로 포스터 배너 (없으면 상단 여백) --}}
+    @if (!empty($heroPosters))
+        @include('partials.poster-banner', ['posters' => $heroPosters])
+    @else
+        <div class="cat-top-gap"></div>
+    @endif
 
     <x-poster-row title="추천영상" :items="$recommended" />
 

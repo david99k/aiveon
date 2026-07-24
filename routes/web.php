@@ -22,17 +22,23 @@ Route::get('/watch/{type?}', [App\Http\Controllers\WatchController::class, 'show
     ->whereIn('type', ['drama', 'movie'])
     ->name('watch');
 
-/* AI 라이브 & 채널 (GNB "AI 라이브 & 채널" 클릭 진입) - 실시간 방송 시청 */
+/* AI 라이브채널 (GNB "AI 라이브채널" 클릭 진입) - 실시간 방송 시청 */
 Route::get('/live', [LiveController::class, 'show'])->name('live');
 
 /* 검색 (GNB 검색 아이콘 클릭 진입) - 검색 페이지 + 결과/결과없음 */
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/results', [SearchController::class, 'results'])->name('search.results');
 
-/* 카테고리 (GNB 메뉴 클릭 진입) - 메인 레이아웃 재사용 (animation/bl/shortform/adult) */
+/* 카테고리 (GNB 메뉴 클릭 진입) - 메인 레이아웃 재사용. IA ver1.1: 숏츠/드라마/영화/애니메이션/BL/성인19+ (shortform 은 레거시) */
 Route::get('/category/{slug}', [MainController::class, 'category'])
-    ->whereIn('slug', ['shorts', 'animation', 'bl', 'shortform', 'adult'])
+    ->whereIn('slug', ['shorts', 'drama', 'movie', 'animation', 'bl', 'shortform', 'adult'])
     ->name('category');
+
+/* 콘텐츠 업로드 (GNB "업로드 +" 클릭 진입) - 종류 선택 → 파일 업로드 → 상세 입력 → 주의사항 확인 */
+Route::get('/upload', [App\Http\Controllers\UploadController::class, 'show'])->name('upload');
+
+/* 크리에이터 스튜디오 - 내 채널관리 (유저 메뉴 "크리에이터 전환" / 마이페이지 "크리에이터" 진입) */
+Route::get('/studio', [App\Http\Controllers\StudioController::class, 'show'])->name('studio');
 
 /* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');

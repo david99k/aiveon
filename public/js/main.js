@@ -813,6 +813,8 @@
      * 레일의 댓글 버튼(.js-comments-toggle) 클릭 시 .is-comments 를 토글해
      * 패널이 오른쪽에서 슬라이드 인 되고 스테이지(영상)는 왼쪽으로 이동한다.
      * X 버튼(.js-comments-close)과 Esc 로 닫힌다.
+     * 세로 피드에서 슬라이드가 바뀌면(player:slidechange) 열림 여부와 무관하게
+     * 해당 영상의 댓글 목록/카운트로 전환한다.
      */
     function initPlayerComments() {
         var player = document.querySelector('.player');
@@ -833,6 +835,29 @@
             });
             panel.setAttribute('aria-hidden', String(!open));
         }
+
+        // 슬라이드별 댓글 목록(data-comments-for) 전환 : 활성 영상의 목록만 표시 + 카운트 갱신
+        var lists = panel.querySelectorAll('[data-comments-for]');
+        var countEl = panel.querySelector('.player__comments-count');
+
+        function syncTo(slideIndex) {
+            if (!lists.length) { return; }
+            Array.prototype.forEach.call(lists, function (list) {
+                var mine = Number(list.getAttribute('data-comments-for')) === slideIndex;
+                if (mine) {
+                    list.removeAttribute('hidden');
+                    list.scrollTop = 0; // 새 영상 댓글은 맨 위부터
+                    if (countEl) { countEl.textContent = list.getAttribute('data-count') || ''; }
+                } else {
+                    list.setAttribute('hidden', '');
+                }
+            });
+        }
+
+        player.addEventListener('player:slidechange', function (e) {
+            syncTo(e.detail ? e.detail.index : 0);
+        });
+        syncTo(0);
 
         Array.prototype.forEach.call(toggles, function (toggle) {
             toggle.addEventListener('click', function () {
@@ -859,8 +884,9 @@
     /**
      * 쇼츠 세로 피드: 위로 드래그(스와이프/휠)하면 다음 슬라이드가 아래에서 올라오고,
      * 아래로 드래그하면 이전 슬라이드로. 활성 슬라이드의 영상만 재생한다.
-     * 진행바 시킹/레일 버튼/링크 위에서 시작한 제스처는 스와이프로 보지 않으며,
-     * 댓글이 열려 있으면 스와이프를 막는다.
+     * 진행바 시킹/레일 버튼/링크/댓글 패널 위에서 시작한 제스처는 스와이프로 보지 않는다.
+     * 댓글이 열려 있어도 이동 가능 — 슬라이드가 바뀌면 player:slidechange 이벤트로
+     * 댓글 패널이 해당 영상의 댓글로 갱신된다(initPlayerComments).
      */
     function initPlayerFeed() {
         var feed = document.querySelector('.js-player-feed');
@@ -879,10 +905,6 @@
         var height = 0;
         var IGNORE = '.player__progress, .player__rail, .player__mute, .player__play, .player__comments, button, a, input, textarea';
 
-        function commentsOpen() {
-            return !!player && player.classList.contains('is-comments');
-        }
-
         function setActive(i) {
             Array.prototype.forEach.call(slides, function (slide, si) {
                 slide.classList.toggle('is-active', si === i);
@@ -898,9 +920,15 @@
         }
 
         function goTo(i) {
-            index = Math.max(0, Math.min(slides.length - 1, i));
+            var next = Math.max(0, Math.min(slides.length - 1, i));
+            var changed = next !== index;
+            index = next;
             feed.style.transform = 'translateY(' + (-index * 100) + '%)';
             setActive(index);
+            // 댓글 패널 등 외부 UI 가 활성 슬라이드를 따라가도록 알림
+            if (changed && player) {
+                player.dispatchEvent(new CustomEvent('player:slidechange', { detail: { index: index } }));
+            }
         }
 
         function onDown(e) {
@@ -909,7 +937,6 @@
             //  스와이프 직후의 버튼 탭 클릭이 잘못 차단되지 않는다.)
             didSwipe = false;
             if (e.pointerType === 'mouse' && e.button !== 0) { return; }
-            if (commentsOpen()) { return; }
             if (e.target.closest(IGNORE)) { return; }
             startX = e.clientX; startY = e.clientY;
             tracking = true; decided = false; swiping = false;
@@ -945,7 +972,7 @@
             if (!swiping) { return; }
             swiping = false;
             var moved = e.clientY - startY;
-            var threshold = Math.min(140, height * 0.15);
+            var threshold = Math.min(90, height * 0.12);   /* 스와이프 인식 거리 완화(더 쉽게 전환) */
             if (moved <= -threshold && index < slides.length - 1) { goTo(index + 1); }
             else if (moved >= threshold && index > 0) { goTo(index - 1); }
             else { goTo(index); } // 스냅백
@@ -969,10 +996,10 @@
             }
         }, true);
 
-        // 데스크톱 휠로도 이동 (연속 입력 쿨다운)
+        // 데스크톱 휠로도 이동 (연속 입력 쿨다운) — 댓글 패널 위 휠은 피드 밖이라 목록 스크롤 유지
         var wheelLock = false;
         feed.addEventListener('wheel', function (e) {
-            if (commentsOpen() || Math.abs(e.deltaY) < 20) { return; }
+            if (Math.abs(e.deltaY) < 20) { return; }
             e.preventDefault();
             if (wheelLock) { return; }
             wheelLock = true;
@@ -984,23 +1011,75 @@
     }
 
     /**
+     * 상단 배너(세로 포스터 캐러셀) 좌/우 화살표.
+     * 드래그 스크롤(data-scroll-x)은 공통 로직이 처리하므로, 여기서는
+     * 화살표 클릭 시 카드 폭+간격만큼 부드럽게 좌/우로 스크롤한다.
+     */
+    function initPosterBanner() {
+        var banners = document.querySelectorAll('.poster-banner');
+        if (!banners.length) { return; }
+
+        Array.prototype.forEach.call(banners, function (banner) {
+            var track = banner.querySelector('[data-banner-track]');
+            var prev = banner.querySelector('[data-banner-prev]');
+            var next = banner.querySelector('[data-banner-next]');
+            if (!track) { return; }
+
+            function step() {
+                var card = track.querySelector('.poster-banner__card');
+                // 카드 폭 + gap(34px). 카드가 없으면 뷰포트의 80%.
+                return card ? card.getBoundingClientRect().width + 34 : track.clientWidth * 0.8;
+            }
+
+            function scrollByCards(dir) {
+                track.scrollBy({ left: dir * step(), behavior: 'smooth' });
+            }
+
+            if (prev) { prev.addEventListener('click', function () { scrollByCards(-1); }); }
+            if (next) { next.addEventListener('click', function () { scrollByCards(1); }); }
+
+            // 스크롤 위치에 따라 화살표 흐림 + 비활성화(맨 끝이면 반투명 · disabled 로 키보드/보조기술에도 노출)
+            function syncNav() {
+                var max = track.scrollWidth - track.clientWidth - 1;
+                var atStart = track.scrollLeft <= 0;
+                var atEnd = track.scrollLeft >= max;
+                if (prev) { prev.classList.toggle('is-end', atStart); prev.disabled = atStart; }
+                if (next) { next.classList.toggle('is-end', atEnd); next.disabled = atEnd; }
+            }
+            track.addEventListener('scroll', syncNav, { passive: true });
+            window.addEventListener('resize', syncNav);
+            syncNav();
+        });
+    }
+
+    /**
      * 고정 GNB: 페이지를 조금이라도 내리면 .is-scrolled 를 붙여
      * 투명 헤더 -> 프로스티드 글래스 배경으로 전환한다.
+     * 또한 조금 더 내리면 .is-collapsed 를 붙여, 모바일에서 로고 행을 접고
+     * 카테고리 메뉴만 상단에 고정으로 남긴다(CSS ≤767 에서만 로고 숨김 적용).
      */
     function initStickyGnb() {
         var gnb = document.querySelector('.gnb');
         if (!gnb) { return; }
 
-        var THRESHOLD = 8; // px
+        // 쇼츠 플레이어: 문서 스크롤이 잠겨 있으므로 헤더를 항상 접힘(탭메뉴만) + 프로스티드 배경으로 고정
+        if (document.body.classList.contains('page-player')) {
+            gnb.classList.add('is-scrolled', 'is-collapsed');
+            return;
+        }
+
+        var THRESHOLD = 8;   // px : 프로스티드 배경 전환
+        var COLLAPSE = 46;   // px : 로고 행 접힘(모바일)
         var isScrolled = false;
+        var isCollapsed = false;
 
         // class 토글은 상태가 바뀔 때만 수행 (스크롤마다 DOM 변경 방지)
         function update() {
-            var next = window.pageYOffset > THRESHOLD;
-            if (next !== isScrolled) {
-                isScrolled = next;
-                gnb.classList.toggle('is-scrolled', next);
-            }
+            var y = window.pageYOffset;
+            var s = y > THRESHOLD;
+            if (s !== isScrolled) { isScrolled = s; gnb.classList.toggle('is-scrolled', s); }
+            var c = y > COLLAPSE;
+            if (c !== isCollapsed) { isCollapsed = c; gnb.classList.toggle('is-collapsed', c); }
         }
 
         window.addEventListener('scroll', update, { passive: true });
@@ -1053,6 +1132,111 @@
         });
     }
 
+    /**
+     * 댓글 답글 작성 폼 (watch·player 공통).
+     * 댓글의 "답글" 버튼 클릭 시 해당 댓글 아래에 대댓글 라인에 맞춘 인라인 폼
+     * (내 아바타 + 입력박스 + 취소/댓글)을 삽입한다. 한 번에 하나만 열리고,
+     * 취소/Esc 로 닫히며, 등록 시 데모용 답글(.comment--reply)을 그 자리에 추가한다.
+     * 실서비스에서는 등록 핸들러를 댓글 API 호출로 교체하면 된다.
+     */
+    function initCommentReply() {
+        var openForm = null;   // 현재 열린 폼
+        var originBtn = null;  // 폼을 연 답글 버튼 (포커스 복원용)
+
+        function myAvatarSrc() {
+            var img = document.querySelector('.watch__comment-form .comment__avatar img, .player__comments-form .comment__avatar img');
+            return img ? img.getAttribute('src') : 'images/common/default_icon.png';
+        }
+
+        function closeForm(restoreFocus) {
+            if (!openForm) { return; }
+            var btn = originBtn;
+            if (openForm.parentNode) { openForm.parentNode.removeChild(openForm); }
+            openForm = null; originBtn = null;
+            if (restoreFocus && btn) { btn.focus(); }
+        }
+
+        function buildForm() {
+            var item = document.createElement('li');
+            item.className = 'comment-reply-form';
+            item.innerHTML =
+                '<span class="comment__avatar"><img src="' + myAvatarSrc() + '" alt=""></span>' +
+                '<div class="comment-reply-form__box">' +
+                    '<textarea class="comment-reply-form__input" placeholder="답글 추가..." aria-label="답글 입력"></textarea>' +
+                    '<div class="comment-reply-form__actions">' +
+                        '<button type="button" class="player__comments-cancel js-reply-cancel">취소</button>' +
+                        '<button type="button" class="player__comments-submit js-reply-submit">댓글</button>' +
+                    '</div>' +
+                '</div>';
+            return item;
+        }
+
+        /* 데모 답글 항목 생성 : 사용자 입력은 textContent 로만 주입 */
+        function buildReply(text) {
+            var item = document.createElement('li');
+            item.className = 'comment comment--reply';
+            var avatar = document.createElement('span');
+            avatar.className = 'comment__avatar';
+            var img = document.createElement('img');
+            img.src = myAvatarSrc(); img.alt = '';
+            avatar.appendChild(img);
+            var body = document.createElement('div');
+            body.className = 'comment__body';
+            var meta = document.createElement('div');
+            meta.className = 'comment__meta';
+            meta.innerHTML = '<span class="comment__name">synergy_on</span><span class="comment__date">2026.07.23</span>';
+            var p = document.createElement('p');
+            p.className = 'comment__text';
+            p.textContent = text;
+            var actions = document.createElement('div');
+            actions.className = 'comment__actions';
+            actions.innerHTML = '<button type="button"><img src="' + (document.querySelector('.comment__actions img') ? document.querySelector('.comment__actions img').getAttribute('src') : 'images/player/ic_heart.svg') + '" alt="">좋아요</button><button type="button">답글</button>';
+            body.appendChild(meta); body.appendChild(p); body.appendChild(actions);
+            item.appendChild(avatar); item.appendChild(body);
+            return item;
+        }
+
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('.comment__actions button');
+
+            // 답글 버튼 → 폼 토글
+            if (btn && btn.textContent.replace(/\s/g, '') === '답글') {
+                var comment = btn.closest('.comment');
+                if (!comment) { return; }
+                var reopen = !(openForm && openForm.previousElementSibling === comment);
+                closeForm(false);
+                if (reopen) {
+                    openForm = buildForm();
+                    originBtn = btn;
+                    comment.insertAdjacentElement('afterend', openForm);
+                    openForm.querySelector('.comment-reply-form__input').focus();
+                }
+                return;
+            }
+
+            if (!openForm) { return; }
+
+            // 취소 / 등록
+            if (e.target.closest('.js-reply-cancel') && openForm.contains(e.target)) {
+                closeForm(true);
+            } else if (e.target.closest('.js-reply-submit') && openForm.contains(e.target)) {
+                var input = openForm.querySelector('.comment-reply-form__input');
+                var text = input.value.trim();
+                if (!text) { input.focus(); return; }
+                openForm.insertAdjacentElement('beforebegin', buildReply(text));
+                closeForm(false);
+            }
+        });
+
+        // Esc : 답글 폼만 닫기 (캡처 단계에서 먼저 처리해 댓글 패널 닫힘과 겹치지 않게)
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && openForm) {
+                e.stopPropagation();
+                closeForm(true);
+            }
+        }, true);
+    }
+
     /*
      * 로그인 상태 데모.
      * - 프로필 클릭 시 상태별 메뉴(비로그인=로그인 유도 / 로그인=유저 메뉴) 표시
@@ -1084,6 +1268,7 @@
 
         // 마이페이지 링크 : 정적 프리뷰(.html)면 preview-mypage.html, 실앱이면 /mypage
         var mypageUrl = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage';
+        var studioUrl = /\.html$/.test(location.pathname) ? 'preview-studio.html' : '/studio';
 
         // 로그인 후 유저 메뉴 주입 (마크업에 이미 있으면 건너뜀)
         if (wrap && !wrap.querySelector('.gnb__usermenu')) {
@@ -1098,7 +1283,7 @@
                 '</div>' +
                 '<ul class="gnb__usermenu-list">' +
                     '<li><a href="' + mypageUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.user + '마이페이지</a></li>' +
-                    '<li><a href="#" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 전환</a></li>' +
+                    '<li><a href="' + studioUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 스튜디오</a></li>' +
                     '<li><a href="#" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
                     '<li><button type="button" class="gnb__usermenu-item js-demo-logout" role="menuitem">' + ICON.logout + '로그아웃</button></li>' +
                 '</ul>';
@@ -1176,11 +1361,154 @@
         });
     }
 
+    /*
+     * 모바일 하단 고정 독바 (홈·검색·업로드·즐겨찾기·마이페이지).
+     * 기존 authbar/usermenu 와 동일하게 JS 주입 → 모든 페이지(프리뷰·블레이드)에 자동 적용.
+     * 푸터 없는 몰입 화면(플레이어·시청·로그인)엔 표시하지 않는다(.footer 존재 여부로 판별).
+     * 표시는 CSS(≤767)가 제어하며, 데스크톱/태블릿에선 숨겨진다.
+     */
+    function initMobileDock() {
+        // 푸터가 있는 브라우즈/앱 페이지 + 쇼츠 플레이어에 표시 (watch/로그인 등 그 외 몰입/플로우는 제외)
+        if (!document.querySelector('.footer') && !document.body.classList.contains('page-player')) { return; }
+        if (document.querySelector('.mobile-dock')) { return; }  // 중복 방지
+
+        var isPreview = /\.html$/.test(location.pathname);
+        var link = function (route, preview) { return isPreview ? preview : route; };
+
+        var ICON = {
+            home: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 11.4 12 4.5l8 6.9V19a1.5 1.5 0 0 1-1.5 1.5H15V15a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5.5H5.5A1.5 1.5 0 0 1 4 19v-7.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            search: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-3.4-3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+            upload: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+            favorites: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14.2l-6.5-3.7-6.5 3.7V5.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            mypage: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+        };
+
+        var ITEMS = [
+            { key: 'home', label: '홈', href: link('/', 'preview.html'), icon: ICON.home },
+            { key: 'search', label: '검색', href: link('/search', 'preview-search.html'), icon: ICON.search },
+            { key: 'upload', label: '업로드', href: link('/upload', 'preview-upload.html'), icon: ICON.upload },
+            { key: 'favorites', label: '즐겨찾기', href: link('/mypage/favorites', 'preview-favorites.html'), icon: ICON.favorites },
+            { key: 'mypage', label: '마이페이지', href: link('/mypage', 'preview-mypage.html'), icon: ICON.mypage }
+        ];
+
+        // 현재 경로 기준 활성 탭 판정 (그 외 브라우즈 페이지는 모두 '홈')
+        var path = location.pathname;
+        var active = /upload/.test(path) ? 'upload'
+            : /search/.test(path) ? 'search'
+            : /favorite/.test(path) ? 'favorites'
+            : /(mypage|faq)/.test(path) ? 'mypage'
+            : 'home';
+
+        var nav = document.createElement('nav');
+        nav.className = 'mobile-dock';
+        nav.setAttribute('aria-label', '하단 메뉴');
+        nav.innerHTML = ITEMS.map(function (it) {
+            var on = it.key === active;
+            return '<a href="' + it.href + '" class="mobile-dock__item' + (on ? ' is-active' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' +
+                '<span class="mobile-dock__icon">' + it.icon + '</span>' +
+                '<span class="mobile-dock__label">' + it.label + '</span></a>';
+        }).join('');
+        document.body.appendChild(nav);
+        document.body.classList.add('has-mobile-dock');
+    }
+
+    /*
+     * 모바일(≤767) GNB 카테고리 라벨 축약 (Figma 모바일 시안: AI/성인 접두 제거).
+     * 데스크톱/태블릿은 전체 라벨 유지하며, 리사이즈에도 대응한다.
+     */
+    function initMobileGnbLabels() {
+        var links = document.querySelectorAll('.gnb__nav-link');
+        if (!links.length || !window.matchMedia) { return; }
+
+        var SHORT = {
+            'AI 라이브채널': '라이브채널',
+            '성인 19+': '19+'
+        };
+        var mq = window.matchMedia('(max-width: 767px)');
+
+        function apply() {
+            var mobile = mq.matches;
+            Array.prototype.forEach.call(links, function (a) {
+                var full = a.getAttribute('data-label-full');
+                if (full === null) { full = a.textContent.trim(); a.setAttribute('data-label-full', full); }
+                a.textContent = (mobile && SHORT[full]) ? SHORT[full] : full;
+            });
+        }
+        apply();
+        if (mq.addEventListener) { mq.addEventListener('change', apply); }
+        else if (mq.addListener) { mq.addListener(apply); }
+    }
+
+    /*
+     * 콘텐츠 업로드 플로우.
+     * 진입 시 종류 선택 → 파일 업로드 모달 → 상세 폼 → 영상 등록하기 → 주의사항 확인.
+     * 공용 .modal 오버레이(.is-open)를 열고 닫는다.
+     */
+    function initUploadFlow() {
+        var form = document.querySelector('.js-upload-form');
+        if (!form) { return; }
+
+        function closeAll() {
+            Array.prototype.forEach.call(document.querySelectorAll('.js-upload-modal'), function (m) { m.classList.remove('is-open'); });
+            document.body.style.overflow = '';
+        }
+        function show(id) {
+            closeAll();
+            var m = document.getElementById(id);
+            if (m) { m.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+        }
+
+        // 진입 시 종류 선택 모달 (QA 해시: #noflow 생략 / #file / #notice 로 특정 모달 확인)
+        if (/notice/.test(location.hash)) { show('modal-notice'); }
+        else if (/file/.test(location.hash)) { show('modal-file'); }
+        else if (!/noflow/.test(location.hash)) { show('modal-type'); }
+
+        // 종류 선택 → 파일 업로드
+        Array.prototype.forEach.call(document.querySelectorAll('.js-type-shorts, .js-type-drama'), function (btn) {
+            btn.addEventListener('click', function () { show('modal-file'); });
+        });
+        // 파일 선택 → 폼 활성(모달 닫기)
+        var fileBtn = document.querySelector('.js-file-select');
+        if (fileBtn) { fileBtn.addEventListener('click', closeAll); }
+
+        // 닫기(X) / 오버레이 클릭 / Esc
+        Array.prototype.forEach.call(document.querySelectorAll('.js-modal-close'), function (b) { b.addEventListener('click', closeAll); });
+        Array.prototype.forEach.call(document.querySelectorAll('.js-upload-modal'), function (m) {
+            m.addEventListener('click', function (e) { if (e.target === m) { closeAll(); } });
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.querySelector('.js-upload-modal.is-open')) { closeAll(); }
+        });
+
+        // 영상 등록하기 → 주의사항 확인 모달
+        form.addEventListener('submit', function (e) { e.preventDefault(); show('modal-notice'); });
+        // 확인 → 완료(홈으로)
+        var ok = document.querySelector('.js-notice-ok');
+        if (ok) {
+            ok.addEventListener('click', function () {
+                closeAll();
+                location.href = /\.html$/.test(location.pathname) ? 'preview.html' : '/';
+            });
+        }
+
+        // 셀렉트 placeholder 색상 + AI 칩 삭제
+        Array.prototype.forEach.call(document.querySelectorAll('.upload-select'), function (sel) {
+            sel.addEventListener('change', function () { sel.classList.toggle('is-placeholder', !sel.value); });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.upload-chip button'), function (b) {
+            b.addEventListener('click', function () { var c = b.closest('.upload-chip'); if (c) { c.remove(); } });
+        });
+    }
+
     function init() {
         var lists = document.querySelectorAll('[data-scroll-x]');
 
         Array.prototype.forEach.call(lists, initDragScroll);
         preloadRankDigits();
+        initPosterBanner();
+        initMobileDock();
+        initMobileGnbLabels();
+        initUploadFlow();
         initStickyGnb();
         initPasswordToggles();
         initTermsAgree();
@@ -1194,6 +1522,7 @@
         initWatchVideo();
         initWatchSeason();
         initCommentMenu();
+        initCommentReply();
         initAuthDemo();
         initFaq();
     }

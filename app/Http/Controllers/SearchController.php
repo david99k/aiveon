@@ -47,9 +47,9 @@ class SearchController
                 'sections' => [
                     ['title' => $q . ' 검색결과', 'count' => 12, 'type' => 'video', 'items' => $this->videos()],
                     ['title' => $q . ' 크리에이터 검색결과', 'count' => 7, 'type' => 'creator', 'items' => $this->creators()],
-                    ['title' => $q . ' AI 쇼츠 검색결과', 'count' => 24, 'type' => 'poster', 'items' => $this->posters()],
-                    ['title' => $q . ' AI 애니메이션 검색결과', 'count' => 12, 'type' => 'video', 'items' => $this->videos()],
-                    ['title' => $q . ' AI 숏폼 드라마 검색결과', 'count' => 24, 'type' => 'poster', 'items' => $this->posters()],
+                    ['title' => $q . ' 숏츠 검색결과', 'count' => 24, 'type' => 'poster', 'items' => $this->posters()],
+                    ['title' => $q . ' 애니메이션 검색결과', 'count' => 12, 'type' => 'video', 'items' => $this->videos()],
+                    ['title' => $q . ' 드라마 검색결과', 'count' => 24, 'type' => 'poster', 'items' => $this->posters()],
                 ],
             ]);
         }
@@ -58,9 +58,9 @@ class SearchController
             'q' => $q === '' ? '검색어' : $q,
             'noResults' => true,
             'sections' => [
-                ['title' => 'AI 쇼츠 추천영상', 'count' => null, 'type' => 'poster', 'items' => $this->posters()],
-                ['title' => 'AI 애니메이션 추천영상', 'count' => null, 'type' => 'video', 'items' => $this->videos()],
-                ['title' => 'AI 숏폼 드라마 추천영상', 'count' => null, 'type' => 'poster', 'items' => $this->posters()],
+                ['title' => '숏츠 추천영상', 'count' => null, 'type' => 'poster', 'items' => $this->posters()],
+                ['title' => '애니메이션 추천영상', 'count' => null, 'type' => 'video', 'items' => $this->videos()],
+                ['title' => '드라마 추천영상', 'count' => null, 'type' => 'poster', 'items' => $this->posters()],
             ],
         ]);
     }

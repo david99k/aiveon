@@ -23,18 +23,19 @@
             <div class="gnb__left">
                 <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
                 <nav class="gnb__nav" aria-label="주 메뉴">
-                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
-                    <a href="preview-category-shorts.html" class="gnb__nav-link">AI 쇼츠</a>
-                    <a href="preview-category-animation.html" class="gnb__nav-link">AI 애니메이션</a>
-                    <a href="preview-category-bl.html" class="gnb__nav-link">AI BL</a>
-                    <a href="preview-category-shortform.html" class="gnb__nav-link">AI 숏폼 드라마</a>
-                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
                     <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
                 </nav>
             </div>
             <div class="gnb__utils">
                 <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
-                <a href="#" class="gnb__upload">업로드 +</a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
                 <div class="gnb__profile-wrap">
                     <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
                         <img src="images/common/default_icon.png" alt="">
@@ -142,7 +143,7 @@
 
                             <ul class="hero__tags">
                                 <li>2026</li>
-                                <li>AI 애니메이션</li>
+                                <li>애니메이션</li>
                                 <li>판타지</li>
                                 <li class="tag--age15">15+</li>
                             </ul>
@@ -208,13 +209,14 @@
             <!-- 댓글 패널 : 댓글 버튼 클릭 시 오른쪽에서 슬라이드 인 (Figma 498:2734) · 슬라이드 공유 -->
             <aside class="player__comments" id="player-comments" aria-label="댓글" aria-hidden="true">
                 <div class="player__comments-head">
-                    <h3 class="player__comments-title">댓글</h3>
+                    <h3 class="player__comments-title">댓글<span class="player__comments-count">932</span></h3>
                     <button type="button" class="player__comments-close js-comments-close" aria-label="댓글 닫기">
                         <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                     </button>
                 </div>
 
-                <ul class="player__comments-list">
+                <!-- 슬라이드 0 (빛이 빛날 때) 댓글 -->
+                <ul class="player__comments-list" data-comments-for="0" data-count="932">
                     <li class="comment is-mine">
                         <span class="comment__avatar"><img src="images/main/creator_profile_05.jpg" alt=""></span>
                         <div class="comment__body">
@@ -288,6 +290,61 @@
                         <div class="comment__body">
                             <div class="comment__meta"><span class="comment__name">User3325421</span><span class="comment__date">2026.07.08</span></div>
                             <p class="comment__text">너무 슬퍼요 재미있을줄 알았는데 밤새...</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- 슬라이드 1 (여름의 기억) 댓글 : 슬라이드 전환 시 JS 가 표시 전환 -->
+                <ul class="player__comments-list" data-comments-for="1" data-count="7" hidden>
+                    <li class="comment is-mine">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_04.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User1555846</span><span class="comment__date">2026.07.19</span></div>
+                            <p class="comment__text">여름 감성 가득... 그림체가 너무 예뻐요</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_07.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User7782013</span><span class="comment__date">2026.07.18</span></div>
+                            <p class="comment__text">마지막 장면에서 눈물이... 짧지만 여운이 길어요</p>
+                            <div class="comment__actions">
+                                <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
+                                <button type="button">답글</button>
+                            </div>
+                        </div>
+                        <button type="button" class="comment__more js-comment-more" aria-label="댓글 옵션" aria-haspopup="true" aria-expanded="false"><img src="images/player/ic_more.svg" alt=""></button>
+                        <div class="comment__menu" role="menu">
+                            <button type="button" class="comment__menu-item comment__menu-item--edit" role="menuitem">수정</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--delete" role="menuitem">삭제</button>
+                            <button type="button" class="comment__menu-item comment__menu-item--report" role="menuitem">신고하기</button>
+                        </div>
+                    </li>
+                    <li class="comment">
+                        <span class="comment__avatar"><img src="images/main/creator_profile_03.jpg" alt=""></span>
+                        <div class="comment__body">
+                            <div class="comment__meta"><span class="comment__name">User2094117</span><span class="comment__date">2026.07.18</span></div>
+                            <p class="comment__text">이거 AI로 만든 거 맞아요? 퀄리티 미쳤다</p>
                             <div class="comment__actions">
                                 <button type="button"><img src="images/player/ic_heart.svg" alt="">좋아요</button>
                                 <button type="button">답글</button>

@@ -15,7 +15,7 @@
 
     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
         <a href="{{ route('favorites') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_favorite.svg') }}" alt="">즐겨찾기</a>
-        <a href="#"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_favorite.svg') }}" alt="">크리에이터</a>
+        <a href="{{ route('studio') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_favorite.svg') }}" alt="">크리에이터</a>
         <a href="{{ route('faq') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_faq.svg') }}" alt="">자주하는 질문</a>
         <a href="#"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_inquiry.svg') }}" alt="">1:1 문의</a>
         <a href="#"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_notice.svg') }}" alt="">공지사항</a>

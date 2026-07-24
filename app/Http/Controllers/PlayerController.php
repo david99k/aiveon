@@ -17,7 +17,6 @@ class PlayerController
     {
         return view('player.show', [
             'shorts' => $this->shorts(),
-            'comments' => $this->comments(),
             // 로그인 여부 : 인증 연동 시 auth()->check() 로 교체. 시안은 로그인 상태 기준.
             'isLoggedIn' => true,
         ]);
@@ -55,12 +54,13 @@ class PlayerController
                     'following' => true,
                 ],
                 'aiTools' => $aiTools,
+                'commentList' => $this->comments(),
             ],
             [
                 'title' => '여름의 기억',
                 'source' => 'videos/shot01.mp4', // 테스트 영상 - 실서비스에서 스트리밍 URL로 교체
                 'poster' => 'images/main/poster_02.jpg',
-                'tags' => ['2026', 'AI 애니메이션', '판타지'],
+                'tags' => ['2026', '애니메이션', '판타지'],
                 'ratings' => ['15+'],
                 'synopsis' => '잊고 지낸 어느 여름날의 조각들이 천천히 되살아나며 마음 한켠을 데우는 짧은 이야기...',
                 'likes' => '58',
@@ -73,11 +73,12 @@ class PlayerController
                     'following' => false,
                 ],
                 'aiTools' => $aiTools,
+                'commentList' => $this->summerComments(),
             ],
         ];
     }
 
-    /** @return array<int, array<string, string>> */
+    /** 슬라이드 0 (빛이 빛날 때) 댓글 @return array<int, array<string, string>> */
     private function comments(): array
     {
         $avatars = ['creator_profile_05', 'creator_profile_04', 'creator_profile_02', 'creator_profile_07', 'creator_profile_03'];
@@ -94,5 +95,15 @@ class PlayerController
         $comments[0]['is_mine'] = true;
 
         return $comments;
+    }
+
+    /** 슬라이드 1 (여름의 기억) 댓글 — 슬라이드 전환 시 패널이 이 목록으로 갱신된다. @return array<int, array<string, mixed>> */
+    private function summerComments(): array
+    {
+        return [
+            ['user' => 'User1555846', 'date' => '2026.07.19', 'text' => '여름 감성 가득... 그림체가 너무 예뻐요', 'avatar' => 'images/main/creator_profile_04.jpg', 'is_mine' => true],
+            ['user' => 'User7782013', 'date' => '2026.07.18', 'text' => '마지막 장면에서 눈물이... 짧지만 여운이 길어요', 'avatar' => 'images/main/creator_profile_07.jpg', 'is_mine' => false],
+            ['user' => 'User2094117', 'date' => '2026.07.18', 'text' => '이거 AI로 만든 거 맞아요? 퀄리티 미쳤다', 'avatar' => 'images/main/creator_profile_03.jpg', 'is_mine' => false],
+        ];
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BL · AIVEON</title>
+    <title>영화 · AIVEON</title>
     <!--
         [QA 전용] resources/views 블레이드 출력 결과를 정적으로 재현한 파일입니다.
         원본은 블레이드 템플릿이며, 이 파일은 생성기(gen-preview.js)로 자동 생성됩니다.
@@ -28,9 +28,9 @@
                     <a href="preview.html" class="gnb__nav-link">추천</a>
                     <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
                     <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
-                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link is-active" aria-current="page">영화</a>
                     <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
-                    <a href="preview-category-bl.html" class="gnb__nav-link is-active" aria-current="page">BL</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
                     <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
                     <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
                 </nav>
@@ -53,14 +53,14 @@
             <section class="hero swiper js-hero-swiper" aria-label="추천 콘텐츠 슬라이드">
                 <div class="swiper-wrapper">
                     <article class="swiper-slide">
-                        <div class="hero__bg"><img src="images/main/hero_bl.jpg" alt=""></div>
+                        <div class="hero__bg"><img src="images/main/hero_main03.jpg" alt=""></div>
                         <div class="hero__content">
-                            <span class="hero__badge hero__badge--premium">PREMIUM</span>
-                            <h2 class="hero__title">서로의 계절</h2>
-                            <ul class="hero__tags"><li>2026</li><li>BL</li><li>로맨스</li></ul>
-                            <p class="hero__desc">우리가 사랑했던 그 여름날의 이야기<br>AI 오리지널 BL 로맨스</p>
+                            <span class="hero__badge hero__badge--new">NEW</span>
+                            <h2 class="hero__title">AI 코드 : 인간의 경계</h2>
+                            <ul class="hero__tags"><li>2026</li><li>SF</li><li>스릴러</li></ul>
+                            <p class="hero__desc">인간과 AI, 그 경계가 무너지는 순간<br>화제의 신작 시리즈</p>
                             <div class="hero__actions">
-                                <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
+                                <a href="preview-watch-movie.html" class="btn btn--primary">바로재생</a>
                                 <a href="preview-detail.html" class="btn btn--ghost">상세보기</a>
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="시청중인 영상">
                     <ul class="poster-list">
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -88,7 +88,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_05.jpg" alt="" loading="lazy">
                                     </figure>
@@ -99,7 +99,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -111,7 +111,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                     </figure>
@@ -122,7 +122,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -134,7 +134,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_06.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -146,7 +146,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -169,7 +169,7 @@
                             <span class="rank-card__num" aria-hidden="true">1</span>
                             <span class="blind">1위</span>
                             <div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                     </figure>
@@ -184,7 +184,7 @@
                             <span class="rank-card__num" aria-hidden="true">2</span>
                             <span class="blind">2위</span>
                             <div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                         <span class="badge badge--new">NEW</span>
@@ -200,7 +200,7 @@
                             <span class="rank-card__num" aria-hidden="true">3</span>
                             <span class="blind">3위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                     </figure>
@@ -230,7 +230,7 @@
                             <span class="rank-card__num" aria-hidden="true">5</span>
                             <span class="blind">5위</span>
                             <div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                     </figure>
@@ -245,7 +245,7 @@
                             <span class="rank-card__num" aria-hidden="true">6</span>
                             <span class="blind">6위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_05.jpg" alt="" loading="lazy">
                                     </figure>
@@ -265,7 +265,7 @@
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="새로운 영상">
                     <ul class="poster-list">
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                     </figure>
@@ -276,7 +276,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                     </figure>
@@ -287,7 +287,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -299,7 +299,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -311,7 +311,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_05.jpg" alt="" loading="lazy">
                                         <span class="badge badge--new">NEW</span>
@@ -323,7 +323,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -438,7 +438,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_05.jpg" alt="" loading="lazy">
                                     </figure>
@@ -449,7 +449,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_06.jpg" alt="" loading="lazy">
                                     </figure>
@@ -460,7 +460,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                     </figure>
@@ -482,7 +482,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                     </figure>
@@ -493,7 +493,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                     </figure>
@@ -512,7 +512,7 @@
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="신기한 컨텐츠를 찾을 때">
                     <ul class="poster-list">
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -524,7 +524,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_05.jpg" alt="" loading="lazy">
                                     </figure>
@@ -535,7 +535,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_06.jpg" alt="" loading="lazy">
                                     </figure>
@@ -546,7 +546,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                     </figure>
@@ -557,7 +557,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                     </figure>
@@ -568,7 +568,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                     </figure>
@@ -579,7 +579,7 @@
                                 </a>
                             </div></li>
                         <li><div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                     </figure>

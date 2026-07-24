@@ -1,13 +1,15 @@
 {{-- GNB : 로고 + 주 메뉴 + 유틸(언어/검색/구독/프로필) --}}
 @php
     /* 컨트롤러가 $gnbMenus를 넘기지 않는 페이지에서도 기본 메뉴가 나오도록 폴백 */
+    /* IA 명세 ver1.1 카테고리 구성 */
     $gnbMenus = $gnbMenus ?? [
         ['label' => '추천', 'url' => route('main'), 'active' => true],
-        ['label' => 'AI 쇼츠', 'url' => route('category', 'shorts')],
-        ['label' => 'AI 애니메이션', 'url' => route('category', 'animation')],
-        ['label' => 'AI BL', 'url' => route('category', 'bl')],
-        ['label' => 'AI 숏폼 드라마', 'url' => route('category', 'shortform')],
-        ['label' => 'AI 라이브 & 채널', 'url' => route('live')],
+        ['label' => '숏츠', 'url' => route('category', 'shorts')],
+        ['label' => '드라마', 'url' => route('category', 'drama')],
+        ['label' => '영화', 'url' => route('category', 'movie')],
+        ['label' => '애니메이션', 'url' => route('category', 'animation')],
+        ['label' => 'BL', 'url' => route('category', 'bl')],
+        ['label' => 'AI 라이브채널', 'url' => route('live')],
         ['label' => '성인 19+', 'url' => route('category', 'adult')],
     ];
 
@@ -36,7 +38,7 @@
         <a href="{{ route('search') }}" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
             <img src="{{ asset('images/common/ic_search.svg') }}" alt="">
         </a>
-        <a href="#" class="gnb__upload">업로드 +</a>
+        <a href="{{ route('upload') }}" class="gnb__upload">업로드 +</a>
 
         {{-- 프로필 : 로그인 전 기본 아이콘 + 호버 시 로그인 유도 팝업 / 로그인 후 유저 아바타 --}}
         <div class="gnb__profile-wrap">

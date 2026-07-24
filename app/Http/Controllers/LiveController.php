@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 
 /**
- * AI 라이브 & 채널 페이지 (GNB "AI 라이브 & 채널" 클릭 진입).
+ * AI 라이브채널 페이지 (GNB "AI 라이브채널" 클릭 진입).
  *
  * Figma: Main - 재생버튼 클릭시 - 라이브.
  * 시청(watch) 페이지와 동일한 레이아웃을 재사용하되,

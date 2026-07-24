@@ -6,8 +6,7 @@
     <title>AIVEON (QA 프리뷰)</title>
     <!--
         [QA 전용] resources/views 블레이드 출력 결과를 정적으로 재현한 파일입니다.
-        실제 마크업의 원본은 블레이드 템플릿이며, 이 파일은 브라우저 확인용입니다.
-        확인 방법: php -S localhost:8123 -t public  ->  http://localhost:8123/preview.html
+        원본은 블레이드 템플릿이며, 이 파일은 생성기(gen-preview.js)로 자동 생성됩니다.
     -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,32 +15,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
     <link rel="stylesheet" href="css/main.css">
     <script>
-        /* TOP6 랭킹 숫자용 Gothic A1 숫자 글리프 선로드 (unicode-range 슬라이스 FOUT 방지) */
         if (document.fonts && document.fonts.load) { document.fonts.load('700 200px "Gothic A1"', '0123456789'); }
     </script>
 </head>
 <body>
     <a href="#content" class="skip-link">본문 바로가기</a>
-
     <div class="wrap">
         <header class="gnb">
             <div class="gnb__left">
-                <h1><a href="#" class="gnb__logo">AIVEON</a></h1>
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
                 <nav class="gnb__nav" aria-label="주 메뉴">
-                    <a href="#" class="gnb__nav-link is-active" aria-current="page">추천</a>
-                    <a href="preview-category-shorts.html" class="gnb__nav-link">AI 쇼츠</a>
-                    <a href="preview-category-animation.html" class="gnb__nav-link">AI 애니메이션</a>
-                    <a href="preview-category-bl.html" class="gnb__nav-link">AI BL</a>
-                    <a href="preview-category-shortform.html" class="gnb__nav-link">AI 숏폼 드라마</a>
-                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브 &amp; 채널</a>
+                    <a href="preview.html" class="gnb__nav-link is-active" aria-current="page">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
                     <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
                 </nav>
             </div>
             <div class="gnb__utils">
                 <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
-                <a href="#" class="gnb__upload">업로드 +</a>
-
-                <!-- 프로필 : 아이콘 호버 시 로그인 유도 팝업 노출 (로그인 전) -->
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
                 <div class="gnb__profile-wrap">
                     <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
                         <img src="images/common/default_icon.png" alt="">
@@ -53,23 +49,15 @@
                 </div>
             </div>
         </header>
-
         <main id="content" class="content">
-            <!-- 히어로 : Swiper 슬라이드 (3개 콘텐츠, 5초 자동재생 + 루프) -->
             <section class="hero swiper js-hero-swiper" aria-label="추천 콘텐츠 슬라이드">
                 <div class="swiper-wrapper">
                     <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main.jpg" alt="">
-                        </div>
+                        <div class="hero__bg"><img src="images/main/hero_main.jpg" alt=""></div>
                         <div class="hero__content">
                             <span class="hero__badge">OFFICIAL</span>
                             <h2 class="hero__title">빛이 빛날 때</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>드라마</li>
-                                <li>멜로</li>
-                            </ul>
+                            <ul class="hero__tags"><li>2026</li><li>드라마</li><li>멜로</li></ul>
                             <p class="hero__desc">AI가 그려낸 새로운 빛의 이야기<br>공식 오리지널 시리즈 단독 공개</p>
                             <div class="hero__actions">
                                 <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
@@ -77,19 +65,12 @@
                             </div>
                         </div>
                     </article>
-
                     <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main02.jpg" alt="" loading="lazy">
-                        </div>
+                        <div class="hero__bg"><img src="images/main/hero_main02.jpg" alt="" loading="lazy"></div>
                         <div class="hero__content">
                             <span class="hero__badge hero__badge--premium">PREMIUM</span>
                             <h2 class="hero__title">궁의 어둠, 달의 노래</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>사극</li>
-                                <li>판타지</li>
-                            </ul>
+                            <ul class="hero__tags"><li>2026</li><li>사극</li><li>판타지</li></ul>
                             <p class="hero__desc">어둠에 잠긴 궁, 달빛으로 깨어나는 노래<br>AI 오리지널 대서사시</p>
                             <div class="hero__actions">
                                 <a href="preview-watch-drama.html" class="btn btn--primary">바로재생</a>
@@ -97,19 +78,12 @@
                             </div>
                         </div>
                     </article>
-
                     <article class="swiper-slide">
-                        <div class="hero__bg">
-                            <img src="images/main/hero_main03.jpg" alt="" loading="lazy">
-                        </div>
+                        <div class="hero__bg"><img src="images/main/hero_main03.jpg" alt="" loading="lazy"></div>
                         <div class="hero__content">
                             <span class="hero__badge hero__badge--new">NEW</span>
                             <h2 class="hero__title">AI 코드 : 인간의 경계</h2>
-                            <ul class="hero__tags">
-                                <li>2026</li>
-                                <li>SF</li>
-                                <li>스릴러</li>
-                            </ul>
+                            <ul class="hero__tags"><li>2026</li><li>SF</li><li>스릴러</li></ul>
                             <p class="hero__desc">인간과 AI, 그 경계가 무너지는 순간<br>화제의 신작 시리즈</p>
                             <div class="hero__actions">
                                 <a href="preview-watch-movie.html" class="btn btn--primary">바로재생</a>
@@ -118,199 +92,115 @@
                         </div>
                     </article>
                 </div>
-
                 <div class="hero__pagination swiper-pagination"></div>
-                <button type="button" class="hero__nav hero__nav--prev" aria-label="이전 콘텐츠">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <button type="button" class="hero__nav hero__nav--next" aria-label="다음 콘텐츠">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <button type="button" class="hero__nav hero__nav--prev" aria-label="이전 콘텐츠"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="hero__nav hero__nav--next" aria-label="다음 콘텐츠"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </section>
 
-            <section class="section">
-                <h2 class="section__title">추천 영상</h2>
-                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="추천 영상">
-                    <ul class="video-list">
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy">
-                                    <span class="badge badge--premium">PREMIUM</span>
-                                    <span class="badge badge--new">NEW</span>
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_aicode.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">AI 코드 : 인간의 경계</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_beta.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">THE BETA</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_dark.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">어둠 너무 빛이 빛날 때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">궁의 어둠, 달의 노래</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_adventure.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">마법같은 우리의 모험</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_cooking.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="section">
+            <section class="section section--poster">
                 <h2 class="section__title">시청중인 영상</h2>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="시청중인 영상">
-                    <ul class="video-list">
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_invasion.jpg" alt="" loading="lazy">
-                                    <span class="badge badge--premium">PREMIUM</span>
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">AI의 침공</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/garo_img01.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">아기 고양이의 모험</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_nemo.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">네모의 꿈</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_aicode.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">AI 코드 : 인간의 경계</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">알고리즘 러브</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_beta.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">THE BETA</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_adventure.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
+                    <ul class="poster-list">
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_01.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">나의 알고리즘</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_02.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">밤이 우리를 부를 때</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_04.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">스튜디오 세션</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_03.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_01.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
                     </ul>
                 </div>
             </section>
 
             <section class="section section--top">
-                <h2 class="section__title">AIVEON TOP6</h2>
-                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="AIVEON TOP6">
+                <h2 class="section__title">AIVEON TOP 10</h2>
+                <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="AIVEON TOP 10">
                     <ol class="rank-list">
                         <li class="rank-card">
                             <span class="rank-card__num" aria-hidden="true">1</span>
                             <span class="blind">1위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                     </figure>
                                     <div class="poster-card__info">
-                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <strong class="poster-card__title">밤이 우리를 부를 때</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
@@ -320,7 +210,7 @@
                             <span class="rank-card__num" aria-hidden="true">2</span>
                             <span class="blind">2위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                         <span class="badge badge--new">NEW</span>
@@ -341,7 +231,7 @@
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                     </figure>
                                     <div class="poster-card__info">
-                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <strong class="poster-card__title">스튜디오 세션</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
@@ -351,8 +241,10 @@
                             <span class="rank-card__num" aria-hidden="true">4</span>
                             <span class="blind">4위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></figure>
+                                <a href="preview-watch-movie.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
+                                    </figure>
                                     <div class="poster-card__info">
                                         <strong class="poster-card__title">영상 타이틀</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
@@ -364,8 +256,10 @@
                             <span class="rank-card__num" aria-hidden="true">5</span>
                             <span class="blind">5위</span>
                             <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"></figure>
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_02.jpg" alt="" loading="lazy">
+                                    </figure>
                                     <div class="poster-card__info">
                                         <strong class="poster-card__title">영상 타이틀</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
@@ -378,7 +272,9 @@
                             <span class="blind">6위</span>
                             <div class="poster-card">
                                 <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"></figure>
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
+                                    </figure>
                                     <div class="poster-card__info">
                                         <strong class="poster-card__title">영상 타이틀</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
@@ -394,37 +290,30 @@
                 <h2 class="section__title">새로운 영상</h2>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="새로운 영상">
                     <ul class="poster-list">
-                        <li>
-                            <div class="poster-card">
+                        <li><div class="poster-card">
                                 <a href="preview-player.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
-                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
-                                        <span class="badge badge--new">NEW</span>
+                                        <img src="images/main/poster_01.jpg" alt="" loading="lazy">
                                     </figure>
                                     <div class="poster-card__info">
-                                        <strong class="poster-card__title">아기 고양이의 모험</strong>
+                                        <strong class="poster-card__title">영상 타이틀</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
-                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
-                                        <span class="badge badge--new">NEW</span>
+                                        <img src="images/main/poster_02.jpg" alt="" loading="lazy">
                                     </figure>
                                     <div class="poster-card__info">
-                                        <strong class="poster-card__title">한 소녀의 피클볼 도전기</strong>
+                                        <strong class="poster-card__title">영상 타이틀</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_03.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
@@ -434,10 +323,8 @@
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
+                            </div></li>
+                        <li><div class="poster-card">
                                 <a href="preview-player.html" class="poster-card__link">
                                     <figure class="poster-card__thumb">
                                         <img src="images/main/poster_04.jpg" alt="" loading="lazy">
@@ -448,12 +335,23 @@
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
+                            </div></li>
+                        <li><div class="poster-card">
                                 <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--new">NEW</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">아기 고양이의 모험</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_04.jpg" alt="" loading="lazy">
                                         <span class="badge badge--premium">PREMIUM</span>
                                     </figure>
                                     <div class="poster-card__info">
@@ -461,34 +359,19 @@
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy">
-                                        <span class="badge badge--premium">PREMIUM</span>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--new">NEW</span>
                                     </figure>
                                     <div class="poster-card__info">
-                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <strong class="poster-card__title">한 소녀의 피클볼 도전기</strong>
                                         <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
                                     </div>
                                 </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="poster-card">
-                                <a href="preview-player.html" class="poster-card__link">
-                                    <figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy">
-                                        <span class="badge badge--premium">PREMIUM</span>
-                                    </figure>
-                                    <div class="poster-card__info">
-                                        <strong class="poster-card__title">영상 타이틀</strong>
-                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </li>
+                            </div></li>
                     </ul>
                 </div>
             </section>
@@ -564,201 +447,200 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section section--poster">
                 <h2 class="section__title">가족과 함께 볼 만한 영상</h2>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="가족과 함께 볼 만한 영상">
-                    <ul class="video-list">
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_adventure.jpg" alt="" loading="lazy">
-                                    <span class="badge badge--premium">PREMIUM</span>
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">마법 같은 우리의 모험</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_sleep.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">당신이 잠들어 있을 때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_cooking.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_family.jpg" alt="" loading="lazy">
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/garo_img02.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">한 소녀의 피클볼 도전기</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_dark.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_algorithm.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
+                    <ul class="poster-list">
+                        <li><div class="poster-card">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_04.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">마법 같은 우리의 모험</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">당신이 잠들어 있을 때</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">아기 고양이의 모험</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_03.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">빛이 빛날 때</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-movie.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_01.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">한 소녀의 피클볼 도전기</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_02.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_03.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
                     </ul>
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section section--poster">
                 <h2 class="section__title">신기한 컨텐츠를 찾을 때</h2>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="신기한 컨텐츠를 찾을 때">
-                    <ul class="video-list">
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb">
-                                    <img src="images/main/thumb_wide_cooking.jpg" alt="" loading="lazy">
-                                    <span class="badge badge--premium">PREMIUM</span>
-                                </figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">AI가 만든 미니어처 요리 만들기</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_family.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_nemo.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_palace.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_sleep.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_beta.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="video-card">
-                            <a href="preview-detail.html" class="video-card__link">
-                                <figure class="video-card__thumb"><img src="images/main/thumb_wide_aicode.jpg" alt="" loading="lazy"></figure>
-                                <div class="video-card__info">
-                                    <strong class="video-card__title">빛이 빛날때</strong>
-                                    <span class="video-card__meta">크리에이터 · 조회수 12만</span>
-                                </div>
-                            </a>
-                        </li>
+                    <ul class="poster-list">
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_04.jpg" alt="" loading="lazy">
+                                        <span class="badge badge--premium">PREMIUM</span>
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">AI가 만든 미니어처 요리</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_05.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">60초 세계여행</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_06.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">스튜디오 세션</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_01.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_02.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-watch-drama.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_03.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
+                        <li><div class="poster-card">
+                                <a href="preview-player.html" class="poster-card__link">
+                                    <figure class="poster-card__thumb">
+                                        <img src="images/main/poster_04.jpg" alt="" loading="lazy">
+                                    </figure>
+                                    <div class="poster-card__info">
+                                        <strong class="poster-card__title">영상 타이틀</strong>
+                                        <span class="poster-card__meta">크리에이터 · 조회수 12만</span>
+                                    </div>
+                                </a>
+                            </div></li>
                     </ul>
                 </div>
             </section>
         </main>
-
-        <!-- 푸터 : 브랜드 + 링크 컬럼 + 카피라이트 -->
         <footer class="footer">
             <div class="footer__cols">
                 <div class="footer__brand">
                     <p class="footer__logo">AIVEON</p>
                     <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
                 </div>
-
                 <nav class="footer__col" aria-label="회사">
                     <h3 class="footer__col-title">회사</h3>
-                    <ul>
-                        <li><a href="#">회사소개</a></li>
-                        <li><a href="#">채용</a></li>
-                        <li><a href="#">뉴스룸</a></li>
-                    </ul>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
                 </nav>
-
                 <nav class="footer__col" aria-label="약관·정책">
                     <h3 class="footer__col-title">약관·정책</h3>
-                    <ul>
-                        <li><a href="#">이용약관</a></li>
-                        <li><a href="#">개인정보처리방침</a></li>
-                        <li><a href="#">정산정책</a></li>
-                    </ul>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
                 </nav>
-
                 <nav class="footer__col" aria-label="고객지원">
                     <h3 class="footer__col-title">고객지원</h3>
-                    <ul>
-                        <li><a href="#">고객센터</a></li>
-                        <li><a href="#">크리에이터 지원센터</a></li>
-                        <li><a href="#">공지사항</a></li>
-                    </ul>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
                 </nav>
             </div>
-
             <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
         </footer>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js" defer></script>
     <script src="js/main.js" defer></script>
 </body>
