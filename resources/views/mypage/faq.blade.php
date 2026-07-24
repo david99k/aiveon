@@ -9,9 +9,14 @@
     <section class="mypage">
         @include('partials.mypage-sidebar')
 
-        {{-- 우측 : 검색 + 필터 칩 + 아코디언 Q&A --}}
+        {{-- 우측 : 고객센터 (자주하는 질문 탭) --}}
         <div class="mypage__content">
-            <h2 class="mypage__page-title">자주하는 질문</h2>
+            <h2 class="mypage__page-title">고객센터</h2>
+
+            <div class="cs-tabs" role="tablist">
+                <a href="{{ route('faq') }}" class="cs-tab is-active" aria-current="page">자주하는 질문</a>
+                <a href="{{ route('inquiry') }}" class="cs-tab">문의하기</a>
+            </div>
 
             <div class="faq__search">
                 <input type="text" class="faq__search-input" placeholder="검색어를 입력하세요" aria-label="자주하는 질문 검색">

@@ -7,48 +7,8 @@
 
 @section('content')
     <section class="mypage">
-        {{-- 좌측 스튜디오 사이드바 --}}
-        <aside class="mypage__side" aria-label="크리에이터 스튜디오 메뉴">
-            <div class="mypage__profile">
-                <img class="mypage__profile-avatar" src="{{ asset($channel['avatar']) }}" alt="">
-                <div>
-                    <p class="mypage__profile-name">synergy_on</p>
-                    <p class="mypage__profile-plan">크리에이터</p>
-                </div>
-            </div>
-
-            <a href="#" class="mypage__side-edit">내 채널 보기 &gt;</a>
-            <a href="{{ route('upload') }}" class="mypage__subscribe">영상 업로드</a>
-
-            <hr class="mypage__side-divider">
-
-            <nav class="mypage__side-nav" aria-label="스튜디오 메뉴">
-                <a href="{{ route('studio') }}" class="is-active" aria-current="page">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 18.4c1-2.2 3-3.4 5.5-3.4s4.5 1.2 5.5 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                    내 채널관리
-                </a>
-                <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 9.5v5l4.2-2.5-4.2-2.5Z" fill="currentColor"/></svg>
-                    콘텐츠 관리
-                </a>
-                <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.6"/><path d="M16 14.5h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                    수익 관리
-                </a>
-                <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12a8 8 0 1 0-3.1 6.3L21 19.5l-.9-3A7.9 7.9 0 0 0 21 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                    댓글 관리
-                </a>
-                <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.6 18.4a9 9 0 0 1 0-12.8M18.4 5.6a9 9 0 0 1 0 12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                    라이브 관리
-                </a>
-                <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                    채널 설정
-                </a>
-            </nav>
-        </aside>
+        {{-- 좌측 : 마이페이지 사이드바 (크리에이터 스튜디오 아코디언 펼침 + 내 채널 관리 활성) --}}
+        @include('partials.mypage-sidebar', ['studioSub' => 'channel'])
 
         {{-- 우측 : 내 채널관리 (대시보드) --}}
         <div class="mypage__content mypage__content--studio">

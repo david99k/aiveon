@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>자주하는 질문 · AIVEON (QA 프리뷰)</title>
+    <title>1:1 문의 · AIVEON (QA 프리뷰)</title>
     <!--
-        [QA 전용] resources/views/mypage/faq.blade.php 정적 재현.
-        마이페이지 좌측 사이드바 "자주하는 질문" 클릭 시 진입. (Figma 699:8180)
+        [QA 전용] resources/views/mypage/inquiry.blade.php 정적 재현.
+        마이페이지 좌측 사이드바 "1:1 문의" 클릭 시 진입. (Figma 732:9718)
     -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,79 +86,87 @@
                     </nav>
                 </aside>
 
-                <!-- 우측 : 검색 + 필터 칩 + 아코디언 -->
+                <!-- 우측 : 자주 찾는 질문 칩 + 문의 폼 (Figma "Main - 1:1 문의" 732:9718) -->
                 <div class="mypage__content">
                     <h2 class="mypage__page-title">고객센터</h2>
 
                     <div class="cs-tabs" role="tablist">
-                        <a href="preview-faq.html" class="cs-tab is-active" aria-current="page">자주하는 질문</a>
-                        <a href="preview-inquiry.html" class="cs-tab">문의하기</a>
+                        <a href="preview-faq.html" class="cs-tab">자주하는 질문</a>
+                        <a href="preview-inquiry.html" class="cs-tab is-active" aria-current="page">문의하기</a>
                     </div>
 
-                    <div class="faq__search">
-                        <input type="text" class="faq__search-input" placeholder="검색어를 입력하세요" aria-label="자주하는 질문 검색">
-                        <button type="button" class="faq__search-btn" aria-label="검색">
-                            <img src="images/common/ic_search.svg" alt="">
-                        </button>
-                    </div>
-
+                    <!-- 문의 전 자주 찾는 질문 바로가기 -->
                     <div class="faq__chips">
-                        <button type="button" class="faq__chip">로그인이 안돼요</button>
-                        <button type="button" class="faq__chip">프리미엄 구독은 어떻게 하나요?</button>
-                        <button type="button" class="faq__chip">크리에이터로 전환하는방법</button>
-                        <button type="button" class="faq__chip">결제수단 변경은 어떻게 하나요?</button>
+                        <a href="preview-faq.html" class="faq__chip">로그인이 안돼요</a>
+                        <a href="preview-faq.html" class="faq__chip">프리미엄 구독은 어떻게 하나요?</a>
+                        <a href="preview-faq.html" class="faq__chip">크리에이터로 전환하는방법</a>
+                        <a href="preview-faq.html" class="faq__chip">결제수단 변경은 어떻게 하나요?</a>
                     </div>
 
-                    <ul class="faq__list">
-                        <li class="faq__item">
-                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
-                                <span class="faq__q-text">아이디 변경은 어떻게 하나요?</span>
-                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="faq__a"><p>아이디는 회원 식별을 위한 고유 정보로 변경이 불가능합니다. 다른 아이디 사용을 원하시면 새로 가입해 주세요.</p></div>
-                        </li>
-                        <li class="faq__item">
-                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
-                                <span class="faq__q-text">닉네임 변경은 어떻게 진행이 되나요?</span>
-                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="faq__a">
-                                <p>회원님의 닉네임은 언제든지 자유롭게 변경하실 수 있습니다. 단, 변경 이후 7일 동안은 새로운 닉네임으로 다시 변경하실 수 없으니 유의해 주시기 바랍니다.</p>
-                                <p class="faq__a-head">■ 닉네임 변경 방법</p>
+                    <hr class="inquiry__divider">
+
+                    <form class="inquiry__form" action="#" onsubmit="return false">
+                        <div class="inquiry__row">
+                            <label class="inquiry__label" for="inq-name">이름</label>
+                            <div class="inquiry__field">
+                                <input type="text" id="inq-name" class="inquiry__input" placeholder="이름을 입력해주세요">
+                            </div>
+                        </div>
+
+                        <div class="inquiry__row">
+                            <label class="inquiry__label" for="inq-email">이메일</label>
+                            <div class="inquiry__field">
+                                <input type="email" id="inq-email" class="inquiry__input" placeholder="이메일을 입력해주세요">
+                            </div>
+                        </div>
+
+                        <div class="inquiry__row">
+                            <label class="inquiry__label" for="inq-phone">연락처</label>
+                            <div class="inquiry__field">
+                                <input type="tel" id="inq-phone" class="inquiry__input" placeholder="&ldquo;-&rdquo;를 빼고 입력해주세요">
+                            </div>
+                        </div>
+
+                        <div class="inquiry__row">
+                            <span class="inquiry__label" id="inq-type-label">문의 종류</span>
+                            <div class="inquiry__field inquiry__radios" role="radiogroup" aria-labelledby="inq-type-label">
+                                <label class="inquiry__radio"><input type="radio" class="radio" name="inq-type" value="사이트 이용" checked>사이트 이용</label>
+                                <label class="inquiry__radio"><input type="radio" class="radio" name="inq-type" value="회원/로그인">회원/로그인</label>
+                                <label class="inquiry__radio"><input type="radio" class="radio" name="inq-type" value="환불/해지 신청">환불/해지 신청</label>
+                                <label class="inquiry__radio"><input type="radio" class="radio" name="inq-type" value="장애신고">장애신고</label>
+                                <label class="inquiry__radio"><input type="radio" class="radio" name="inq-type" value="기타">기타</label>
+                            </div>
+                        </div>
+
+                        <div class="inquiry__row inquiry__row--top">
+                            <label class="inquiry__label" for="inq-body">문의 내용</label>
+                            <div class="inquiry__field">
+                                <textarea id="inq-body" class="inquiry__textarea" placeholder="문의 내용을 입력해 주세요."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="inquiry__offset">
+                            <label class="inquiry__agree">
+                                <input type="checkbox" class="checkbox checkbox--lg">
+                                개인정보 수집 및 이용동의
+                            </label>
+                        </div>
+
+                        <div class="inquiry__offset">
+                            <div class="inquiry__notice">
+                                <p>개인 정보 수집 및 이용 안내</p>
                                 <ul>
-                                    <li>경로: [마이페이지] &gt; [내 정보 수정] &gt; [닉네임 설정]</li>
-                                    <li>원하시는 닉네임을 입력하신 후 [저장] 버튼을 누르시면 즉시 반영됩니다.</li>
-                                </ul>
-                                <p class="faq__a-head">■ 닉네임 변경 시 유의사항</p>
-                                <ul>
-                                    <li>7일 재변경 제한: 닉네임을 변경한 시점으로부터 7일(168시간) 동안은 다른 닉네임으로 다시 변경할 수 없습니다.</li>
-                                    <li>7일이 경과한 이후에는 횟수 제한 없이 다시 자유롭게 변경이 가능합니다.</li>
-                                    <li>해당 7일 재변경 제한 기간 외에 닉네임 변경과 관련된 별도의 추가 제약이나 조건은 없습니다.</li>
+                                    <li>개인정보 수집 및 이용 목적 : 문의 또는 환불 접수, 접수 사항의 확인 및 처리, 처리 사항의 회신</li>
+                                    <li>개인정보 수집 및 이용 항목 : [필수]아이디, 성명, 이메일, 연락처 / [환불 처리 시] 은행명, 계좌번호, 예금주명</li>
+                                    <li>개인정보 수집 및 이용 기간 : [일반 문의] 접수 후 3년 / [환불 처리 시] 접수 후 5년</li>
                                 </ul>
                             </div>
-                        </li>
-                        <li class="faq__item">
-                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
-                                <span class="faq__q-text">비밀번호 변경을 하고 싶어요</span>
-                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="faq__a"><p>[마이페이지] &gt; [내 정보 수정] &gt; [비밀번호] 에서 변경하실 수 있습니다. 보안을 위해 영문·숫자·특수문자를 조합해 주세요.</p></div>
-                        </li>
-                        <li class="faq__item">
-                            <button type="button" class="faq__q js-faq-toggle" aria-expanded="false">
-                                <span class="faq__q-text">닉네임 변경은 어떻게 진행이 되나요?</span>
-                                <svg class="faq__chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="faq__a">
-                                <p>회원님의 닉네임은 언제든지 자유롭게 변경하실 수 있습니다. 단, 변경 이후 7일 동안은 새로운 닉네임으로 다시 변경하실 수 없으니 유의해 주시기 바랍니다.</p>
-                                <p class="faq__a-head">■ 닉네임 변경 방법</p>
-                                <ul>
-                                    <li>경로: [마이페이지] &gt; [내 정보 수정] &gt; [닉네임 설정]</li>
-                                    <li>원하시는 닉네임을 입력하신 후 [저장] 버튼을 누르시면 즉시 반영됩니다.</li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+                        </div>
+
+                        <div class="inquiry__offset inquiry__actions">
+                            <button type="submit" class="mypage__btn mypage__btn--primary">문의 접수</button>
+                        </div>
+                    </form>
                 </div>
             </section>
         </main>

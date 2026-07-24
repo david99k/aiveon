@@ -39,12 +39,15 @@ Route::get('/upload', [App\Http\Controllers\UploadController::class, 'show'])->n
 
 /* 크리에이터 스튜디오 - 내 채널관리 (유저 메뉴 "크리에이터 전환" / 마이페이지 "크리에이터" 진입) */
 Route::get('/studio', [App\Http\Controllers\StudioController::class, 'show'])->name('studio');
+/* 크리에이터 스튜디오 - 콘텐츠 관리 (등록 영상 목록) */
+Route::get('/studio/content', [App\Http\Controllers\StudioController::class, 'content'])->name('studio.content');
 
 /* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
 /* 마이페이지 사이드바 진입 - 즐겨찾기 / 자주하는 질문 */
 Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('favorites');
 Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
+Route::get('/mypage/inquiry', [MypageController::class, 'inquiry'])->name('inquiry');
 
 /*
  * 로그인 / 회원가입 (단일 페이지 3단계 온보딩).

@@ -45,4 +45,36 @@ class StudioController
             ],
         ]);
     }
+
+    /**
+     * 콘텐츠 관리 (Figma 762:11324 / 영상없을 시 762:11418).
+     * 등록한 영상 목록을 표로 보여준다. $contents 가 비면 빈 상태 안내를 노출한다.
+     */
+    public function content(): View
+    {
+        return view('studio.content', [
+            'contents' => [
+                [
+                    'title' => 'THE BETA',
+                    'desc' => 'AI로 인해 위험에 빠진 미래사회의 모습을 그리는...',
+                    'duration' => '15:23',
+                    'thumb' => 'images/main/garo_img01.jpg',
+                    'visibility' => '공개',
+                    'date' => '2026.07.23',
+                    'views' => '23',
+                    'comments' => '10',
+                ],
+                [
+                    'title' => '혼례 금지된 사랑',
+                    'desc' => '세자와 무술의 이뤄질 수 없는 사랑이야기',
+                    'duration' => '15:23',
+                    'thumb' => 'images/main/garo_img02.jpg',
+                    'visibility' => '공개',
+                    'date' => '2026.07.23',
+                    'views' => '23',
+                    'comments' => '10',
+                ],
+            ],
+        ]);
+    }
 }

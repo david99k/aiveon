@@ -26,7 +26,7 @@ class LiveController
                 'source' => 'videos/drama01.mp4',
                 'poster' => 'images/live/stream_stock.jpg',
                 'tags' => ['2026', '드라마', '멜로'],
-                'ratings' => ['19+', '15+'],
+                'ratings' => ['15+'], // 연령 등급은 하나만 (19+와 15+ 공존 불가)
                 'viewers' => '1,034',
                 'description' => '오늘의 주식 전망에 대해서 이야기 해보아요',
                 'hashtags' => ['주식시장', '주식', '대한민국주식'],

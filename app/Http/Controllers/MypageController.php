@@ -67,6 +67,20 @@ class MypageController
         ]);
     }
 
+    /** 1:1 문의 (자주 찾는 질문 칩 + 문의 폼) */
+    public function inquiry(): View
+    {
+        return view('mypage.inquiry', [
+            'chips' => [
+                '로그인이 안돼요',
+                '프리미엄 구독은 어떻게 하나요?',
+                '크리에이터로 전환하는방법',
+                '결제수단 변경은 어떻게 하나요?',
+            ],
+            'types' => ['사이트 이용', '회원/로그인', '환불/해지 신청', '장애신고', '기타'],
+        ]);
+    }
+
     /** @return array<int, array<string, mixed>> */
     private function faqs(): array
     {

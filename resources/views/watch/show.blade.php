@@ -154,7 +154,7 @@
                             <li class="watch__episode">
                                 <a href="{{ $ep['url'] }}" class="watch__episode-thumb"><img src="{{ asset($ep['thumb']) }}" alt="" loading="lazy"></a>
                                 <div class="watch__episode-body">
-                                    <p class="watch__episode-title">{{ $ep['title'] }}</p>
+                                    <p class="watch__episode-title">{{ $ep['title'] }}@if (!empty($ep['premium']))<span class="watch__episode-premium">PREMIUM</span>@endif</p>
                                     <p class="watch__episode-desc">{{ $ep['desc'] }}</p>
                                 </div>
                             </li>

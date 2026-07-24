@@ -1172,9 +1172,9 @@
         }
 
         /* 데모 답글 항목 생성 : 사용자 입력은 textContent 로만 주입 */
-        function buildReply(text) {
+        function buildReply(text, deep) {
             var item = document.createElement('li');
-            item.className = 'comment comment--reply';
+            item.className = 'comment comment--reply' + (deep ? ' comment--reply-2' : '');
             var avatar = document.createElement('span');
             avatar.className = 'comment__avatar';
             var img = document.createElement('img');
@@ -1208,6 +1208,10 @@
                 if (reopen) {
                     openForm = buildForm();
                     originBtn = btn;
+                    // 대댓글(.comment--reply)에 답글이면 폼을 한 단계 더 안쪽으로 (depth 정리)
+                    if (comment.classList.contains('comment--reply')) {
+                        openForm.classList.add('comment-reply-form--nested');
+                    }
                     comment.insertAdjacentElement('afterend', openForm);
                     openForm.querySelector('.comment-reply-form__input').focus();
                 }
@@ -1223,7 +1227,8 @@
                 var input = openForm.querySelector('.comment-reply-form__input');
                 var text = input.value.trim();
                 if (!text) { input.focus(); return; }
-                openForm.insertAdjacentElement('beforebegin', buildReply(text));
+                var deep = openForm.classList.contains('comment-reply-form--nested');
+                openForm.insertAdjacentElement('beforebegin', buildReply(text, deep));
                 closeForm(false);
             }
         });
@@ -1252,7 +1257,9 @@
             user: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
             swap: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 8.5h13m0 0-3.2-3.2M20 8.5l-3.2 3.2M17 15.5H4m0 0 3.2-3.2M4 15.5l3.2 3.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             help: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.4 2.2c-.7.35-1 .85-1 1.5v.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1" fill="currentColor"/></svg>',
-            logout: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9 8.5 5.5 12 9 15.5M5.5 12H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+            logout: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9 8.5 5.5 12 9 15.5M5.5 12H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            adult: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 9.5C8 19 5 15.5 5 11V6l7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11.5l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            premium: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8l3.7 2.7L12 5l4.3 5.7L20 8l-1.4 9.5H5.4L4 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
         };
 
         // 아바타 경로 (프리뷰=상대경로, 블레이드=asset() 절대경로 모두 대응)
@@ -1269,8 +1276,29 @@
         // 마이페이지 링크 : 정적 프리뷰(.html)면 preview-mypage.html, 실앱이면 /mypage
         var mypageUrl = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage';
         var studioUrl = /\.html$/.test(location.pathname) ? 'preview-studio.html' : '/studio';
+        var csUrl = /\.html$/.test(location.pathname) ? 'preview-faq.html' : '/mypage/faq'; // 고객센터 = 자주하는 질문(고객센터) 페이지
 
-        // 로그인 후 유저 메뉴 주입 (마크업에 이미 있으면 건너뜀)
+        // 데모 상태 3종 : 로그인 / 성인인증 / 프리미엄 구독. 각각 body 클래스 + localStorage 로 유지.
+        // 인증·구독 여부를 미리보기로 확인하기 위한 토글(로그인 상태와 동일 방식). 실서비스에선 서버 상태로 대체.
+        var STATES = [
+            { key: 'auth',    cls: 'is-authed',  on: '로그인 상태',     off: '비로그인 상태' },
+            { key: 'adult',   cls: 'is-adult',   on: '성인인증 완료',   off: '성인인증 전' },
+            { key: 'premium', cls: 'is-premium', on: '프리미엄 구독중', off: '프리미엄 미구독' }
+        ];
+        var demo = { auth: false, adult: false, premium: false };
+        STATES.forEach(function (s) { try { demo[s.key] = localStorage.getItem('aiveon-demo-' + s.key) === '1'; } catch (e) {} });
+
+        function demoRowHtml(s) {
+            return '<div class="gnb__demo-row" data-demo="' + s.key + '">' +
+                    '<span class="gnb__demo-info"><span class="authbar__dot"></span><span class="gnb__demo-state js-demo-label">' + (demo[s.key] ? s.on : s.off) + '</span></span>' +
+                    '<button type="button" class="authbar__toggle js-demo-toggle" data-demo="' + s.key + '" role="switch" aria-checked="' + demo[s.key] + '" aria-label="' + s.on + ' 전환"><span class="authbar__knob"></span></button>' +
+                '</div>';
+        }
+        // 로그인 후 메뉴 : 3종 토글 그룹 / 게스트 팝업 : 로그인 토글만
+        var groupHtml = '<div class="gnb__demo-group">' + STATES.map(demoRowHtml).join('') + '</div>';
+        var loginGroupHtml = '<div class="gnb__demo-group">' + demoRowHtml(STATES[0]) + '</div>';
+
+        // 로그인 후 유저 메뉴 주입 (마이페이지·크리에이터 스튜디오·고객센터·로그아웃 + 데모 상태 토글 3종)
         if (wrap && !wrap.querySelector('.gnb__usermenu')) {
             var menu = document.createElement('div');
             menu.className = 'gnb__usermenu';
@@ -1279,48 +1307,55 @@
             menu.innerHTML =
                 '<div class="gnb__usermenu-head">' +
                     '<img class="gnb__usermenu-avatar" src="' + duckSrc + '" alt="">' +
-                    '<div class="gnb__usermenu-id"><strong class="gnb__usermenu-name">synergy kim</strong><span class="gnb__usermenu-plan">Premium</span></div>' +
+                    '<div class="gnb__usermenu-id"><strong class="gnb__usermenu-name">synergy kim</strong><span class="gnb__usermenu-plan js-plan-label">Free</span></div>' +
                 '</div>' +
                 '<ul class="gnb__usermenu-list">' +
                     '<li><a href="' + mypageUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.user + '마이페이지</a></li>' +
                     '<li><a href="' + studioUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 스튜디오</a></li>' +
-                    '<li><a href="#" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
+                    '<li><a href="' + csUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
                     '<li><button type="button" class="gnb__usermenu-item js-demo-logout" role="menuitem">' + ICON.logout + '로그아웃</button></li>' +
-                '</ul>';
+                '</ul>' +
+                groupHtml;
             wrap.appendChild(menu);
         }
 
-        // 우측 하단 토글바 주입
-        var bar = document.createElement('div');
-        bar.className = 'authbar';
-        bar.setAttribute('aria-label', '로그인 상태 미리보기 토글');
-        bar.innerHTML =
-            '<span class="authbar__info"><span class="authbar__dot"></span>' +
-            '<span class="authbar__text"><span class="authbar__state"></span><span class="authbar__caption">미리보기 · 로그인 전환</span></span></span>' +
-            '<button type="button" class="authbar__toggle js-auth-toggle" role="switch" aria-checked="false" aria-label="로그인 상태 전환"><span class="authbar__knob"></span></button>';
-        body.appendChild(bar);
-        var stateEl = bar.querySelector('.authbar__state');
-        var toggleEl = bar.querySelector('.js-auth-toggle');
-
-        function apply(authed) {
-            body.classList.toggle('is-authed', authed);
-            if (avatarImg) { avatarImg.setAttribute('src', authed ? duckSrc : guestSrc); }
-            stateEl.textContent = authed ? '로그인 상태' : '비로그인 상태';
-            toggleEl.setAttribute('aria-checked', String(authed));
+        // 비로그인 팝업(게스트)에도 로그인 토글 주입 → 로그인 전환 가능
+        var pop = wrap ? wrap.querySelector('.gnb__profile-pop') : null;
+        if (pop && !pop.querySelector('.gnb__demo-group')) {
+            pop.insertAdjacentHTML('beforeend', loginGroupHtml);
         }
 
-        var authed = false;
-        try { authed = localStorage.getItem(KEY) === '1'; } catch (e) {}
-        apply(authed);
+        function apply() {
+            STATES.forEach(function (s) {
+                var on = demo[s.key];
+                body.classList.toggle(s.cls, on);
+                Array.prototype.forEach.call(document.querySelectorAll('.gnb__demo-row[data-demo="' + s.key + '"]'), function (row) {
+                    row.classList.toggle('is-on', on);
+                    var lbl = row.querySelector('.js-demo-label');
+                    if (lbl) { lbl.textContent = on ? s.on : s.off; }
+                    var tog = row.querySelector('.js-demo-toggle');
+                    if (tog) { tog.setAttribute('aria-checked', String(on)); }
+                });
+            });
+            if (avatarImg) { avatarImg.setAttribute('src', demo.auth ? duckSrc : guestSrc); }
+            // 프리미엄 상태를 메뉴 헤드 플랜 라벨에 반영 (구독중=Premium / 미구독=Free)
+            Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) {
+                el.textContent = demo.premium ? 'Premium' : 'Free';
+            });
+        }
+        apply();
 
-        function setState(next) {
-            authed = next;
-            try { localStorage.setItem(KEY, next ? '1' : '0'); } catch (e) {}
-            apply(next);
-            if (wrap) { wrap.classList.remove('is-open'); }
+        function setState(key, val) {
+            demo[key] = val;
+            try { localStorage.setItem('aiveon-demo-' + key, val ? '1' : '0'); } catch (e) {}
+            apply(); // 메뉴는 열린 채로 두어 상태 전환을 바로 확인
         }
 
-        toggleEl.addEventListener('click', function () { setState(!authed); });
+        // 데모 토글 클릭 → 해당 상태 전환. 메뉴 바깥클릭 닫힘과 겹치지 않게 정지.
+        document.addEventListener('click', function (e) {
+            var t = e.target.closest('.js-demo-toggle');
+            if (t) { e.preventDefault(); e.stopPropagation(); var k = t.getAttribute('data-demo'); setState(k, !demo[k]); }
+        });
 
         // 프로필 아바타 클릭 → 상태별 메뉴 열기/닫기
         if (wrap) {
@@ -1334,7 +1369,7 @@
             }
             // 로그아웃(유저 메뉴) → 비로그인으로 전환 (데모)
             document.addEventListener('click', function (e) {
-                if (e.target.closest('.js-demo-logout')) { e.preventDefault(); setState(false); }
+                if (e.target.closest('.js-demo-logout')) { e.preventDefault(); setState('auth', false); }
             });
             // 바깥 클릭 / Esc 로 닫기
             document.addEventListener('click', function (e) {
@@ -1356,6 +1391,78 @@
                 if (!item) { return; }
                 var willOpen = !item.classList.contains('is-open');
                 item.classList.toggle('is-open', willOpen);
+                btn.setAttribute('aria-expanded', String(willOpen));
+            });
+        });
+    }
+
+    /**
+     * 프로필 이미지 변경 팝업 (마이페이지 아바타 우하단 기어 배지 클릭).
+     * 사진 변경 = 파일 선택 시 즉시 반영 후 닫힘 / 사진 삭제 = 기본 프로필 이미지로 즉시 변경 후 닫힘 (완료·취소 없음).
+     * 정적 데모라 FileReader 로 클라이언트 미리보기만; 실서비스에선 업로드 API 로 교체.
+     */
+    function initAvatarModal() {
+        var modal = document.getElementById('modal-avatar');
+        var gear = document.querySelector('.mypage__avatar-gear');
+        if (!modal || !gear) { return; }
+
+        var pageAvatar = document.querySelector('.mypage__avatar');
+        var preview = modal.querySelector('.js-avatar-preview');
+        var fileInput = modal.querySelector('.js-avatar-file');
+
+        // 기본 프로필 이미지 경로 (프리뷰=상대경로 / 블레이드=asset() 절대경로 모두 대응)
+        var cur = pageAvatar ? (pageAvatar.getAttribute('src') || '') : '';
+        var i = cur.indexOf('images/');
+        var defaultSrc = (i >= 0 ? cur.slice(0, i) : '') + 'images/common/default_icon.png';
+
+        function open() {
+            if (pageAvatar) { preview.src = pageAvatar.getAttribute('src'); } // 현재 이미지로 표시
+            modal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() { modal.classList.remove('is-open'); document.body.style.overflow = ''; }
+
+        gear.addEventListener('click', open);
+        modal.querySelector('.js-avatar-close').addEventListener('click', close);
+        modal.addEventListener('click', function (e) { if (e.target === modal) { close(); } });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) { close(); }
+        });
+
+        // 사진 변경 → 파일 선택 → 선택 즉시 페이지 아바타 반영 + 팝업 닫힘
+        modal.querySelector('.js-avatar-change').addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', function () {
+            var f = fileInput.files && fileInput.files[0];
+            if (!f) { return; }
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+                if (pageAvatar) { pageAvatar.src = ev.target.result; }
+                fileInput.value = '';
+                close();
+            };
+            reader.readAsDataURL(f);
+        });
+        // 사진 삭제 → 기본 프로필 이미지로 즉시 변경 + 팝업 닫힘
+        modal.querySelector('.js-avatar-delete').addEventListener('click', function () {
+            if (pageAvatar) { pageAvatar.src = defaultSrc; }
+            fileInput.value = '';
+            close();
+        });
+    }
+
+    /**
+     * 마이페이지 사이드바 "크리에이터 스튜디오" 아코디언 토글.
+     * 부모 버튼 클릭 시 서브메뉴(내 채널 관리 / 콘텐츠 관리 / 수익 관리 / 댓글 관리)를 펼치고 접는다.
+     */
+    function initMypageStudioNav() {
+        var toggles = document.querySelectorAll('.js-studio-toggle');
+        if (!toggles.length) { return; }
+        Array.prototype.forEach.call(toggles, function (btn) {
+            btn.addEventListener('click', function () {
+                var group = btn.closest('.mypage__side-group');
+                if (!group) { return; }
+                var willOpen = !group.classList.contains('is-open');
+                group.classList.toggle('is-open', willOpen);
                 btn.setAttribute('aria-expanded', String(willOpen));
             });
         });
@@ -1458,20 +1565,183 @@
             if (m) { m.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
         }
 
-        // 진입 시 종류 선택 모달 (QA 해시: #noflow 생략 / #file / #notice 로 특정 모달 확인)
+        // QA 해시(#notice)로 주의사항 모달 바로 확인 (진입 시 자동 모달 없음)
         if (/notice/.test(location.hash)) { show('modal-notice'); }
-        else if (/file/.test(location.hash)) { show('modal-file'); }
-        else if (!/noflow/.test(location.hash)) { show('modal-type'); }
 
-        // 종류 선택 → 파일 업로드
-        Array.prototype.forEach.call(document.querySelectorAll('.js-type-shorts, .js-type-drama'), function (btn) {
-            btn.addEventListener('click', function () { show('modal-file'); });
-        });
-        // 파일 선택 → 폼 활성(모달 닫기)
-        var fileBtn = document.querySelector('.js-file-select');
-        if (fileBtn) { fileBtn.addEventListener('click', closeAll); }
+        // 상단 영상 업로드 : 드롭존 ↔ 미리보기 토글 (파일 선택은 데모)
+        var vdz = document.querySelector('.js-video-dropzone');
+        var vpv = document.querySelector('.js-video-preview');
+        function videoPreview(on) { if (vdz) { vdz.hidden = on; } if (vpv) { vpv.hidden = !on; } }
+        var vsel = document.querySelector('.js-video-select');
+        if (vsel) { vsel.addEventListener('click', function () { videoPreview(true); }); }
+        var vchg = document.querySelector('.js-video-change');
+        if (vchg) { vchg.addEventListener('click', function () { videoPreview(false); }); }
 
-        // 닫기(X) / 오버레이 클릭 / Esc
+        // 카테고리 선택 → 장르 팝업(복수 선택) (IA 명세 : 카테고리별 하위 장르, 처음엔 미선택 → 하단 칩)
+        var catSel = document.querySelector('.js-upload-category');
+        var genreWrap = document.querySelector('.js-upload-genre');
+        var genreModal = document.getElementById('modal-genre');
+        if (catSel && genreWrap && genreModal) {
+            var genreMap = {};
+            try { genreMap = JSON.parse(catSel.getAttribute('data-genres') || '{}'); } catch (e) {}
+            var genreBtn = genreWrap.querySelector('.js-genre-btn');
+            var genreBtnText = genreWrap.querySelector('.js-genre-btn-text');
+            var genreChips = genreWrap.querySelector('.js-genre-chips');
+            var genreList = genreModal.querySelector('.js-genre-modal-list');
+            var selected = [];
+
+            function syncList() {
+                Array.prototype.forEach.call(genreList.querySelectorAll('.genre-modal__item'), function (it) {
+                    it.classList.toggle('is-selected', selected.indexOf(it.getAttribute('data-genre')) >= 0);
+                    it.setAttribute('aria-pressed', selected.indexOf(it.getAttribute('data-genre')) >= 0);
+                });
+                genreBtnText.textContent = selected.length ? ('장르 ' + selected.length + '개 선택됨') : '장르 선택하기';
+            }
+            function renderChips() {
+                genreChips.innerHTML = '';
+                selected.forEach(function (g) {
+                    var chip = document.createElement('span');
+                    chip.className = 'upload-chip';
+                    chip.appendChild(document.createTextNode(g + ' '));
+                    var x = document.createElement('button');
+                    x.type = 'button';
+                    x.setAttribute('aria-label', g + ' 삭제');
+                    x.innerHTML = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+                    x.addEventListener('click', function () { setGenre(g, false); });
+                    chip.appendChild(x);
+                    genreChips.appendChild(chip);
+                });
+            }
+            function setGenre(g, on) {
+                var idx = selected.indexOf(g);
+                if (on && idx < 0) { selected.push(g); }
+                else if (!on && idx >= 0) { selected.splice(idx, 1); }
+                syncList();
+                renderChips();
+            }
+            catSel.addEventListener('change', function () {
+                catSel.classList.toggle('is-placeholder', !catSel.value);
+                selected = []; // 카테고리 변경 시 처음엔 아무것도 선택 안 됨
+                var list = genreMap[catSel.value] || [];
+                genreList.innerHTML = '';
+                list.forEach(function (g) {
+                    var it = document.createElement('button');
+                    it.type = 'button';
+                    it.className = 'genre-modal__item';
+                    it.setAttribute('data-genre', g);
+                    it.setAttribute('aria-pressed', 'false');
+                    it.textContent = g;
+                    it.addEventListener('click', function () { setGenre(g, selected.indexOf(g) < 0); });
+                    genreList.appendChild(it);
+                });
+                genreBtn.disabled = list.length === 0;
+                renderChips();
+                syncList();
+            });
+            // 장르 버튼 → 팝업 열기
+            function openGenre() { genreModal.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+            function closeGenre() { genreModal.classList.remove('is-open'); document.body.style.overflow = ''; }
+            genreBtn.addEventListener('click', function () { if (!genreBtn.disabled) { syncList(); openGenre(); } });
+            genreModal.querySelector('.js-genre-modal-close').addEventListener('click', closeGenre);
+            genreModal.querySelector('.js-genre-modal-ok').addEventListener('click', closeGenre);
+            genreModal.addEventListener('click', function (e) { if (e.target === genreModal) { closeGenre(); } });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && genreModal.classList.contains('is-open')) { closeGenre(); } });
+        }
+
+        // 사용한 AI 선택 팝업 (카테고리별 툴, 복수 선택 → 하단 칩) — AI_영상제작_툴_목록_2026
+        var aiWrap = document.querySelector('.js-upload-ai');
+        var aiModal = document.getElementById('modal-ai');
+        if (aiWrap && aiModal) {
+            // 카테고리별 아이콘 (각 타이틀에 맞춘 라인 아이콘)
+            var AI_ICONS = {
+                'plan': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8.9.8 1.5v.6h5.4v-.6c0-.6.3-1.1.8-1.5A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 19h5M10 21.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                'image': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l4.5-4.5L13 17m2-3 2-2 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                'image-edit': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="14" height="12" rx="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="7.5" cy="8.5" r="1.4" stroke="currentColor" stroke-width="1.3"/><path d="M4 14l3.5-3.5L11 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 15.5 20 10l2 2-5.5 5.5-2.6.6.6-2.6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+                'video': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="13" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M16 10.5 21 8v8l-5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 9.5v5l4-2.5-4-2.5Z" fill="currentColor"/></svg>',
+                'avatar': '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3.1-5.8 7-5.8s7 2.4 7 5.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                'lipsync': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 3.5 6.6L4 20l1-3.2A7.9 7.9 0 0 1 4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11.5c1 1.5 5 1.5 6 0M9.5 14.5c.9.8 4.1.8 5 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+                'motion': '<svg viewBox="0 0 24 24" fill="none"><circle cx="14" cy="5.5" r="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M15 9l-4 2.5.5 3.5m0 0L14 20m-2.5-5-3.5-1M15 9l3 1.5M11 11.5 8 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                'voice': '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9.5 21h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                'music': '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v11" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="6.5" cy="18" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16.5" cy="15" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/></svg>',
+                'sfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h3l5 4V5L7 9H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                'edit': '<svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="17" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 8.5 20 16M8.2 15.5 20 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                'color': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+                'upscale': '<svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M20 4l-6 6M10 20H4v-6M4 20l6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                'denoise': '<svg viewBox="0 0 24 24" fill="none"><path d="M3 12h2l2-5 3 10 3-13 3 16 2-8h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                'bg-remove': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 4h3M4 4v3M20 4h-3M20 4v3M4 20h3M4 20v-3M20 20h-3M20 20v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 17c.8-2 2.5-3.2 4.5-3.2s3.7 1.2 4.5 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+                '3d': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+                'vfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" fill="currentColor"/></svg>'
+            };
+            var aiGroups = [];
+            try { aiGroups = JSON.parse(aiWrap.getAttribute('data-ai-groups') || '[]'); } catch (e) {}
+            var aiBtn = aiWrap.querySelector('.js-ai-btn');
+            var aiBtnText = aiWrap.querySelector('.js-ai-btn-text');
+            var aiChips = aiWrap.querySelector('.js-ai-chips');
+            var aiList = aiModal.querySelector('.js-ai-modal-list');
+            var aiSelected = [];
+
+            // 모달 내용 구성 (카테고리 헤더 + 툴 핀). 처음엔 아무것도 선택 안 됨.
+            aiGroups.forEach(function (g) {
+                var sec = document.createElement('div');
+                sec.className = 'ai-group';
+                var head = document.createElement('div');
+                head.className = 'ai-group__head';
+                head.innerHTML = '<span class="ai-group__icon">' + (AI_ICONS[g.icon] || '') + '</span>';
+                head.appendChild(document.createTextNode(g.title));
+                sec.appendChild(head);
+                var pills = document.createElement('div');
+                pills.className = 'ai-group__pills';
+                (g.tools || []).forEach(function (t) {
+                    var p = document.createElement('button');
+                    p.type = 'button';
+                    p.className = 'ai-tool-pill';
+                    p.setAttribute('data-tool', t);
+                    p.textContent = t;
+                    p.addEventListener('click', function () { setAi(t, aiSelected.indexOf(t) < 0); });
+                    pills.appendChild(p);
+                });
+                sec.appendChild(pills);
+                aiList.appendChild(sec);
+            });
+
+            function syncPills() {
+                Array.prototype.forEach.call(aiList.querySelectorAll('.ai-tool-pill'), function (p) {
+                    p.classList.toggle('is-selected', aiSelected.indexOf(p.getAttribute('data-tool')) >= 0);
+                });
+                aiBtnText.textContent = aiSelected.length ? ('사용한 AI ' + aiSelected.length + '개 선택됨') : '사용한 AI 선택하기';
+            }
+            function renderAiChips() {
+                aiChips.innerHTML = '';
+                aiSelected.forEach(function (t) {
+                    var chip = document.createElement('span');
+                    chip.className = 'upload-chip';
+                    chip.appendChild(document.createTextNode(t + ' '));
+                    var x = document.createElement('button');
+                    x.type = 'button';
+                    x.setAttribute('aria-label', t + ' 삭제');
+                    x.innerHTML = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+                    x.addEventListener('click', function () { setAi(t, false); });
+                    chip.appendChild(x);
+                    aiChips.appendChild(chip);
+                });
+            }
+            function setAi(t, on) {
+                var idx = aiSelected.indexOf(t);
+                if (on && idx < 0) { aiSelected.push(t); }
+                else if (!on && idx >= 0) { aiSelected.splice(idx, 1); }
+                syncPills();
+                renderAiChips();
+            }
+            function openAi() { aiModal.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+            function closeAi() { aiModal.classList.remove('is-open'); document.body.style.overflow = ''; }
+            aiBtn.addEventListener('click', function () { syncPills(); openAi(); });
+            aiModal.querySelector('.js-ai-modal-close').addEventListener('click', closeAi);
+            aiModal.querySelector('.js-ai-modal-ok').addEventListener('click', closeAi);
+            aiModal.addEventListener('click', function (e) { if (e.target === aiModal) { closeAi(); } });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && aiModal.classList.contains('is-open')) { closeAi(); } });
+        }
+
+        // 닫기(X) / 오버레이 클릭 / Esc (주의사항 모달)
         Array.prototype.forEach.call(document.querySelectorAll('.js-modal-close'), function (b) { b.addEventListener('click', closeAll); });
         Array.prototype.forEach.call(document.querySelectorAll('.js-upload-modal'), function (m) {
             m.addEventListener('click', function (e) { if (e.target === m) { closeAll(); } });
@@ -1525,6 +1795,8 @@
         initCommentReply();
         initAuthDemo();
         initFaq();
+        initAvatarModal();
+        initMypageStudioNav();
     }
 
     if (document.readyState === 'loading') {

@@ -66,9 +66,21 @@
 
                     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
                         <a href="preview-favorites.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">즐겨찾기</a>
-                        <a href="preview-studio.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">크리에이터</a>
+                        <div class="mypage__side-group">
+                            <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
+                                <img class="mypage__side-nav-icon" src="images/mypage/ic_creator.svg" alt="">
+                                크리에이터 스튜디오
+                                <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="mypage__side-sub">
+                            <a href="preview-studio.html">내 채널 관리</a>
+                            <a href="preview-studio-content.html">콘텐츠 관리</a>
+                            <a href="#">수익 관리</a>
+                            <a href="#">댓글 관리</a>
+                            </div>
+                        </div>
                         <a href="preview-faq.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_faq.svg" alt="">자주하는 질문</a>
-                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_inquiry.svg" alt="">1:1 문의</a>
+                        <a href="preview-inquiry.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_inquiry.svg" alt="">1:1 문의</a>
                         <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_notice.svg" alt="">공지사항</a>
                         <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_event.svg" alt="">이벤트</a>
                     </nav>

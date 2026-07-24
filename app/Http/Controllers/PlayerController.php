@@ -42,7 +42,7 @@ class PlayerController
                 'source' => 'videos/cow_story.mp4', // 테스트 영상 - 실서비스에서 스트리밍 URL로 교체
                 'poster' => 'images/player/poster_algorithm.jpg',
                 'tags' => ['2026', '드라마', '멜로'],
-                'ratings' => ['19+', '15+'],
+                'ratings' => ['15+'], // 연령 등급은 하나만 (19+와 15+ 공존 불가)
                 'synopsis' => '<빛이 빛날 때>는 각자의 가슴속에 깊은 상처와 어둠을 품고 살아가는 인물들이 서로의 삶에 스며들어 따뜻한 마음을 품는...',
                 'likes' => '102',
                 'comments' => '12',
