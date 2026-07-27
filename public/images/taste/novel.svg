@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-novel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#221708"/><stop offset="1" stop-color="#3a270e"/>
+    </linearGradient>
+    <filter id="soft-novel" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-novel" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-novel)"/>
+  <g filter="url(#soft-novel)">
+    <ellipse cx="319" cy="143" rx="98" ry="92" fill="#d9a441" opacity="0.63" transform="rotate(97 319 143)"/>
+    <ellipse cx="168" cy="326" rx="101" ry="107" fill="#f6d488" opacity="0.37" transform="rotate(64 168 326)"/>
+    <ellipse cx="101" cy="146" rx="145" ry="85" fill="#7d5a1c" opacity="0.34" transform="rotate(29 101 146)"/>
+    <ellipse cx="157" cy="181" rx="190" ry="80" fill="#d9a441" opacity="0.58" transform="rotate(27 157 181)"/>
+    <ellipse cx="172" cy="123" rx="174" ry="90" fill="#f6d488" opacity="0.47" transform="rotate(122 172 123)"/>
+    <path d="M-40 236 C 144 313, 336 294, 520 236" fill="none" stroke="#f6d488" stroke-width="40" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 281 C 144 126, 336 284, 520 281" fill="none" stroke="#7d5a1c" stroke-width="34" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-novel)" opacity="0.055"/>
+</svg>

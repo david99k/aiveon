@@ -6,7 +6,8 @@
 @section('hide-footer', '1')
 
 @section('content')
-    <section class="watch">
+    {{-- data-premium : 프리미엄 전용 콘텐츠 → 미구독 시 구독 유도 오버레이(main.js initContentGates) --}}
+    <section class="watch" @if (!empty($video['is_premium'])) data-premium="1" @endif>
         {{-- 좌측 : 플레이어 + 정보 + 댓글 --}}
         <div class="watch__main">
             {{-- 영상 + 정보 (모바일/태블릿에서 이 그룹 다음에 에피소드가 온다) --}}
@@ -65,8 +66,8 @@
 
             <div class="watch__info">
                 <div class="player__channel">
-                    <a href="#" class="player__channel-avatar"><img src="{{ asset($channel['avatar']) }}" alt=""></a>
-                    <a href="#" class="player__channel-name">{{ $channel['name'] }}</a>
+                    <a href="{{ route('channel') }}" class="player__channel-avatar"><img src="{{ asset($channel['avatar']) }}" alt=""></a>
+                    <a href="{{ route('channel') }}" class="player__channel-name">{{ $channel['name'] }}</a>
                     <button type="button" class="player__follow{{ $channel['following'] ? '' : ' player__follow--primary' }}">{{ $channel['following'] ? '팔로잉' : '팔로우' }}</button>
                 </div>
 
@@ -80,9 +81,9 @@
                 </ul>
 
                 <div class="player__ai">
-                    <a href="#" class="player__ai-label">사용 AI &nbsp;&gt;</a>
+                    <a href="{{ route('ai-tools') }}" class="player__ai-label">사용 AI &nbsp;&gt;</a>
                     @foreach ($aiTools as $tool)
-                        <span class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></span>
+                        <a href="{{ route('ai-tool', $tool['slug'] ?? 'runway') }}" class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}" title="{{ $tool['name'] }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></a>
                     @endforeach
                 </div>
 

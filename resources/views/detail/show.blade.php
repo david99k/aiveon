@@ -43,8 +43,8 @@
         <x-video-row :title="'에피소드 ' . ($i * 6 + 1) . '~' . ($i * 6 + count($row)) . '화'" :items="$row" :hide-title="true" />
     @endforeach
 
-    {{-- 함께 많이 찾는 영상 --}}
-    <x-video-row :title="$title['name'] . '를 보시는 분들이 많이 찾는 영상'" :items="$related" />
+    {{-- 함께 많이 찾는 영상 (세로 포스터) --}}
+    <x-poster-row :title="$title['name'] . '를 보시는 분들이 많이 찾는 영상'" :items="$related" />
 
     {{-- 추천 컨텐츠 --}}
     <section class="section section--poster">

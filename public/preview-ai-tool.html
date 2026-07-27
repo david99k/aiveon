@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Runway · AI 툴 도감 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/ai-tools/show.blade.php 정적 재현.
+        AI 툴 상세 (Runway 예시) — 이 툴로 만든 AIVEON 영상 연결.
+        마이페이지 셸(.mypage 좌측 LNB + 콘텐츠) 재사용.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 : 마이페이지 사이드바 (크리에이터 스튜디오 아코디언 펼침 + 내 채널 관리 활성) -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                                <div class="mypage__side-group">
+                                    <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
+                                        <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                        크리에이터 스튜디오
+                                        <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div class="mypage__side-sub">
+                                    <a href="preview-studio.html">내 채널 관리</a>
+                                    <a href="preview-studio-content.html">콘텐츠 관리</a>
+                                    <a href="preview-studio-revenue.html">수익 관리</a>
+                                    <a href="preview-studio-comments.html">댓글 관리</a>
+                                    </div>
+                                </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html" class="is-active" aria-current="page"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : AI 툴 상세 (Runway 예시) -->
+                <div class="mypage__content">
+                    <section class="aitool">
+                        <a href="preview-ai-tools.html" class="aitool__back" aria-label="AI 툴 도감으로" title="AI 툴 도감"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+
+                        <header class="aitool__head">
+                            <span class="aitool__logo" data-ai-logo="Runway"></span>
+                            <div class="aitool__id">
+                                <h1 class="aitool__name">Runway<span class="aitool__verified">AIVEON 추천</span></h1>
+                                <p class="aitool__kor">런웨이 · <span class="aitool__cat">영상 생성</span></p>
+                            </div>
+                            <div class="aitool__actions">
+                                <button type="button" class="aitool__act" aria-label="저장" title="저장"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14.2l-6.5-3.7-6.5 3.7V5.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                                <button type="button" class="aitool__act" aria-label="공유" title="공유"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5V4m0 0L8 8m4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+                                <a href="#" class="btn btn--primary aitool__official" target="_blank" rel="noopener">공식 사이트</a>
+                            </div>
+                        </header>
+
+                        <p class="aitool__summary">Runway(런웨이)은(는) 영상 생성 분야에서 가장 널리 쓰이는 AI 툴 중 하나입니다. AIVEON 크리에이터들이 실제 작업에 사용하고 있으며, 아래에서 이 툴로 만든 영상을 확인할 수 있습니다.</p>
+
+                        <div class="aitool__stats">
+                            <div class="aitool__stat"><span class="aitool__stat-label">AIVEON 사용 영상</span><strong class="aitool__stat-value">1,284</strong></div>
+                            <div class="aitool__stat"><span class="aitool__stat-label">크리에이터 평점</span><strong class="aitool__stat-value">4.6<span class="aitool__stat-sub">/ 5</span></strong></div>
+                            <div class="aitool__stat"><span class="aitool__stat-label">카테고리</span><strong class="aitool__stat-value aitool__stat-value--text">영상 생성</strong></div>
+                            <div class="aitool__stat"><span class="aitool__stat-label">요금</span><strong class="aitool__stat-value aitool__stat-value--text">무료 체험 + 유료 플랜</strong></div>
+                            <div class="aitool__stat"><span class="aitool__stat-label">난이도</span><strong class="aitool__stat-value aitool__stat-value--text">입문 ~ 중급</strong></div>
+                            <div class="aitool__stat"><span class="aitool__stat-label">한국어 지원</span><strong class="aitool__stat-value aitool__stat-value--text">지원</strong></div>
+                        </div>
+
+                        <section class="section section--poster">
+                            <h2 class="section__title">Runway(으)로 만든 영상</h2>
+                            <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="Runway(으)로 만든 영상">
+                                <ul class="poster-list">
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                    <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section class="section aitool__section">
+                            <h2 class="section__title">핵심 기능</h2>
+                            <ul class="aitool__features">
+                                <li class="aitool__feature"><strong class="aitool__feature-title">빠른 시안 제작</strong><p class="aitool__feature-desc">아이디어를 몇 분 만에 결과물로 확인할 수 있어 기획 단계에서 시간을 크게 줄여줍니다.</p></li>
+                                <li class="aitool__feature"><strong class="aitool__feature-title">스타일 일관성</strong><p class="aitool__feature-desc">레퍼런스를 지정해 여러 컷을 같은 톤으로 유지할 수 있습니다.</p></li>
+                                <li class="aitool__feature"><strong class="aitool__feature-title">상업적 이용</strong><p class="aitool__feature-desc">유료 플랜에서 상업적 이용이 허용됩니다. 세부 조건은 공식 약관을 확인하세요.</p></li>
+                            </ul>
+                        </section>
+
+                        <section class="section aitool__section">
+                            <h2 class="section__title">장단점</h2>
+                            <div class="aitool__pros-cons">
+                                <div class="aitool__pc aitool__pc--pro"><strong class="aitool__pc-head">이런 점이 좋아요</strong><ul><li>한국어 프롬프트도 잘 알아듣는 편</li><li>결과물 퀄리티가 안정적</li><li>레퍼런스를 활용한 스타일 고정이 쉬움</li></ul></div>
+                                <div class="aitool__pc aitool__pc--con"><strong class="aitool__pc-head">이런 점은 아쉬워요</strong><ul><li>무료 플랜은 생성 횟수 제한이 있음</li><li>세밀한 디테일은 후보정이 필요할 수 있음</li></ul></div>
+                            </div>
+                        </section>
+
+                        <section class="section aitool__section">
+                            <h2 class="section__title">요금제</h2>
+                            <div class="aitool__plans">
+                                <div class="aitool__plan"><strong class="aitool__plan-name">Free</strong><span class="aitool__plan-price">무료</span><p class="aitool__plan-desc">체험용 크레딧 제공 · 워터마크 있음</p></div>
+                                <div class="aitool__plan"><strong class="aitool__plan-name">Standard</strong><span class="aitool__plan-price">월 $12~</span><p class="aitool__plan-desc">상업적 이용 가능 · 워터마크 없음</p></div>
+                                <div class="aitool__plan"><strong class="aitool__plan-name">Pro</strong><span class="aitool__plan-price">월 $30~</span><p class="aitool__plan-desc">고해상도 · 우선 처리 · 팀 협업</p></div>
+                            </div>
+                            <p class="aitool__tip">AIVEON에 업로드할 때 "사용한 AI"에 이 툴을 선택하면, 이 페이지의 "이 툴로 만든 영상"에 자동으로 노출됩니다.</p>
+                        </section>
+
+                        <section class="section aitool__section">
+                            <h2 class="section__title">같은 카테고리의 다른 툴</h2>
+                            <div class="aitool__related">
+                                <a href="preview-ai-tool.html" class="aitool__related-item"><span class="aitool-card__logo" data-ai-logo="Kling"></span><span><strong>Kling</strong><span class="aitool__related-kor">클링</span></span></a>
+                                <a href="preview-ai-tool.html" class="aitool__related-item"><span class="aitool-card__logo" data-ai-logo="Veo"></span><span><strong>Veo</strong><span class="aitool__related-kor">비오</span></span></a>
+                                <a href="preview-ai-tool.html" class="aitool__related-item"><span class="aitool-card__logo" data-ai-logo="Luma Dream Machine"></span><span><strong>Luma Dream Machine</strong><span class="aitool__related-kor">루마 드림머신</span></span></a>
+                            </div>
+                        </section>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-complete" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#231a08"/><stop offset="1" stop-color="#3d2d0e"/>
+    </linearGradient>
+    <filter id="soft-complete" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-complete" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-complete)"/>
+  <g filter="url(#soft-complete)">
+    <ellipse cx="90" cy="247" rx="98" ry="113" fill="#fbbf24" opacity="0.62" transform="rotate(20 90 247)"/>
+    <ellipse cx="60" cy="70" rx="191" ry="67" fill="#fde68a" opacity="0.34" transform="rotate(91 60 70)"/>
+    <ellipse cx="314" cy="260" rx="78" ry="120" fill="#8a6416" opacity="0.49" transform="rotate(131 314 260)"/>
+    <ellipse cx="53" cy="285" rx="100" ry="158" fill="#fbbf24" opacity="0.57" transform="rotate(46 53 285)"/>
+    <ellipse cx="317" cy="238" rx="159" ry="114" fill="#fde68a" opacity="0.54" transform="rotate(97 317 238)"/>
+    <path d="M-40 224 C 144 142, 336 184, 520 224" fill="none" stroke="#fde68a" stroke-width="28" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 221 C 144 113, 336 162, 520 221" fill="none" stroke="#8a6416" stroke-width="31" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-complete)" opacity="0.055"/>
+</svg>

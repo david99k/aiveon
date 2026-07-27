@@ -31,9 +31,9 @@ class PlayerController
     private function shorts(): array
     {
         $aiTools = [
-            ['icon' => 'images/player/ai_logo1.png', 'name' => 'AI 도구 1', 'light' => false],
-            ['icon' => 'images/player/ai_logo2.png', 'name' => 'AI 도구 2', 'light' => false],
-            ['icon' => 'images/player/ai_logo3.png', 'name' => 'AI 도구 3', 'light' => true],
+            ['icon' => 'images/player/ai_logo1.png', 'name' => 'ChatGPT Plus/Pro', 'slug' => 'chatgpt-plus-pro', 'light' => false],
+            ['icon' => 'images/player/ai_logo2.png', 'name' => 'Runway', 'slug' => 'runway', 'light' => false],
+            ['icon' => 'images/player/ai_logo3.png', 'name' => 'Kling', 'slug' => 'kling', 'light' => true],
         ];
 
         return [

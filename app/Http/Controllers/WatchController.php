@@ -26,6 +26,8 @@ class WatchController
                 'title' => $isDrama ? '빛이 빛날 때' : 'THE BETA',
                 'subtitle' => $isDrama ? '1화 · 빛의 시작' : '영화 · 본편',
                 'badge' => $isDrama ? 'OFFICIAL' : null,
+                // 프리미엄 전용 : 미구독 시 재생 대신 구독 유도 오버레이 노출
+                'is_premium' => true,
                 'source' => 'videos/drama01.mp4', // 테스트 영상(16:9) - 드라마·영화 공통, 실서비스에서 교체
                 'poster' => $isDrama ? 'images/main/hero_main.jpg' : 'images/main/thumb_wide_beta.jpg',
                 'tags' => ['2026', '드라마', '멜로'],
@@ -39,9 +41,9 @@ class WatchController
                 'following' => !$isDrama, // 드라마 화면은 미팔로우(팔로우 버튼) 상태 시안
             ],
             'aiTools' => [
-                ['icon' => 'images/player/ai_logo1.png', 'name' => 'AI 도구 1', 'light' => false],
-                ['icon' => 'images/player/ai_logo2.png', 'name' => 'AI 도구 2', 'light' => false],
-                ['icon' => 'images/player/ai_logo3.png', 'name' => 'AI 도구 3', 'light' => true],
+                ['icon' => 'images/player/ai_logo1.png', 'name' => 'ChatGPT Plus/Pro', 'slug' => 'chatgpt-plus-pro', 'light' => false],
+                ['icon' => 'images/player/ai_logo2.png', 'name' => 'Runway', 'slug' => 'runway', 'light' => false],
+                ['icon' => 'images/player/ai_logo3.png', 'name' => 'Kling', 'slug' => 'kling', 'light' => true],
             ],
             'seasons' => ['시즌 1', '시즌 2'],
             'episodes' => $isDrama ? $this->episodes() : [],

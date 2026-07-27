@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>댓글 관리 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/studio/comments.blade.php 정적 재현.
+        크리에이터 스튜디오 > 댓글 관리.
+        마이페이지 셸(.mypage 좌측 LNB + 콘텐츠) 재사용.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 : 마이페이지 사이드바 (크리에이터 스튜디오 아코디언 펼침 + 내 채널 관리 활성) -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                                <div class="mypage__side-group is-open is-active">
+                                    <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="true">
+                                        <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                        크리에이터 스튜디오
+                                        <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div class="mypage__side-sub">
+                                    <a href="preview-studio.html">내 채널 관리</a>
+                                    <a href="preview-studio-content.html">콘텐츠 관리</a>
+                                    <a href="preview-studio-revenue.html">수익 관리</a>
+                                    <a href="preview-studio-comments.html" class="is-active" aria-current="page">댓글 관리</a>
+                                    </div>
+                                </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : 내 콘텐츠 댓글 관리 (답글 / 숨김 / 신고 처리) -->
+                <div class="mypage__content mypage__content--studio">
+                    <h2 class="studio__title">댓글 관리</h2>
+                    <p class="studio__lead">내 콘텐츠에 달린 댓글에 답글을 달고, 신고·숨김을 관리하세요.</p>
+
+                    <div class="cmt-sum">
+                        <div class="cmt-sum__card"><strong class="cmt-sum__value">1,204</strong><span class="cmt-sum__label">전체 댓글</span></div>
+                        <div class="cmt-sum__card"><strong class="cmt-sum__value">18</strong><span class="cmt-sum__label">답글 대기</span></div>
+                        <div class="cmt-sum__card cmt-sum__card--alert"><strong class="cmt-sum__value">3</strong><span class="cmt-sum__label">신고 접수</span></div>
+                    </div>
+
+                    <div class="cmt-tabs" role="tablist" aria-label="댓글 필터">
+                        <button type="button" class="cmt-tab is-active" role="tab" aria-selected="true">전체<span class="cmt-tab__count">1,204</span></button>
+                        <button type="button" class="cmt-tab" role="tab" aria-selected="false">답글 대기<span class="cmt-tab__count">18</span></button>
+                        <button type="button" class="cmt-tab" role="tab" aria-selected="false">신고됨<span class="cmt-tab__count">3</span></button>
+                        <button type="button" class="cmt-tab" role="tab" aria-selected="false">내가 남긴 댓글</button>
+                    </div>
+
+                    <div class="cmt-list js-cmt-list">
+                        <article class="cmt cmt--reported" data-type="reported">
+                            <img class="cmt__avatar" src="images/common/default_icon.png" alt="">
+                            <div class="cmt__body">
+                                <div class="cmt__head">
+                                    <strong class="cmt__user">unknown_user</strong>
+                                    <span class="cmt__time">2시간 전</span>
+                                    <span class="cmt__flag">신고 2건 · 스팸/욕설</span>
+                                </div>
+                                <p class="cmt__text">△△△ 사이트에서 무료로 보세요 링크 → …</p>
+                                <a class="cmt__on" href="preview-detail.html"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 2.5v7l6-3.5-6-3.5Z" fill="currentColor"/></svg><b>마법 같은 우리의 모험</b></a>
+                            <div class="cmt__actions">
+                                <button type="button" class="cmt-act cmt-act--danger" data-cmt-act="hide">숨기기</button>
+                                <button type="button" class="cmt-act cmt-act--danger" data-cmt-act="delete">삭제</button>
+                                <button type="button" class="cmt-act" data-cmt-act="dismiss">신고 무시</button>
+                                <button type="button" class="cmt-act" data-cmt-act="block">작성자 차단</button>
+                            </div>
+                            </div>
+                        </article>
+                        <article class="cmt" data-type="waiting">
+                            <img class="cmt__avatar" src="images/common/avatar_user.jpg" alt="">
+                            <div class="cmt__body">
+                                <div class="cmt__head">
+                                    <strong class="cmt__user">bright_moon</strong>
+                                    <span class="cmt__time">5시간 전</span>
+                                </div>
+                                <p class="cmt__text">3화 결말 진짜 최고였어요 ㅠㅠ 다음 편 언제 올라오나요? 매주 기다리고 있습니다!</p>
+                                <a class="cmt__on" href="preview-watch-drama.html"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 2.5v7l6-3.5-6-3.5Z" fill="currentColor"/></svg><b>빛이 빛날 때</b></a>
+                            <div class="cmt__actions">
+                                <button type="button" class="cmt-act cmt-act--primary" data-cmt-act="reply">답글 달기</button>
+                                <button type="button" class="cmt-act cmt-act--heart" data-cmt-act="heart" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-9.4A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 3C19.5 15.4 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>하트</button>
+                                <button type="button" class="cmt-act" data-cmt-act="hide">숨기기</button>
+                            </div>
+                            </div>
+                        </article>
+                        <article class="cmt" data-type="replied">
+                            <img class="cmt__avatar" src="images/common/avatar_user.jpg" alt="">
+                            <div class="cmt__body">
+                                <div class="cmt__head">
+                                    <strong class="cmt__user">pixel_kim</strong>
+                                    <span class="cmt__time">어제</span>
+                                </div>
+                                <p class="cmt__text">작화 퀄리티가 미쳤네요. AI로 이 정도까지 가능하군요 👏</p>
+                                <a class="cmt__on" href="preview-detail.html"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 2.5v7l6-3.5-6-3.5Z" fill="currentColor"/></svg><b>아기 고양이의 모험</b></a>
+                                <div class="cmt__reply">
+                                    <div class="cmt__head"><strong class="cmt__user cmt__user--me">synergy_on</strong><span class="cmt__time">· 작성자</span></div>
+                                    <p class="cmt__text">감사합니다! 다음 작품도 기대해 주세요 🙌</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

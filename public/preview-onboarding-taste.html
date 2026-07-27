@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>취향 선택 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/onboarding/taste.blade.php 정적 재현.
+        회원가입 완료 직후 1회 노출되는 취향(장르) 선택 온보딩.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="page-onboarding">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="taste">
+                <header class="taste__head">
+                    <span class="taste__step">가입 완료 · 마지막 단계</span>
+                    <h1 class="taste__title">어떤 영상을 좋아하세요?</h1>
+                    <p class="taste__desc">관심 장르를 <b>3개 이상</b> 선택하면 <br class="taste__br">취향에 맞는 AI 영상을 먼저 보여드려요.</p>
+                </header>
+
+                <form id="taste-form" class="taste__form js-taste-form" action="preview.html" method="get">
+                    <section class="taste__group">
+                        <h2 class="taste__group-title">드라마 · 영화</h2>
+                        <ul class="taste__grid">
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="로맨스" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/romance.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">로맨스</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="스릴러" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/thriller.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">스릴러</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="복수" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/revenge.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">복수</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="막장" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/makjang.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">막장</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="하이틴" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/highteen.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">하이틴</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="공포" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/horror.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">공포</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="무빙툰" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/movingtoon.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">무빙툰</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="노블" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/novel.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">노블</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="taste__group">
+                        <h2 class="taste__group-title">애니메이션</h2>
+                        <ul class="taste__grid">
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="이세계" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/isekai.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">이세계</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="판타지" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/fantasy.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">판타지</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="SF" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/scifi.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">SF</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="메카닉" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/mecha.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">메카닉</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="학원" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/school.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">학원</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="서브컬처" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/subculture.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">서브컬처</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="3D · 시네마틱" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/cinematic3d.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">3D · 시네마틱</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="taste__group">
+                        <h2 class="taste__group-title">BL</h2>
+                        <ul class="taste__grid">
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="실사 로맨스" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/blromance.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">실사 로맨스</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="2D 아니메" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/anime2d.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">2D 아니메</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="캠퍼스 · 청춘" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/campus.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">캠퍼스 · 청춘</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="오피스" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/office.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">오피스</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="특수 세계관" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/worldview.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">특수 세계관</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="taste__group">
+                        <h2 class="taste__group-title">숏폼 · 기타</h2>
+                        <ul class="taste__grid">
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="숏츠" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/shorts.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">숏츠</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="AI 라이브" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/ailive.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">AI 라이브</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="taste-card">
+                                    <input type="checkbox" name="genres[]" value="완결작" class="taste-card__input js-taste-check">
+                                    <span class="taste-card__thumb"><img src="images/taste/complete.svg" alt="" loading="lazy"><span class="taste-card__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                                    <span class="taste-card__name">완결작</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </section>
+                </form>
+
+                <div class="taste__bar">
+                    <div class="taste__bar-inner">
+                        <p class="taste__count"><b class="js-taste-count">0</b>개 선택 <span class="taste__count-hint js-taste-hint">· 3개 이상 선택해주세요</span></p>
+                        <div class="taste__actions">
+                            <a href="preview.html" class="btn btn--ghost taste__skip">나중에 하기</a>
+                            <button type="submit" form="taste-form" class="btn btn--primary taste__submit js-taste-submit" disabled>시작하기</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

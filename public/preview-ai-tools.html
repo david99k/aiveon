@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI 툴 도감 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/ai-tools/index.blade.php 정적 재현.
+        AI 툴 도감 목록 (카테고리 필터 + 카드 그리드).
+        마이페이지 셸(.mypage 좌측 LNB + 콘텐츠) 재사용.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 : 마이페이지 사이드바 (크리에이터 스튜디오 아코디언 펼침 + 내 채널 관리 활성) -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                                <div class="mypage__side-group">
+                                    <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
+                                        <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                        크리에이터 스튜디오
+                                        <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div class="mypage__side-sub">
+                                    <a href="preview-studio.html">내 채널 관리</a>
+                                    <a href="preview-studio-content.html">콘텐츠 관리</a>
+                                    <a href="preview-studio-revenue.html">수익 관리</a>
+                                    <a href="preview-studio-comments.html">댓글 관리</a>
+                                    </div>
+                                </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html" class="is-active" aria-current="page"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : AI 툴 도감 목록 -->
+                <div class="mypage__content">
+                    <section class="aitools">
+                        <header class="aitools__head">
+                            <h1 class="aitools__title">AI 툴 도감</h1>
+                            <p class="aitools__lead">AIVEON 크리에이터들이 실제로 사용하는 AI 툴을 카테고리별로 확인하세요.<br>각 툴 페이지에서 <strong>그 툴로 만든 영상</strong>을 바로 볼 수 있습니다.</p>
+                            <div class="aitools__search">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-3.4-3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                                <input type="search" class="aitools__search-input" placeholder="툴 이름으로 검색 (예: Runway, 미드저니)" aria-label="AI 툴 검색">
+                            </div>
+                        </header>
+
+                        <div class="aitools__chips" role="tablist" aria-label="카테고리">
+                            <button type="button" class="aitools__chip is-active" role="tab" aria-selected="true">전체</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">기획</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">이미지 생성</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">이미지 편집</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">영상 생성</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">AI 아바타</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">립싱크</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">모션캡처</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">음성 생성</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">음악 생성</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">효과음</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">영상 편집</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">색보정</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">업스케일링</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">노이즈 제거</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">배경 제거</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">3D 생성</button>
+                            <button type="button" class="aitools__chip" role="tab" aria-selected="false">AI VFX</button>
+                        </div>
+
+                        <div class="aitools__grid">
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Runway"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Runway<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">런웨이</span>
+                                    <span class="aitool-card__tagline">텍스트·이미지로 영상을 만드는 대표 생성 툴</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">영상 생성</span><span class="aitool-card__count">영상 1,284</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Midjourney"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Midjourney<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">미드저니</span>
+                                    <span class="aitool-card__tagline">분위기 있는 키비주얼·콘셉트 아트에 강한 이미지 생성</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">이미지 생성</span><span class="aitool-card__count">영상 2,140</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="ChatGPT Plus/Pro"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">ChatGPT Plus/Pro<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">챗지피티</span>
+                                    <span class="aitool-card__tagline">시놉시스·대본·기획안을 빠르게 잡아주는 대화형 AI</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">기획</span><span class="aitool-card__count">영상 3,020</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Claude Pro"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Claude Pro</strong>
+                                    <span class="aitool-card__kor">클로드</span>
+                                    <span class="aitool-card__tagline">긴 대본·설정 정리에 강한 대화형 AI</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">기획</span><span class="aitool-card__count">영상 1,760</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Kling"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Kling</strong>
+                                    <span class="aitool-card__kor">클링</span>
+                                    <span class="aitool-card__tagline">인물 동작이 자연스러운 영상 생성 모델</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">영상 생성</span><span class="aitool-card__count">영상 842</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Veo"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Veo<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">비오</span>
+                                    <span class="aitool-card__tagline">구글의 고화질 영상 생성 모델</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">영상 생성</span><span class="aitool-card__count">영상 735</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="ElevenLabs"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">ElevenLabs<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">일레븐랩스</span>
+                                    <span class="aitool-card__tagline">자연스러운 한국어 내레이션·더빙 음성 생성</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">음성 생성</span><span class="aitool-card__count">영상 1,510</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Suno"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Suno<span class="aitool-card__verified" title="AIVEON 추천 툴"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg></span></strong>
+                                    <span class="aitool-card__kor">수노</span>
+                                    <span class="aitool-card__tagline">가사·장르만으로 완성곡을 만드는 음악 생성</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">음악 생성</span><span class="aitool-card__count">영상 980</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Photoshop"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Photoshop</strong>
+                                    <span class="aitool-card__kor">포토샵</span>
+                                    <span class="aitool-card__tagline">생성형 채우기로 후보정까지 처리하는 표준 편집 툴</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">이미지 편집</span><span class="aitool-card__count">영상 1,190</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Premiere Pro"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Premiere Pro</strong>
+                                    <span class="aitool-card__kor">프리미어 프로</span>
+                                    <span class="aitool-card__tagline">자동 자막·리프레임을 갖춘 표준 편집 툴</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">영상 편집</span><span class="aitool-card__count">영상 1,320</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="HeyGen"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">HeyGen</strong>
+                                    <span class="aitool-card__kor">헤이젠</span>
+                                    <span class="aitool-card__tagline">실사형 AI 아바타로 진행자 영상을 만드는 툴</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">AI 아바타</span><span class="aitool-card__count">영상 610</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Topaz Video AI"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Topaz Video AI</strong>
+                                    <span class="aitool-card__kor">토파즈 비디오</span>
+                                    <span class="aitool-card__tagline">저해상도 영상을 4K로 올려주는 업스케일러</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">업스케일링</span><span class="aitool-card__count">영상 430</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Flux API"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Flux API</strong>
+                                    <span class="aitool-card__kor">플럭스</span>
+                                    <span class="aitool-card__tagline">고품질·고속 이미지 생성 API</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">이미지 생성</span><span class="aitool-card__count">영상 520</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Luma Dream Machine"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Luma Dream Machine</strong>
+                                    <span class="aitool-card__kor">루마 드림머신</span>
+                                    <span class="aitool-card__tagline">부드러운 카메라 무빙이 강점인 영상 생성</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">영상 생성</span><span class="aitool-card__count">영상 380</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Krea AI"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Krea AI</strong>
+                                    <span class="aitool-card__kor">크레아</span>
+                                    <span class="aitool-card__tagline">실시간 리터칭·업스케일에 특화</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">이미지 편집</span><span class="aitool-card__count">영상 295</span></span>
+                                </span>
+                            </a>
+                            <a href="preview-ai-tool.html" class="aitool-card">
+                                <span class="aitool-card__logo" data-ai-logo="Move AI"></span>
+                                <span class="aitool-card__body">
+                                    <strong class="aitool-card__name">Move AI</strong>
+                                    <span class="aitool-card__kor">무브 AI</span>
+                                    <span class="aitool-card__tagline">영상만으로 3D 모션을 추출하는 마커리스 캡처</span>
+                                    <span class="aitool-card__meta"><span class="aitool-card__cat">모션캡처</span><span class="aitool-card__count">영상 150</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

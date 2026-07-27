@@ -16,8 +16,8 @@
                         {{-- 콘텐츠 정보 : 데스크톱(≥1600)은 좌하단, 그 이하는 영상 위 오버레이 --}}
                         <div class="player__info">
                             <div class="player__channel">
-                                <a href="#" class="player__channel-avatar"><img src="{{ asset($short['channel']['avatar']) }}" alt=""></a>
-                                <a href="#" class="player__channel-name">{{ $short['channel']['name'] }}</a>
+                                <a href="{{ route('channel') }}" class="player__channel-avatar"><img src="{{ asset($short['channel']['avatar']) }}" alt=""></a>
+                                <a href="{{ route('channel') }}" class="player__channel-name">{{ $short['channel']['name'] }}</a>
                                 <button type="button" class="player__follow{{ $short['channel']['following'] ? '' : ' player__follow--primary' }}">{{ $short['channel']['following'] ? '팔로잉' : '팔로우' }}</button>
                             </div>
 
@@ -35,9 +35,9 @@
                             <p class="player__synopsis">{!! nl2br(e($short['synopsis'])) !!}<br><a href="#" class="player__more">더보기</a></p>
 
                             <div class="player__ai">
-                                <a href="#" class="player__ai-label">사용 AI &nbsp;&gt;</a>
+                                <a href="{{ route('ai-tools') }}" class="player__ai-label">사용 AI &nbsp;&gt;</a>
                                 @foreach ($short['aiTools'] as $tool)
-                                    <span class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></span>
+                                    <a href="{{ route('ai-tool', $tool['slug'] ?? 'runway') }}" class="player__ai-chip{{ $tool['light'] ? ' player__ai-chip--light' : '' }}" title="{{ $tool['name'] }}"><img src="{{ asset($tool['icon']) }}" alt="{{ $tool['name'] }}"></a>
                                 @endforeach
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                                 </button>
                                 <span class="player__rail-label">더보기</span>
                             </div>
-                            <a href="#" class="player__rail-thumb" aria-label="{{ $short['channel']['name'] }} 채널">
+                            <a href="{{ route('channel') }}" class="player__rail-thumb" aria-label="{{ $short['channel']['name'] }} 채널">
                                 <img src="{{ asset($short['channel']['thumb']) }}" alt="">
                             </a>
                         </aside>

@@ -41,6 +41,21 @@ Route::get('/upload', [App\Http\Controllers\UploadController::class, 'show'])->n
 Route::get('/studio', [App\Http\Controllers\StudioController::class, 'show'])->name('studio');
 /* 크리에이터 스튜디오 - 콘텐츠 관리 (등록 영상 목록) */
 Route::get('/studio/content', [App\Http\Controllers\StudioController::class, 'content'])->name('studio.content');
+/* 크리에이터 스튜디오 - 수익 관리 (적립 포인트 조회 + 제휴 스토어에서 사용) */
+Route::get('/studio/revenue', [App\Http\Controllers\StudioController::class, 'revenue'])->name('studio.revenue');
+/* 크리에이터 스튜디오 - 댓글 관리 (답글 / 숨김 / 신고 처리) */
+Route::get('/studio/comments', [App\Http\Controllers\StudioController::class, 'comments'])->name('studio.comments');
+
+/* 가입 직후 온보딩 - 취향(장르) 선택 */
+Route::get('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'taste'])->name('onboarding.taste');
+Route::post('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'tasteStore'])->name('onboarding.taste.store');
+
+/* 크리에이터 공개 채널 (일반 유저가 크리에이터명 클릭 시 진입, 유튜브 채널 페이지 구조) */
+Route::get('/channel/{handle?}', [App\Http\Controllers\ChannelController::class, 'show'])->name('channel');
+
+/* AI 툴 도감 (목록 / 상세) — 업로드 시 기록한 "사용한 AI"와 연결 */
+Route::get('/ai-tools', [App\Http\Controllers\AiToolController::class, 'index'])->name('ai-tools');
+Route::get('/ai-tools/{slug}', [App\Http\Controllers\AiToolController::class, 'show'])->name('ai-tool');
 
 /* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
@@ -48,6 +63,11 @@ Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
 Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('favorites');
 Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
 Route::get('/mypage/inquiry', [MypageController::class, 'inquiry'])->name('inquiry');
+/* 공지사항 (일반 게시판) / 이벤트 (갤러리) */
+Route::get('/mypage/notice', [MypageController::class, 'notice'])->name('notice');
+Route::get('/mypage/notice/{id}', [MypageController::class, 'noticeShow'])->name('notice.show');
+Route::get('/mypage/event', [MypageController::class, 'event'])->name('event');
+Route::get('/mypage/event/{id}', [MypageController::class, 'eventShow'])->name('event.show');
 
 /*
  * 로그인 / 회원가입 (단일 페이지 3단계 온보딩).

@@ -19,7 +19,10 @@
 
         <div class="poster-card__info">
             <strong class="poster-card__title">{{ $item['title'] ?? '' }}@if (!empty($item['age19']))<span class="badge-age19">19</span>@endif</strong>
-            <span class="poster-card__meta">{{ $item['creator'] ?? '크리에이터' }} · 조회수 {{ $item['views'] ?? '0' }}</span>
+            <span class="poster-card__meta">
+                <img class="poster-card__avatar" src="{{ asset($item['creator_avatar'] ?? 'images/main/creator_profile_01.jpg') }}" alt="" loading="lazy">
+                {{ $item['creator'] ?? '크리에이터' }} · 조회수 {{ $item['views'] ?? '0' }}
+            </span>
         </div>
     </a>
 </div>

@@ -47,18 +47,31 @@ class DetailController
         ], range($from, $to));
     }
 
-    /** @return array<int, array<string, mixed>> */
+    /** 함께 많이 찾는 영상 : 세로 포스터(사이트 공통 세로 썸네일 규칙). @return array<int, array<string, mixed>> */
     private function related(): array
     {
-        return array_map(fn (int $i) => [
-            'title' => '빛이 빛날때',
-            'creator' => '크리에이터',
-            'views' => '12만',
-            'thumb' => 'images/main/thumb_wide_cooking.jpg',
-            'is_premium' => $i === 1,
-            'is_new' => false,
-            'url' => route('detail'),
-        ], range(1, 7));
+        // 포스터 아트에 새겨진 제목과 카드 라벨을 일치시킴
+        $posters = [
+            ['그 계절, 우리가 사랑한 시간', 'poster_01', '거스구스'],
+            ['나의 알고리즘', 'poster_02', '몽글스튜디오'],
+            ['밤이 우리를 부를 때', 'poster_03', '거스구스'],
+            ['아기 고양이의 모험', 'poster_05', '몽글스튜디오'],
+            ['한 소녀의 피클볼 도전기', 'poster_06', '거스구스'],
+        ];
+
+        return array_map(function (int $i) use ($posters) {
+            [$name, $img, $creator] = $posters[($i - 1) % count($posters)];
+
+            return [
+                'title' => $name,
+                'creator' => $creator,
+                'views' => '12만',
+                'thumb' => 'images/main/' . $img . '.jpg',
+                'is_premium' => $i === 1,
+                'is_new' => false,
+                'url' => route('detail'),
+            ];
+        }, range(1, 7));
     }
 
     /** 세로 포스터(추천 컨텐츠) : 클릭 시 플레이어 진입 @return array<int, array<string, mixed>> */

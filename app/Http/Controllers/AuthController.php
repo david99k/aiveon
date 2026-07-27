@@ -77,6 +77,7 @@ class AuthController
 
         // TODO: 이메일 중복 확인 · 인증번호 검증 · 계정 생성 · 로그인 처리
 
-        return redirect()->route('main')->with('status', '가입이 완료되었습니다.');
+        // 가입 완료 → 취향(장르) 선택 온보딩
+        return redirect()->route('onboarding.taste')->with('status', '가입이 완료되었습니다.');
     }
 }

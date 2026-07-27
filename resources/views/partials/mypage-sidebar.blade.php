@@ -20,26 +20,27 @@
     <hr class="mypage__side-divider">
 
     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
-        <a href="{{ route('favorites') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_favorite.svg') }}" alt="">즐겨찾기</a>
+        <a href="{{ route('favorites') }}"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
 
         {{-- 크리에이터 스튜디오 : 아코디언 (내 채널 관리 / 콘텐츠 관리 / 수익 관리 / 댓글 관리) --}}
         <div class="mypage__side-group{{ $studioOpen ? ' is-open' : '' }}{{ $studioSub ? ' is-active' : '' }}">
             <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="{{ $studioOpen ? 'true' : 'false' }}">
-                <img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_creator.svg') }}" alt="">
+                <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
                 크리에이터 스튜디오
                 <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="mypage__side-sub">
                 <a href="{{ route('studio') }}" @class(['is-active' => $studioSub === 'channel']) @if ($studioSub === 'channel') aria-current="page" @endif>내 채널 관리</a>
                 <a href="{{ route('studio.content') }}" @class(['is-active' => $studioSub === 'content']) @if ($studioSub === 'content') aria-current="page" @endif>콘텐츠 관리</a>
-                <a href="#" @class(['is-active' => $studioSub === 'revenue'])>수익 관리</a>
-                <a href="#" @class(['is-active' => $studioSub === 'comment'])>댓글 관리</a>
+                <a href="{{ route('studio.revenue') }}" @class(['is-active' => $studioSub === 'revenue']) @if ($studioSub === 'revenue') aria-current="page" @endif>수익 관리</a>
+                <a href="{{ route('studio.comments') }}" @class(['is-active' => $studioSub === 'comment']) @if ($studioSub === 'comment') aria-current="page" @endif>댓글 관리</a>
             </div>
         </div>
 
-        <a href="{{ route('faq') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_faq.svg') }}" alt="">자주하는 질문</a>
-        <a href="{{ route('inquiry') }}"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_inquiry.svg') }}" alt="">1:1 문의</a>
-        <a href="#"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_notice.svg') }}" alt="">공지사항</a>
-        <a href="#"><img class="mypage__side-nav-icon" src="{{ asset('images/mypage/ic_event.svg') }}" alt="">이벤트</a>
+        <a href="{{ route('faq') }}"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+        <a href="{{ route('inquiry') }}"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+        <a href="{{ route('notice') }}"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+        <a href="{{ route('event') }}"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+        <a href="{{ route('ai-tools') }}"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
     </nav>
 </aside>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>즐겨찾기 · AIVEON (QA 프리뷰)</title>
+    <title>마이페이지 · AIVEON (QA 프리뷰)</title>
     <!--
         [QA 전용] resources/views/mypage/favorites.blade.php 정적 재현.
         마이페이지 좌측 사이드바 "즐겨찾기" 클릭 시 진입. (Figma 699:7870)
@@ -65,45 +65,86 @@
                     <hr class="mypage__side-divider">
 
                     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
-                        <a href="preview-favorites.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_favorite.svg" alt="">즐겨찾기</a>
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
                         <div class="mypage__side-group">
                             <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
-                                <img class="mypage__side-nav-icon" src="images/mypage/ic_creator.svg" alt="">
+                                <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
                                 크리에이터 스튜디오
                                 <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             <div class="mypage__side-sub">
                             <a href="preview-studio.html">내 채널 관리</a>
                             <a href="preview-studio-content.html">콘텐츠 관리</a>
-                            <a href="#">수익 관리</a>
-                            <a href="#">댓글 관리</a>
+                            <a href="preview-studio-revenue.html">수익 관리</a>
+                            <a href="preview-studio-comments.html">댓글 관리</a>
                             </div>
                         </div>
-                        <a href="preview-faq.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_faq.svg" alt="">자주하는 질문</a>
-                        <a href="preview-inquiry.html"><img class="mypage__side-nav-icon" src="images/mypage/ic_inquiry.svg" alt="">1:1 문의</a>
-                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_notice.svg" alt="">공지사항</a>
-                        <a href="#"><img class="mypage__side-nav-icon" src="images/mypage/ic_event.svg" alt="">이벤트</a>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
                     </nav>
                 </aside>
 
-                <!-- 우측 : 즐겨찾기 리스트 -->
+                <!-- 우측 : 마이페이지 허브 (구독중인 크리에이터 + 시청 기록 + 즐겨찾기) -->
                 <div class="mypage__content">
-                    <h2 class="mypage__page-title">즐겨찾기 리스트</h2>
+                    <h2 class="mypage__page-title">마이페이지</h2>
 
-                    <div class="fav-grid">
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                        <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta">크리에이터 · 조회수 12만</span></div></a></div>
-                    </div>
+                    <section class="hub">
+                        <div class="hub__head">
+                            <h3 class="hub__title">구독중인 크리에이터 <span class="hub__count">7</span></h3>
+                            <a href="#" class="hub__more">전체보기 &gt;</a>
+                        </div>
+                        <div class="scroll-x hub__row" data-scroll-x tabindex="0" role="region" aria-label="구독중인 크리에이터">
+                            <ul class="creator-list">
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_01.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">거스구스</strong><span class="creator__subs">구독자 3.2만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_02.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">몽글스튜디오</strong><span class="creator__subs">구독자 99.2만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_03.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">라온</strong><span class="creator__subs">구독자 12.4만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_04.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">이클립스</strong><span class="creator__subs">구독자 8.7만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_05.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">피크니콘</strong><span class="creator__subs">구독자 5.1만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_06.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">시너지 스튜디오</strong><span class="creator__subs">구독자 3.2만</span></span></a></li>
+                                <li class="creator"><a href="preview-channel.html" class="creator__link"><span class="creator__avatar"><img src="images/main/creator_profile_07.jpg" alt="" loading="lazy"></span><span class="creator__info"><strong class="creator__name">달빛서재</strong><span class="creator__subs">구독자 2.8만</span></span></a></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="hub">
+                        <div class="hub__head">
+                            <h3 class="hub__title">시청 기록</h3>
+                            <a href="#" class="hub__more">전체보기 &gt;</a>
+                        </div>
+                        <div class="scroll-x hub__row" data-scroll-x tabindex="0" role="region" aria-label="시청 기록">
+                            <ul class="poster-list">
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 82%</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 45%</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 100%</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 30%</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 12%</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
+                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 68%</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="hub">
+                        <div class="hub__head">
+                            <h3 class="hub__title">즐겨찾기 <span class="hub__count">12</span></h3>
+                        </div>
+                        <div class="fav-grid">
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
+                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
+                        </div>
+                    </section>
                 </div>
             </section>
         </main>

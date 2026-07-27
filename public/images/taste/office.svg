@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-office" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101827"/><stop offset="1" stop-color="#1c2740"/>
+    </linearGradient>
+    <filter id="soft-office" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-office" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-office)"/>
+  <g filter="url(#soft-office)">
+    <ellipse cx="370" cy="229" rx="157" ry="108" fill="#64748b" opacity="0.36" transform="rotate(144 370 229)"/>
+    <ellipse cx="433" cy="236" rx="72" ry="165" fill="#93c5fd" opacity="0.58" transform="rotate(78 433 236)"/>
+    <ellipse cx="369" cy="123" rx="116" ry="138" fill="#334155" opacity="0.63" transform="rotate(5 369 123)"/>
+    <ellipse cx="188" cy="181" rx="129" ry="140" fill="#64748b" opacity="0.46" transform="rotate(84 188 181)"/>
+    <ellipse cx="314" cy="166" rx="82" ry="117" fill="#93c5fd" opacity="0.38" transform="rotate(13 314 166)"/>
+    <path d="M-40 169 C 144 157, 336 131, 520 169" fill="none" stroke="#93c5fd" stroke-width="40" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 140 C 144 58, 336 119, 520 140" fill="none" stroke="#334155" stroke-width="24" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-office)" opacity="0.055"/>
+</svg>

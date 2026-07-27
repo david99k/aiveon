@@ -77,4 +77,101 @@ class StudioController
             ],
         ]);
     }
+
+    /**
+     * 수익 관리 : 적립 수익을 "포인트"로 보여주고, 사용은 제휴 스토어(외부)에서 한다.
+     * 출금/정산 계좌 개념 없음. 수익원은 광고 · 구독 분배 2가지.
+     */
+    public function revenue(): View
+    {
+        return view('studio.revenue', [
+            // 포인트 사용처(외부 제휴 스토어) — 실주소 확정 시 교체
+            'pointUrl' => '#',
+            'summary' => [
+                ['label' => '사용 가능 포인트', 'value' => '3,920,000', 'unit' => 'P', 'note' => '제휴 스토어에서 사용 가능', 'accent' => true],
+                ['label' => '이번 달 적립 수익', 'value' => '₩1,102,000', 'note' => '▲ 4.1% (지난달 대비)', 'dir' => 'up'],
+                ['label' => '총 누적 수익', 'value' => '₩10,650,000', 'note' => '2026.01 ~ 현재'],
+                ['label' => '이번 달 재생 수', 'value' => '128만', 'note' => '▲ 12.3%', 'dir' => 'up'],
+            ],
+            // 월별 추이 (단위 만원). height 는 최대값 대비 비율(%)
+            'trend' => [
+                ['month' => '2월', 'value' => 58, 'height' => 43],
+                ['month' => '3월', 'value' => 67, 'height' => 50],
+                ['month' => '4월', 'value' => 77, 'height' => 57],
+                ['month' => '5월', 'value' => 84, 'height' => 62],
+                ['month' => '6월', 'value' => 99, 'height' => 73],
+                ['month' => '7월', 'value' => 110, 'height' => 82, 'current' => true],
+            ],
+            'composition' => [
+                ['label' => '광고 수익', 'pct' => 67, 'color' => '#a78bfa'],
+                ['label' => '구독 분배', 'pct' => 33, 'color' => '#67e8c3'],
+            ],
+            'top' => [
+                'title' => '그 계절, 우리가 사랑한 시간',
+                'thumb' => 'images/main/poster_01.jpg',
+                'meta' => '₩360,000 · 재생 42만',
+            ],
+            // status : done(적립 완료) | wait(적립 예정)
+            'history' => [
+                ['month' => '2026.07', 'ad' => '742,000', 'sub' => '360,000', 'point' => '1,102,000 P', 'status' => 'wait', 'statusLabel' => '적립 예정'],
+                ['month' => '2026.06', 'ad' => '668,000', 'sub' => '324,000', 'point' => '992,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
+                ['month' => '2026.05', 'ad' => '552,000', 'sub' => '286,000', 'point' => '838,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
+                ['month' => '2026.04', 'ad' => '505,000', 'sub' => '264,000', 'point' => '769,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
+            ],
+            'point' => ['balance' => '3,920,000', 'desc' => 'AIVEON 제휴 스토어·서비스에서 바로 사용할 수 있어요. (1P = 1원)'],
+        ]);
+    }
+
+    /**
+     * 댓글 관리 : 내 콘텐츠에 달린 댓글 관리(답글·숨김·신고 처리).
+     * 탭(전체/답글 대기/신고됨/내가 남긴 댓글)은 정적 필터 데모.
+     */
+    public function comments(): View
+    {
+        return view('studio.comments', [
+            'summary' => [
+                ['label' => '전체 댓글', 'value' => '1,204'],
+                ['label' => '답글 대기', 'value' => '18'],
+                ['label' => '신고 접수', 'value' => '3', 'alert' => true],
+            ],
+            'tabs' => [
+                ['label' => '전체', 'count' => '1,204', 'active' => true],
+                ['label' => '답글 대기', 'count' => '18'],
+                ['label' => '신고됨', 'count' => '3'],
+                ['label' => '내가 남긴 댓글'],
+            ],
+            // type : reported(신고됨) | waiting(답글 대기) | replied(답글 완료)
+            'comments' => [
+                [
+                    'type' => 'reported',
+                    'user' => 'unknown_user',
+                    'avatar' => 'images/common/default_icon.png',
+                    'time' => '2시간 전',
+                    'flag' => '신고 2건 · 스팸/욕설',
+                    'text' => '△△△ 사이트에서 무료로 보세요 링크 → …',
+                    'on' => '마법 같은 우리의 모험',
+                    'url' => route('detail'),
+                ],
+                [
+                    'type' => 'waiting',
+                    'user' => 'bright_moon',
+                    'avatar' => 'images/common/avatar_user.jpg',
+                    'time' => '5시간 전',
+                    'text' => '3화 결말 진짜 최고였어요 ㅠㅠ 다음 편 언제 올라오나요? 매주 기다리고 있습니다!',
+                    'on' => '빛이 빛날 때',
+                    'url' => route('watch', 'drama'),
+                ],
+                [
+                    'type' => 'replied',
+                    'user' => 'pixel_kim',
+                    'avatar' => 'images/common/avatar_user.jpg',
+                    'time' => '어제',
+                    'text' => '작화 퀄리티가 미쳤네요. AI로 이 정도까지 가능하군요 👏',
+                    'on' => '아기 고양이의 모험',
+                    'url' => route('detail'),
+                    'reply' => ['user' => 'synergy_on', 'text' => '감사합니다! 다음 작품도 기대해 주세요 🙌'],
+                ],
+            ],
+        ]);
+    }
 }

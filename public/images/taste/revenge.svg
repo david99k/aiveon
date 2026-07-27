@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-revenge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a0a0c"/><stop offset="1" stop-color="#3a0f14"/>
+    </linearGradient>
+    <filter id="soft-revenge" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-revenge" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-revenge)"/>
+  <g filter="url(#soft-revenge)">
+    <ellipse cx="298" cy="90" rx="126" ry="87" fill="#e63946" opacity="0.45" transform="rotate(168 298 90)"/>
+    <ellipse cx="229" cy="97" rx="196" ry="71" fill="#ff8a76" opacity="0.30" transform="rotate(19 229 97)"/>
+    <ellipse cx="249" cy="284" rx="98" ry="140" fill="#6d1620" opacity="0.43" transform="rotate(179 249 284)"/>
+    <ellipse cx="158" cy="276" rx="119" ry="133" fill="#e63946" opacity="0.51" transform="rotate(173 158 276)"/>
+    <ellipse cx="166" cy="75" rx="150" ry="92" fill="#ff8a76" opacity="0.54" transform="rotate(178 166 75)"/>
+    <path d="M-40 115 C 144 107, 336 161, 520 115" fill="none" stroke="#ff8a76" stroke-width="22" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 133 C 144 303, 336 132, 520 133" fill="none" stroke="#6d1620" stroke-width="40" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-revenge)" opacity="0.055"/>
+</svg>

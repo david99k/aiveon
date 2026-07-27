@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-campus" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e2118"/><stop offset="1" stop-color="#173626"/>
+    </linearGradient>
+    <filter id="soft-campus" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-campus" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-campus)"/>
+  <g filter="url(#soft-campus)">
+    <ellipse cx="328" cy="65" rx="119" ry="157" fill="#4ade80" opacity="0.57" transform="rotate(84 328 65)"/>
+    <ellipse cx="189" cy="168" rx="107" ry="124" fill="#bef264" opacity="0.38" transform="rotate(115 189 168)"/>
+    <ellipse cx="155" cy="288" rx="141" ry="79" fill="#1f6b45" opacity="0.54" transform="rotate(66 155 288)"/>
+    <ellipse cx="45" cy="246" rx="197" ry="114" fill="#4ade80" opacity="0.47" transform="rotate(115 45 246)"/>
+    <ellipse cx="399" cy="120" rx="71" ry="140" fill="#bef264" opacity="0.37" transform="rotate(90 399 120)"/>
+    <path d="M-40 216 C 144 178, 336 203, 520 216" fill="none" stroke="#bef264" stroke-width="21" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 272 C 144 161, 336 132, 520 272" fill="none" stroke="#1f6b45" stroke-width="32" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-campus)" opacity="0.055"/>
+</svg>

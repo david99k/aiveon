@@ -22,7 +22,7 @@
             <section class="mypage-lib__section" aria-label="시청 기록">
                 <a href="#" class="mypage-lib__section-head">시청 기록 <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                 <div class="scroll-x mypage-lib__row" data-scroll-x tabindex="0" role="region" aria-label="시청 기록">
-                    @foreach ([['THE BETA','images/main/thumb_wide_beta.jpg','거스구스'],['궁의 어둠, 달의 노래','images/main/thumb_wide_palace.jpg','몽글스튜디오'],['알고리즘 러브','images/main/thumb_wide_algorithm.jpg','거스구스'],['아기 고양이의 모험','images/main/garo_img01.jpg','몽글스튜디오'],['한 소녀의 피클볼 도전기','images/main/garo_img02.jpg','거스구스']] as $h)
+                    @foreach ([['그 계절, 우리가 사랑한 시간','images/main/poster_01.jpg','거스구스'],['나의 알고리즘','images/main/poster_02.jpg','몽글스튜디오'],['밤이 우리를 부를 때','images/main/poster_03.jpg','거스구스'],['아기 고양이의 모험','images/main/poster_05.jpg','몽글스튜디오'],['한 소녀의 피클볼 도전기','images/main/poster_06.jpg','거스구스']] as $h)
                         <a href="{{ route('detail') }}" class="mypage-lib__card">
                             <div class="mypage-lib__thumb"><img src="{{ asset($h[1]) }}" alt="" loading="lazy"></div>
                             <p class="mypage-lib__card-title">{{ $h[0] }}</p>
@@ -33,12 +33,13 @@
             </section>
 
             <nav class="mypage-lib__menu" aria-label="마이페이지 메뉴">
-                <a href="{{ route('mypage') }}"><img src="{{ asset('images/mypage/ic_setting.svg') }}" alt="">회원정보 변경</a>
-                <a href="{{ route('favorites') }}"><img src="{{ asset('images/mypage/ic_favorite.svg') }}" alt="">즐겨찾기</a>
-                <a href="{{ route('studio') }}"><img src="{{ asset('images/mypage/ic_creator.svg') }}" alt="">크리에이터 스튜디오</a>
-                <a href="{{ route('faq') }}"><img src="{{ asset('images/mypage/ic_faq.svg') }}" alt="">고객센터</a>
-                <a href="#"><img src="{{ asset('images/mypage/ic_notice.svg') }}" alt="">공지사항</a>
-                <a href="#"><img src="{{ asset('images/mypage/ic_event.svg') }}" alt="">이벤트</a>
+                <a href="{{ route('mypage') }}"><span class="mypage-lib__menu-icon icon-setting" aria-hidden="true"></span>회원정보 변경</a>
+                <a href="{{ route('favorites') }}"><span class="mypage-lib__menu-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                <a href="{{ route('studio') }}"><span class="mypage-lib__menu-icon icon-creator" aria-hidden="true"></span>크리에이터 스튜디오</a>
+                <a href="{{ route('faq') }}"><span class="mypage-lib__menu-icon icon-faq" aria-hidden="true"></span>고객센터</a>
+                <a href="{{ route('notice') }}"><span class="mypage-lib__menu-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                <a href="{{ route('event') }}"><span class="mypage-lib__menu-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                <a href="{{ route('ai-tools') }}"><span class="mypage-lib__menu-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
             </nav>
         </div>
 

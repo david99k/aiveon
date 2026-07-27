@@ -324,6 +324,8 @@ class MainController
         return [
             'title' => $title,
             'creator' => '크리에이터',
+            // 카드 메타 앞 크리에이터 프로필 이미지 (포스터 번호 기준으로 고르게 배분)
+            'creator_avatar' => 'images/main/creator_profile_0' . (((int) filter_var($img, FILTER_SANITIZE_NUMBER_INT) % 7) ?: 7) . '.jpg',
             'views' => '12만',
             'thumb' => 'images/main/' . $img . '.jpg',
             'is_premium' => $premium,
@@ -369,7 +371,7 @@ class MainController
             'name' => $name,
             'subscribers' => '99.2만',
             'avatar' => $avatar,
-            'url' => '#',
+            'url' => route('channel'),   // 크리에이터 공개 채널 페이지
         ];
     }
 }

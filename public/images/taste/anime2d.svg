@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <defs>
+    <linearGradient id="bg-anime2d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101a2e"/><stop offset="1" stop-color="#1c2c4a"/>
+    </linearGradient>
+    <filter id="soft-anime2d" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain-anime2d" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg-anime2d)"/>
+  <g filter="url(#soft-anime2d)">
+    <ellipse cx="384" cy="204" rx="142" ry="56" fill="#93c5fd" opacity="0.38" transform="rotate(83 384 204)"/>
+    <ellipse cx="189" cy="172" rx="120" ry="152" fill="#f9a8d4" opacity="0.36" transform="rotate(16 189 172)"/>
+    <ellipse cx="403" cy="69" rx="89" ry="152" fill="#3b5f9e" opacity="0.46" transform="rotate(131 403 69)"/>
+    <ellipse cx="239" cy="163" rx="81" ry="153" fill="#93c5fd" opacity="0.31" transform="rotate(27 239 163)"/>
+    <ellipse cx="248" cy="156" rx="91" ry="160" fill="#f9a8d4" opacity="0.59" transform="rotate(153 248 156)"/>
+    <path d="M-40 84 C 144 306, 336 127, 520 84" fill="none" stroke="#f9a8d4" stroke-width="30" opacity="0.22" stroke-linecap="round"/>
+    <path d="M-40 126 C 144 96, 336 143, 520 126" fill="none" stroke="#3b5f9e" stroke-width="27" opacity="0.22" stroke-linecap="round"/>
+  </g>
+  <rect width="480" height="360" filter="url(#grain-anime2d)" opacity="0.055"/>
+</svg>

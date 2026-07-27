@@ -1469,6 +1469,420 @@
     }
 
     /*
+     * 마이페이지 하위 페이지(스튜디오·즐겨찾기·고객센터·문의 등)의 "전단계로 가기" 버튼.
+     * 모바일에선 상단 사이드바 메뉴를 숨기고(CSS) 이 버튼만 노출한다(표시 제어는 CSS ≤767).
+     * 라이브러리(마이페이지 홈, .mypage--library)는 제외 — 그 자체가 메뉴 허브이므로.
+     * authbar/독바와 동일하게 JS 주입 → 블레이드·프리뷰 모두 자동 적용.
+     */
+    /*
+     * AI 툴 도감(목록·상세)의 로고 채우기.
+     * 마크업은 <span data-ai-logo="Runway"></span> 형태로만 두고, 실제 로고는 여기서 주입한다.
+     * (업로드 팝업과 동일한 AI_TOOL_LOGOS 사용 — 로고 미확보 툴은 첫 글자 모노그램)
+     */
+    function initAiToolLogos() {
+        var slots = document.querySelectorAll('[data-ai-logo]');
+        if (!slots.length) { return; }
+        Array.prototype.forEach.call(slots, function (el) {
+            var name = el.getAttribute('data-ai-logo') || '';
+            var logo = AI_TOOL_LOGOS[name];
+            if (logo) {
+                el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + logo.p + '" fill="' + logo.c + '"/></svg>';
+                return;
+            }
+            var m = name.replace(/[^0-9A-Za-z가-힣]/g, '');
+            var h = 0;
+            for (var i = 0; i < name.length; i++) { h = (h * 31 + name.charCodeAt(i)) % 360; }
+            el.classList.add('is-mono');
+            el.textContent = (m.charAt(0) || '?').toUpperCase();
+            el.style.color = 'hsl(' + h + ', 62%, 42%)';
+        });
+    }
+
+    /*
+     * 크리에이터 스튜디오 > 댓글 관리 동작 (데모).
+     * 숨기기 / 삭제 / 신고 무시 / 작성자 차단 / 답글 달기 / 하트 를 이벤트 위임으로 처리하고,
+     * 처리 결과는 실행취소 바 + 상단 요약/탭 카운트에 즉시 반영한다.
+     * 실서비스에서는 각 분기에서 API 호출 후 응답으로 상태를 갱신하면 된다.
+     */
+    function initStudioComments() {
+        var list = document.querySelector('.js-cmt-list');
+        if (!list) { return; }
+
+        // 상단 요약 카드 · 탭 카운트 동기화 (전체 / 답글 대기 / 신고 접수)
+        function counts() {
+            var live = list.querySelectorAll('.cmt:not(.is-removed)');
+            var waiting = 0, reported = 0;
+            Array.prototype.forEach.call(live, function (c) {
+                if (c.classList.contains('is-hidden')) { return; }
+                if (c.getAttribute('data-type') === 'waiting') { waiting++; }
+                if (c.classList.contains('cmt--reported')) { reported++; }
+            });
+            return { total: live.length, waiting: waiting, reported: reported };
+        }
+        // 데모 기준값 (표시 숫자는 큰 값이므로 증감분만 반영한다)
+        var baseline = counts();
+        var baseText = [];
+        Array.prototype.forEach.call(document.querySelectorAll('.cmt-sum__value'), function (el) {
+            baseText.push(parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0);
+        });
+        function syncCounts() {
+            var now = counts();
+            var deltas = [now.total - baseline.total, now.waiting - baseline.waiting, now.reported - baseline.reported];
+            var cards = document.querySelectorAll('.cmt-sum__value');
+            var tabs = document.querySelectorAll('.cmt-tab__count');
+            [0, 1, 2].forEach(function (i) {
+                var v = Math.max(0, baseText[i] + deltas[i]);
+                if (cards[i]) { cards[i].textContent = v.toLocaleString(); }
+                if (tabs[i]) { tabs[i].textContent = v.toLocaleString(); }
+            });
+        }
+
+        // 처리 결과 안내 + 실행취소
+        function notice(cmt, message, undo) {
+            var old = cmt.querySelector('.cmt__notice');
+            if (old) { old.remove(); }
+            var bar = document.createElement('div');
+            bar.className = 'cmt__notice';
+            var txt = document.createElement('span');
+            txt.textContent = message;
+            bar.appendChild(txt);
+            if (undo) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'cmt__undo';
+                btn.textContent = '실행취소';
+                btn.addEventListener('click', function () { undo(); bar.remove(); syncCounts(); });
+                bar.appendChild(btn);
+            }
+            // .cmt 는 flex(아바타+본문) 라 직접 붙이면 본문이 짓눌린다 → 본문 안쪽에 붙인다
+            (cmt.querySelector('.cmt__body') || cmt).appendChild(bar);
+            syncCounts();
+        }
+
+        // 답글 폼 (하나만 열림)
+        function openReplyForm(cmt) {
+            var exist = cmt.querySelector('.cmt-reply-box');
+            if (exist) { exist.remove(); return; }
+            Array.prototype.forEach.call(list.querySelectorAll('.cmt-reply-box'), function (b) { b.remove(); });
+
+            var box = document.createElement('div');
+            box.className = 'cmt-reply-box';
+            var ta = document.createElement('textarea');
+            ta.className = 'cmt-reply-box__input';
+            ta.placeholder = '답글을 입력하세요';
+            ta.rows = 2;
+            var acts = document.createElement('div');
+            acts.className = 'cmt-reply-box__actions';
+            var cancel = document.createElement('button');
+            cancel.type = 'button';
+            cancel.className = 'cmt-act';
+            cancel.textContent = '취소';
+            cancel.addEventListener('click', function () { box.remove(); });
+            var submit = document.createElement('button');
+            submit.type = 'button';
+            submit.className = 'cmt-act cmt-act--primary';
+            submit.textContent = '답글 등록';
+            submit.addEventListener('click', function () {
+                var text = ta.value.trim();
+                if (!text) { ta.focus(); return; }
+                var reply = document.createElement('div');
+                reply.className = 'cmt__reply';
+                var head = document.createElement('div');
+                head.className = 'cmt__head';
+                head.innerHTML = '<strong class="cmt__user cmt__user--me">synergy_on</strong><span class="cmt__time">· 작성자</span>';
+                var p = document.createElement('p');
+                p.className = 'cmt__text';
+                p.textContent = text;   // textContent 로 넣어 XSS 방지
+                reply.appendChild(head);
+                reply.appendChild(p);
+                box.replaceWith(reply);
+                cmt.setAttribute('data-type', 'replied');   // 답글 대기 → 답글 완료
+                var replyBtn = cmt.querySelector('[data-cmt-act="reply"]');
+                if (replyBtn) { replyBtn.textContent = '답글 추가'; }
+                syncCounts();
+            });
+            acts.appendChild(cancel);
+            acts.appendChild(submit);
+            box.appendChild(ta);
+            box.appendChild(acts);
+
+            var body = cmt.querySelector('.cmt__body');
+            body.appendChild(box);
+            ta.focus();
+        }
+
+        list.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-cmt-act]');
+            if (!btn) { return; }
+            var cmt = btn.closest('.cmt');
+            if (!cmt) { return; }
+            var act = btn.getAttribute('data-cmt-act');
+
+            if (act === 'hide') {
+                var wasHidden = cmt.classList.toggle('is-hidden');
+                if (wasHidden) {
+                    notice(cmt, '이 댓글을 숨겼습니다. 작성자에게는 계속 보입니다.', function () { cmt.classList.remove('is-hidden'); });
+                } else {
+                    var n = cmt.querySelector('.cmt__notice');
+                    if (n) { n.remove(); }
+                    syncCounts();
+                }
+                return;
+            }
+
+            if (act === 'delete' || act === 'block') {
+                cmt.classList.add('is-removed');
+                notice(cmt, act === 'delete' ? '댓글을 삭제했습니다.' : '작성자를 차단하고 댓글을 삭제했습니다.', function () {
+                    cmt.classList.remove('is-removed');
+                });
+                return;
+            }
+
+            if (act === 'dismiss') {
+                cmt.classList.remove('cmt--reported');
+                var flag = cmt.querySelector('.cmt__flag');
+                if (flag) { flag.hidden = true; }
+                cmt.setAttribute('data-type', 'waiting');
+                btn.closest('.cmt__actions').remove();
+                notice(cmt, '신고를 무시했습니다. 댓글이 정상 노출됩니다.', null);
+                return;
+            }
+
+            if (act === 'reply') { openReplyForm(cmt); return; }
+
+            if (act === 'heart') {
+                var on = btn.classList.toggle('is-on');
+                btn.setAttribute('aria-pressed', String(on));
+                return;
+            }
+        });
+
+        // 탭 : 활성 표시 + 목록 필터 (전체 / 답글 대기 / 신고됨 / 내가 남긴 댓글)
+        var tabs = document.querySelectorAll('.cmt-tab');
+        Array.prototype.forEach.call(tabs, function (tab, idx) {
+            tab.addEventListener('click', function () {
+                Array.prototype.forEach.call(tabs, function (t) {
+                    t.classList.remove('is-active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('is-active');
+                tab.setAttribute('aria-selected', 'true');
+
+                var mode = ['all', 'waiting', 'reported', 'mine'][idx];
+                Array.prototype.forEach.call(list.querySelectorAll('.cmt'), function (c) {
+                    var type = c.getAttribute('data-type');
+                    var show = mode === 'all'
+                        || (mode === 'waiting' && type === 'waiting')
+                        || (mode === 'reported' && c.classList.contains('cmt--reported'))
+                        || (mode === 'mine' && !!c.querySelector('.cmt__reply'));
+                    c.hidden = !show;
+                });
+            });
+        });
+    }
+
+    /*
+     * 콘텐츠 이용 게이트 (성인인증 · 프리미엄 구독).
+     *   - 성인 19+ : 인증 전에는 GNB 메뉴 클릭 차단 + 인증 안내 모달. 인증 후 정상 진입.
+     *   - 프리미엄 : 미구독 상태에서 프리미엄 전용 영상 재생 시 구독 유도 오버레이.
+     * 상태는 body 클래스(is-adult / is-premium)로 판별하며, 데모 토글(gnb__demo-group)과 연동된다.
+     * 실서비스에서는 서버 인증 결과로 body 클래스를 내려주면 그대로 동작한다.
+     */
+    function initContentGates() {
+        var isPreview = /\.html$/.test(location.pathname);
+        var adultUrl = isPreview ? 'preview-category-adult.html' : '/category/adult';
+
+        /* --- 성인 19+ 게이트 --- */
+        var adultLinks = Array.prototype.filter.call(
+            document.querySelectorAll('a[href]'),
+            function (a) {
+                var t = (a.textContent || '').replace(/\s/g, '');
+                return t.indexOf('성인19') === 0 || /category\/adult|preview-category-adult\.html/.test(a.getAttribute('href') || '');
+            }
+        );
+
+        function adultVerified() { return document.body.classList.contains('is-adult'); }
+
+        // 인증 전에는 잠금 표시 (CSS 가 자물쇠 아이콘 노출)
+        adultLinks.forEach(function (a) { a.classList.add('is-adult-gate'); });
+
+        function openAdultModal() {
+            var modal = document.getElementById('modal-adult');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.className = 'modal js-adult-modal';
+                modal.id = 'modal-adult';
+                modal.setAttribute('role', 'dialog');
+                modal.setAttribute('aria-modal', 'true');
+                modal.innerHTML =
+                    '<div class="modal__box modal__box--gate">' +
+                        '<div class="modal__head"><h2 class="modal__title">성인 인증이 필요합니다</h2>' +
+                        '<button type="button" class="modal__close js-gate-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>' +
+                        '<div class="gate">' +
+                            '<span class="gate__badge">19+</span>' +
+                            '<p class="gate__desc">성인 19+ 콘텐츠는 <b>본인인증을 통한 성인 확인</b> 후 이용할 수 있습니다.<br>인증 후 바로 시청하실 수 있어요.</p>' +
+                            '<ul class="gate__notes"><li>만 19세 미만은 이용할 수 없습니다.</li><li>인증 정보는 본인 확인 용도로만 사용됩니다.</li></ul>' +
+                        '</div>' +
+                        '<div class="modal__actions">' +
+                            '<button type="button" class="btn btn--ghost js-gate-close">취소</button>' +
+                            '<button type="button" class="btn btn--primary js-gate-verify">성인 인증하기</button>' +
+                        '</div>' +
+                    '</div>';
+                document.body.appendChild(modal);
+
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal || e.target.closest('.js-gate-close')) { closeGate(modal); }
+                    if (e.target.closest('.js-gate-verify')) {
+                        // 데모 : 인증 완료 처리 후 성인 19+ 페이지로 이동 (실서비스는 본인인증 모듈 연동 지점)
+                        try { localStorage.setItem('aiveon-demo-adult', '1'); } catch (err) {}
+                        document.body.classList.add('is-adult');
+                        closeGate(modal);
+                        location.href = adultUrl;
+                    }
+                });
+            }
+            modal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeGate(m) { m.classList.remove('is-open'); document.body.style.overflow = ''; }
+
+        adultLinks.forEach(function (a) {
+            a.addEventListener('click', function (e) {
+                if (adultVerified()) { return; }   // 인증 완료 → 정상 이동
+                e.preventDefault();
+                e.stopPropagation();
+                openAdultModal();
+            });
+        });
+
+        // 인증 전 직접 URL 진입 차단 (성인 카테고리 페이지)
+        var isAdultPage = /category\/adult|preview-category-adult\.html/.test(location.pathname + location.search);
+        if (isAdultPage && !adultVerified()) {
+            var main = document.querySelector('.content') || document.body;
+            main.innerHTML = '<section class="gate-page">'
+                + '<span class="gate__badge">19+</span>'
+                + '<h1 class="gate-page__title">성인 인증이 필요합니다</h1>'
+                + '<p class="gate-page__desc">성인 19+ 콘텐츠는 본인인증을 통한 성인 확인 후 이용할 수 있습니다.</p>'
+                + '<button type="button" class="btn btn--primary js-gate-verify-page">성인 인증하기</button>'
+                + '</section>';
+            var vp = main.querySelector('.js-gate-verify-page');
+            if (vp) {
+                vp.addEventListener('click', function () {
+                    try { localStorage.setItem('aiveon-demo-adult', '1'); } catch (err) {}
+                    document.body.classList.add('is-adult');
+                    location.reload();
+                });
+            }
+        }
+
+        /* --- 프리미엄 구독 게이트 (프리미엄 전용 영상 재생 시) --- */
+        var premiumHost = document.querySelector('[data-premium="1"] .watch__player, [data-premium="1"] .player__stage');
+        if (premiumHost && !document.body.classList.contains('is-premium')) {
+            var video = premiumHost.querySelector('video');
+            if (video) { video.pause(); video.removeAttribute('autoplay'); }
+
+            var wall = document.createElement('div');
+            wall.className = 'paywall';
+            wall.innerHTML =
+                '<div class="paywall__inner">' +
+                    '<p class="paywall__title">이 콘텐츠는 <b>프리미엄 전용</b>입니다. 구독 후 시청하실 수 있습니다.</p>' +
+                    '<a href="#" class="paywall__cta">프리미엄 구독하러 가기</a>' +
+                    '<ul class="paywall__benefits">' +
+                        '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>최신 콘텐츠 먼저보기</li>' +
+                        '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 10v4M7.5 12h2.6M10.1 10v4M13.4 10v4h1.8a1.6 1.6 0 0 0 1.6-1.6v-.8a1.6 1.6 0 0 0-1.6-1.6h-1.8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1080P (Full HD)</li>' +
+                        '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="5" width="13" height="10" rx="1.8" stroke="currentColor" stroke-width="1.6"/><rect x="16.5" y="9" width="5" height="10" rx="1.4" stroke="currentColor" stroke-width="1.6"/><path d="M6 18h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>여러 기기에서 시청</li>' +
+                        '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="m20 20-3.4-3.4M8.6 13l2.4-5 2.4 5M9.4 11.4h3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>광고 건너뛰기</li>' +
+                    '</ul>' +
+                '</div>';
+            premiumHost.appendChild(wall);
+
+            // 데모 : 구독하러 가기 → 구독 상태로 전환하고 재생 가능하게
+            wall.querySelector('.paywall__cta').addEventListener('click', function (e) {
+                e.preventDefault();
+                try { localStorage.setItem('aiveon-demo-premium', '1'); } catch (err) {}
+                document.body.classList.add('is-premium');
+                wall.remove();
+            });
+        }
+    }
+
+    /*
+     * 포스터 카드 메타의 크리에이터 프로필 이미지 클릭 → 크리에이터 채널로 이동.
+     * 카드 전체가 이미 영상 링크(<a>)라 아바타를 <a>로 중첩할 수 없으므로,
+     * 이벤트 위임으로 카드 링크를 막고 채널로 보낸다.
+     */
+    function initCreatorAvatarLinks() {
+        var avatars = document.querySelectorAll('.poster-card__avatar');
+        if (!avatars.length) { return; }
+        var url = /\.html$/.test(location.pathname) ? 'preview-channel.html' : '/channel';
+
+        Array.prototype.forEach.call(avatars, function (img) {
+            img.classList.add('is-linked');
+            img.setAttribute('title', '크리에이터 채널로 이동');
+            img.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                location.href = url;
+            });
+        });
+    }
+
+    /*
+     * 가입 직후 온보딩 - 취향(장르) 선택.
+     * 선택 개수를 하단 바에 실시간 반영하고, 최소 개수를 채워야 "시작하기"가 활성화된다.
+     */
+    function initTastePicker() {
+        var form = document.querySelector('.js-taste-form');
+        if (!form) { return; }
+
+        var MIN = 3;
+        var checks = form.querySelectorAll('.js-taste-check');
+        var countEl = document.querySelector('.js-taste-count');
+        var hintEl = document.querySelector('.js-taste-hint');
+        var submit = document.querySelector('.js-taste-submit');
+
+        function sync() {
+            var n = form.querySelectorAll('.js-taste-check:checked').length;
+            if (countEl) { countEl.textContent = n; }
+            if (submit) { submit.disabled = n < MIN; }
+            if (hintEl) {
+                hintEl.textContent = n < MIN ? ('· ' + (MIN - n) + '개 더 선택해주세요') : '· 준비 완료!';
+                hintEl.classList.toggle('is-ready', n >= MIN);
+            }
+        }
+
+        Array.prototype.forEach.call(checks, function (c) {
+            c.addEventListener('change', sync);
+        });
+        sync();
+    }
+
+    /* 채널 구독 버튼 (데모 : 구독 ↔ 구독중 토글) */
+    function initChannelSubscribe() {
+        var btn = document.querySelector('.js-channel-subscribe');
+        if (!btn) { return; }
+        btn.addEventListener('click', function () {
+            var on = btn.classList.toggle('is-subscribed');
+            btn.textContent = on ? '구독중' : '구독';
+        });
+    }
+
+    function initMypageBack() {
+        var content = document.querySelector('.mypage:not(.mypage--library) .mypage__content');
+        if (!content || content.querySelector('.mypage-back')) { return; }
+        var back = document.createElement('button');
+        back.type = 'button';
+        back.className = 'mypage-back';
+        back.setAttribute('aria-label', '전단계로 가기');   // 아이콘 전용 버튼 — 라벨은 보조기술용
+        back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        back.addEventListener('click', function () {
+            if (window.history.length > 1) { window.history.back(); }
+            else { location.href = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage'; }
+        });
+        content.insertBefore(back, content.firstChild);
+    }
+
+    /*
      * 모바일 하단 고정 독바 (홈·검색·업로드·즐겨찾기·마이페이지).
      * 기존 authbar/usermenu 와 동일하게 JS 주입 → 모든 페이지(프리뷰·블레이드)에 자동 적용.
      * 푸터 없는 몰입 화면(플레이어·시청·로그인)엔 표시하지 않는다(.footer 존재 여부로 판별).
@@ -1551,6 +1965,31 @@
      * 진입 시 종류 선택 → 파일 업로드 모달 → 상세 폼 → 영상 등록하기 → 주의사항 확인.
      * 공용 .modal 오버레이(.is-open)를 열고 닫는다.
      */
+    /* 실제 브랜드 로고 (simple-icons, CC0). 없는 툴은 아래 모노그램으로 폴백한다. */
+    var AI_TOOL_LOGOS = {
+        'ChatGPT Plus/Pro': { p: 'M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z', c: '#412991' },
+        'Claude Pro': { p: 'm4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z', c: '#D97757' },
+        'Gemini Advanced': { p: 'M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81', c: '#8E75B2' },
+        'Notion AI': { p: 'M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z', c: '#000000' },
+        'Flux API': { p: 'M11.402 23.747c.154.075.306.154.454.238.181.038.37.004.525-.097l.386-.251c-1.242-.831-2.622-1.251-3.998-1.602l2.633 1.712Zm-7.495-5.783a8.088 8.088 0 0 1-.222-.236.696.696 0 0 0 .112 1.075l2.304 1.498c1.019.422 2.085.686 3.134.944 1.636.403 3.2.79 4.554 1.728l.697-.453c-1.541-1.158-3.327-1.602-5.065-2.03-2.039-.503-3.965-.977-5.514-2.526Zm1.414-1.322-.665.432c.023.024.044.049.068.073 1.702 1.702 3.825 2.225 5.877 2.731 1.778.438 3.469.856 4.9 1.982l.682-.444c-1.612-1.357-3.532-1.834-5.395-2.293-2.019-.497-3.926-.969-5.467-2.481Zm7.502 2.084c1.596.412 3.096.904 4.367 2.036l.67-.436c-1.484-1.396-3.266-1.953-5.037-2.403v.803Zm.698-2.337a64.695 64.695 0 0 1-.698-.174v.802l.512.127c2.039.503 3.965.978 5.514 2.526l.007.009.663-.431c-.041-.042-.079-.086-.121-.128-1.702-1.701-3.824-2.225-5.877-2.731Zm-.698-1.928v.816c.624.19 1.255.347 1.879.501 2.039.502 3.965.977 5.513 2.526.077.077.153.157.226.239a.704.704 0 0 0-.238-.911l-3.064-1.992c-.744-.245-1.502-.433-2.251-.618a31.436 31.436 0 0 1-2.065-.561Zm-1.646 3.049c-1.526-.4-2.96-.888-4.185-1.955l-.674.439c1.439 1.326 3.151 1.88 4.859 2.319v-.803Zm0-1.772a8.543 8.543 0 0 1-2.492-1.283l-.686.446c.975.804 2.061 1.293 3.178 1.655v-.818Zm0-1.946a7.59 7.59 0 0 1-.776-.453l-.701.456c.462.337.957.627 1.477.865v-.868Zm3.533.269-1.887-1.226v.581c.614.257 1.244.473 1.887.645Zm5.493-8.863L12.381.112a.705.705 0 0 0-.762 0L3.797 5.198a.698.698 0 0 0 0 1.171l7.38 4.797V7.678a.414.414 0 0 0-.412-.412h-.543a.413.413 0 0 1-.356-.617l1.777-3.079a.412.412 0 0 1 .714 0l1.777 3.079a.413.413 0 0 1-.356.617h-.543a.414.414 0 0 0-.412.412v3.488l7.38-4.797a.7.7 0 0 0 0-1.171Z', c: '#5468FF' },
+        'DALL·E': { p: 'M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z', c: '#412991' },
+        'Adobe Firefly': { p: 'M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.884L24 22.624Z', c: '#FF0000' },
+        'Photoshop': { p: 'M9.85 8.42c-.37-.15-.77-.21-1.18-.2-.26 0-.49 0-.68.01-.2-.01-.34 0-.41.01v3.36c.14.01.27.02.39.02h.53c.39 0 .78-.06 1.15-.18.32-.09.6-.28.82-.53.21-.25.31-.59.31-1.03.01-.31-.07-.62-.23-.89-.17-.26-.41-.46-.7-.57zM19.75.3H4.25C1.9.3 0 2.2 0 4.55v14.899c0 2.35 1.9 4.25 4.25 4.25h15.5c2.35 0 4.25-1.9 4.25-4.25V4.55C24 2.2 22.1.3 19.75.3zm-7.391 11.65c-.399.56-.959.98-1.609 1.22-.68.25-1.43.34-2.25.34-.24 0-.4 0-.5-.01s-.24-.01-.43-.01v3.209c.01.07-.04.131-.11.141H5.52c-.08 0-.12-.041-.12-.131V6.42c0-.07.03-.11.1-.11.17 0 .33 0 .56-.01.24-.01.49-.01.76-.02s.56-.01.87-.02c.31-.01.61-.01.91-.01.82 0 1.5.1 2.06.31.5.17.96.45 1.34.82.32.32.57.71.73 1.14.149.42.229.85.229 1.3.001.86-.199 1.57-.6 2.13zm7.091 3.89c-.28.4-.671.709-1.12.891-.49.209-1.09.318-1.811.318-.459 0-.91-.039-1.359-.129-.35-.061-.7-.17-1.02-.32-.07-.039-.121-.109-.111-.189v-1.74c0-.029.011-.07.041-.09.029-.02.06-.01.09.01.39.23.8.391 1.24.49.379.1.779.15 1.18.15.38 0 .65-.051.83-.141.16-.07.27-.24.27-.42 0-.141-.08-.27-.24-.4-.16-.129-.489-.279-.979-.471-.51-.18-.979-.42-1.42-.719-.31-.221-.569-.51-.761-.85-.159-.32-.239-.67-.229-1.021 0-.43.12-.84.341-1.21.25-.4.619-.72 1.049-.92.469-.239 1.059-.349 1.769-.349.41 0 .83.03 1.24.09.3.04.59.12.86.23.039.01.08.05.1.09.01.04.02.08.02.12v1.63c0 .04-.02.08-.05.1-.09.02-.14.02-.18 0-.3-.16-.62-.27-.96-.34-.37-.08-.74-.13-1.12-.13-.2-.01-.41.02-.601.07-.129.03-.24.1-.31.2-.05.08-.08.18-.08.27s.04.18.101.26c.09.11.209.2.34.27.229.12.47.23.709.33.541.18 1.061.43 1.541.73.33.209.6.49.789.83.16.318.24.67.23 1.029.011.471-.129.94-.389 1.331z', c: '#31A8FF' },
+        'Veo': { p: 'M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81', c: '#8E75B2' },
+        'ElevenLabs': { p: 'M4.6035 0v24h4.9317V0zm9.8613 0v24h4.9317V0z', c: '#000000' },
+        'Google TTS': { p: 'M12.19 2.38a9.344 9.344 0 0 0-9.234 6.893c.053-.02-.055.013 0 0-3.875 2.551-3.922 8.11-.247 10.941l.006-.007-.007.03a6.717 6.717 0 0 0 4.077 1.356h5.173l.03.03h5.192c6.687.053 9.376-8.605 3.835-12.35a9.365 9.365 0 0 0-2.821-4.552l-.043.043.006-.05A9.344 9.344 0 0 0 12.19 2.38zm-.358 4.146c1.244-.04 2.518.368 3.486 1.15a5.186 5.186 0 0 1 1.862 4.078v.518c3.53-.07 3.53 5.262 0 5.193h-5.193l-.008.009v-.04H6.785a2.59 2.59 0 0 1-1.067-.23h.001a2.597 2.597 0 1 1 3.437-3.437l3.013-3.012A6.747 6.747 0 0 0 8.11 8.24c.018-.01.04-.026.054-.023a5.186 5.186 0 0 1 3.67-1.69z', c: '#4285F4' },
+        'Suno': { p: 'M16.5 0C20.642 0 24 5.373 24 12h-9c0 6.627-3.358 12-7.5 12C3.358 24 0 18.627 0 12h9c0-6.627 3.358-12 7.5-12Z', c: '#000000' },
+        'ElevenLabs SFX': { p: 'M4.6035 0v24h4.9317V0zm9.8613 0v24h4.9317V0z', c: '#000000' },
+        'Premiere Pro': { p: 'M10.15 8.42a2.93 2.93 0 00-1.18-.2 13.9 13.9 0 00-1.09.02v3.36l.39.02h.53c.39 0 .78-.06 1.15-.18.32-.09.6-.28.82-.53.21-.25.31-.59.31-1.03a1.45 1.45 0 00-.93-1.46zM19.75.3H4.25A4.25 4.25 0 000 4.55v14.9c0 2.35 1.9 4.25 4.25 4.25h15.5c2.35 0 4.25-1.9 4.25-4.25V4.55C24 2.2 22.1.3 19.75.3zm-7.09 11.65c-.4.56-.96.98-1.61 1.22-.68.25-1.43.34-2.25.34l-.5-.01-.43-.01v3.21a.12.12 0 01-.11.14H5.82c-.08 0-.12-.04-.12-.13V6.42c0-.07.03-.11.1-.11l.56-.01.76-.02.87-.02.91-.01c.82 0 1.5.1 2.06.31.5.17.96.45 1.34.82.32.32.57.71.73 1.14.15.42.23.85.23 1.3 0 .86-.2 1.57-.6 2.13zm6.82-3.15v1.95c0 .08-.05.11-.16.11a4.35 4.35 0 00-1.92.37c-.19.09-.37.21-.51.37v5.1c0 .1-.04.14-.13.14h-1.97a.14.14 0 01-.16-.12v-5.58l-.01-.75-.02-.78c0-.23-.02-.45-.04-.68a.1.1 0 01.07-.11h1.78c.1 0 .18.07.2.16a3.03 3.03 0 01.13.92c.3-.35.67-.64 1.08-.86a3.1 3.1 0 011.52-.39c.07-.01.13.04.14.11v.04z', c: '#9999FF' },
+        'DaVinci Resolve Studio': { p: 'M17.621 0 5.977.004c-1.37 0-2.756.345-3.762 1.11a4.925 4.925 0 0 0-1.61 2.003C.233 3.93 0 5.02 0 5.951l.012 12.2c.002 1.604.479 3.057 1.461 4.112.984 1.056 2.462 1.683 4.331 1.691L16.856 24c1.26.005 3.095-.036 4.303-.714 1.075-.605 2.025-1.556 2.497-2.984.278-.84.345-2.084.344-3.147l-.021-11.13c-.002-.888-.15-2.023-.547-2.934-.425-.976-1.181-1.815-2.322-2.425C20.353.26 19.123 0 17.622 0zm0 .93c1.378 0 2.538.295 3.04.565.977.523 1.544 1.166 1.889 1.96.315.721.47 1.793.473 2.572l.018 11.13c.002 1.013-.097 2.257-.298 2.86-.396 1.202-1.146 1.946-2.063 2.462-.814.457-2.612.593-3.82.588l-11.05-.044c-1.657-.007-2.832-.534-3.626-1.386-.792-.851-1.212-2.06-1.212-3.485L.999 5.95c0-.829.196-1.827.474-2.437.345-.757.75-1.207 1.365-1.674C3.585 1.27 4.868.97 6.08.97zm-5.66 3.423c-1.976.089-3.204 1.658-3.214 3.29.019 1.443 1.635 3.481 2.884 4.53.12.099.154.109.33.18.062.025.198-.047.327-.135.36-.245.993-.947 1.648-1.738a7.67 7.67 0 0 0 1.031-1.683c.409-.89.261-1.599.235-1.888a3.983 3.983 0 0 0-.99-1.692 3.36 3.36 0 0 0-2.251-.864zm4.172 7.922a10.185 10.185 0 0 0-3.244.61c-.15.058-.26.1-.374.17-.057.036-.11.135-.105.292.017.433.29 1.278.624 2.27.384 1.135 1.066 2.27 1.844 2.74a3.23 3.23 0 0 0 2.53.342c.832-.243 1.595-.868 1.962-1.546.986-1.818.19-3.548-1.121-4.417-.447-.296-1.133-.445-1.89-.46-.074 0-.15-.002-.226-.001zm-8.432.038a6.201 6.201 0 0 0-.752.047c-.596.078-.932.273-1.29.51a3.177 3.177 0 0 0-1.365 1.979c-.075.552-.086 1.053.033 1.507.433 1.389 1.326 2.222 2.847 2.452.636.028 1.37-.063 1.99-.45 1.269-.782 2.08-3.17 2.412-4.742.053-.176.035-.357-.013-.42-.005-.067-.044-.113-.19-.183-.398-.192-1.32-.417-2.375-.6a7.68 7.68 0 0 0-1.297-.1z', c: '#233A51' },
+        'Filmora': { p: 'M16.216 17.814 7.704 9.368l.02-.02c.391.239.91.19 1.249-.147l3.041-3.016 7.241 7.184c.397.394.402 1.029.005 1.426l-3.044 3.019Zm-5.253-3.017-3.03 3.017L0 9.915l3.746-3.73 7.217 7.187a1.005 1.005 0 0 1 0 1.425ZM24 9.913l-3.725 3.727L16 9.367l.02-.021c.388.239.903.19 1.239-.146l3.014-3.015L24 9.913Z', c: '#07273D' },
+        'DaVinci Studio': { p: 'M17.621 0 5.977.004c-1.37 0-2.756.345-3.762 1.11a4.925 4.925 0 0 0-1.61 2.003C.233 3.93 0 5.02 0 5.951l.012 12.2c.002 1.604.479 3.057 1.461 4.112.984 1.056 2.462 1.683 4.331 1.691L16.856 24c1.26.005 3.095-.036 4.303-.714 1.075-.605 2.025-1.556 2.497-2.984.278-.84.345-2.084.344-3.147l-.021-11.13c-.002-.888-.15-2.023-.547-2.934-.425-.976-1.181-1.815-2.322-2.425C20.353.26 19.123 0 17.622 0zm0 .93c1.378 0 2.538.295 3.04.565.977.523 1.544 1.166 1.889 1.96.315.721.47 1.793.473 2.572l.018 11.13c.002 1.013-.097 2.257-.298 2.86-.396 1.202-1.146 1.946-2.063 2.462-.814.457-2.612.593-3.82.588l-11.05-.044c-1.657-.007-2.832-.534-3.626-1.386-.792-.851-1.212-2.06-1.212-3.485L.999 5.95c0-.829.196-1.827.474-2.437.345-.757.75-1.207 1.365-1.674C3.585 1.27 4.868.97 6.08.97zm-5.66 3.423c-1.976.089-3.204 1.658-3.214 3.29.019 1.443 1.635 3.481 2.884 4.53.12.099.154.109.33.18.062.025.198-.047.327-.135.36-.245.993-.947 1.648-1.738a7.67 7.67 0 0 0 1.031-1.683c.409-.89.261-1.599.235-1.888a3.983 3.983 0 0 0-.99-1.692 3.36 3.36 0 0 0-2.251-.864zm4.172 7.922a10.185 10.185 0 0 0-3.244.61c-.15.058-.26.1-.374.17-.057.036-.11.135-.105.292.017.433.29 1.278.624 2.27.384 1.135 1.066 2.27 1.844 2.74a3.23 3.23 0 0 0 2.53.342c.832-.243 1.595-.868 1.962-1.546.986-1.818.19-3.548-1.121-4.417-.447-.296-1.133-.445-1.89-.46-.074 0-.15-.002-.226-.001zm-8.432.038a6.201 6.201 0 0 0-.752.047c-.596.078-.932.273-1.29.51a3.177 3.177 0 0 0-1.365 1.979c-.075.552-.086 1.053.033 1.507.433 1.389 1.326 2.222 2.847 2.452.636.028 1.37-.063 1.99-.45 1.269-.782 2.08-3.17 2.412-4.742.053-.176.035-.357-.013-.42-.005-.067-.044-.113-.19-.183-.398-.192-1.32-.417-2.375-.6a7.68 7.68 0 0 0-1.297-.1z', c: '#233A51' },
+        'Premiere AI': { p: 'M10.15 8.42a2.93 2.93 0 00-1.18-.2 13.9 13.9 0 00-1.09.02v3.36l.39.02h.53c.39 0 .78-.06 1.15-.18.32-.09.6-.28.82-.53.21-.25.31-.59.31-1.03a1.45 1.45 0 00-.93-1.46zM19.75.3H4.25A4.25 4.25 0 000 4.55v14.9c0 2.35 1.9 4.25 4.25 4.25h15.5c2.35 0 4.25-1.9 4.25-4.25V4.55C24 2.2 22.1.3 19.75.3zm-7.09 11.65c-.4.56-.96.98-1.61 1.22-.68.25-1.43.34-2.25.34l-.5-.01-.43-.01v3.21a.12.12 0 01-.11.14H5.82c-.08 0-.12-.04-.12-.13V6.42c0-.07.03-.11.1-.11l.56-.01.76-.02.87-.02.91-.01c.82 0 1.5.1 2.06.31.5.17.96.45 1.34.82.32.32.57.71.73 1.14.15.42.23.85.23 1.3 0 .86-.2 1.57-.6 2.13zm6.82-3.15v1.95c0 .08-.05.11-.16.11a4.35 4.35 0 00-1.92.37c-.19.09-.37.21-.51.37v5.1c0 .1-.04.14-.13.14h-1.97a.14.14 0 01-.16-.12v-5.58l-.01-.75-.02-.78c0-.23-.02-.45-.04-.68a.1.1 0 01.07-.11h1.78c.1 0 .18.07.2.16a3.03 3.03 0 01.13.92c.3-.35.67-.64 1.08-.86a3.1 3.1 0 011.52-.39c.07-.01.13.04.14.11v.04z', c: '#9999FF' },
+        'Adobe Enhance Premium': { p: 'M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.884L24 22.624Z', c: '#FF0000' },
+        'Remove.bg': { p: 'm23.729 13.55-1.903-.995-9.134 4.776a1.497 1.497 0 0 1-1.383.002l-9.137-4.778-1.903.995a.5.5 0 0 0 0 .888l11.499 6.011a.495.495 0 0 0 .462 0l11.499-6.011a.5.5 0 0 0 0-.888zM.269 10.447l11.499 6.013a.495.495 0 0 0 .462 0l11.499-6.013a.5.5 0 0 0 0-.887l-11.5-6.012a.505.505 0 0 0-.462 0L.268 9.559a.5.5 0 0 0 .001.887z', c: '#54616C' },
+        'Firefly': { p: 'M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.884L24 22.624Z', c: '#FF0000' }
+    };
+
     function initUploadFlow() {
         var form = document.querySelector('.js-upload-form');
         if (!form) { return; }
@@ -1652,6 +2091,14 @@
         var aiWrap = document.querySelector('.js-upload-ai');
         var aiModal = document.getElementById('modal-ai');
         if (aiWrap && aiModal) {
+            var aiGroups = [];
+            try { aiGroups = JSON.parse(aiWrap.getAttribute('data-ai-groups') || '[]'); } catch (e) {}
+            var aiBtn = aiWrap.querySelector('.js-ai-btn');
+            var aiBtnText = aiWrap.querySelector('.js-ai-btn-text');
+            var aiChips = aiWrap.querySelector('.js-ai-chips');
+            var aiList = aiModal.querySelector('.js-ai-modal-list');
+            var aiSelected = [];
+
             // 카테고리별 아이콘 (각 타이틀에 맞춘 라인 아이콘)
             var AI_ICONS = {
                 'plan': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8.9.8 1.5v.6h5.4v-.6c0-.6.3-1.1.8-1.5A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 19h5M10 21.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
@@ -1672,15 +2119,19 @@
                 '3d': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
                 'vfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" fill="currentColor"/></svg>'
             };
-            var aiGroups = [];
-            try { aiGroups = JSON.parse(aiWrap.getAttribute('data-ai-groups') || '[]'); } catch (e) {}
-            var aiBtn = aiWrap.querySelector('.js-ai-btn');
-            var aiBtnText = aiWrap.querySelector('.js-ai-btn-text');
-            var aiChips = aiWrap.querySelector('.js-ai-chips');
-            var aiList = aiModal.querySelector('.js-ai-modal-list');
-            var aiSelected = [];
 
-            // 모달 내용 구성 (카테고리 헤더 + 툴 핀). 처음엔 아무것도 선택 안 됨.
+            // 로고가 없는 툴 폴백 : 첫 글자 모노그램(툴별 고유 색) — 추후 실제 로고 교체 지점.
+            function aiMonogram(name) {
+                var m = String(name).replace(/[^0-9A-Za-z가-힣]/g, '');
+                return (m.charAt(0) || '?').toUpperCase();
+            }
+            function aiHue(name) {
+                var h = 0;
+                for (var i = 0; i < name.length; i++) { h = (h * 31 + name.charCodeAt(i)) % 360; }
+                return h;
+            }
+
+            // 모달 내용 구성 (카테고리 헤더 + 툴 핀[앞에 작은 아이콘]). 처음엔 아무것도 선택 안 됨.
             aiGroups.forEach(function (g) {
                 var sec = document.createElement('div');
                 sec.className = 'ai-group';
@@ -1696,7 +2147,20 @@
                     p.type = 'button';
                     p.className = 'ai-tool-pill';
                     p.setAttribute('data-tool', t);
-                    p.textContent = t;
+                    var ico = document.createElement('span');
+                    ico.className = 'ai-tool-pill__ico';
+                    var logo = AI_TOOL_LOGOS[t];
+                    if (logo) {
+                        // 실제 브랜드 로고 (흰 배경 칩 + 브랜드 컬러 글리프)
+                        ico.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + logo.p + '" fill="' + logo.c + '"/></svg>';
+                    } else {
+                        // 로고 미확보 툴 : 첫 글자 모노그램 (툴별 고유 색)
+                        ico.className += ' ai-tool-pill__ico--mono';
+                        ico.textContent = aiMonogram(t);
+                        ico.style.color = 'hsl(' + aiHue(t) + ', 62%, 42%)';
+                    }
+                    p.appendChild(ico);
+                    p.appendChild(document.createTextNode(t));
                     p.addEventListener('click', function () { setAi(t, aiSelected.indexOf(t) < 0); });
                     pills.appendChild(p);
                 });
@@ -1704,9 +2168,9 @@
                 aiList.appendChild(sec);
             });
 
-            function syncPills() {
-                Array.prototype.forEach.call(aiList.querySelectorAll('.ai-tool-pill'), function (p) {
-                    p.classList.toggle('is-selected', aiSelected.indexOf(p.getAttribute('data-tool')) >= 0);
+            function syncCards() {
+                Array.prototype.forEach.call(aiList.querySelectorAll('.ai-tool-pill'), function (c) {
+                    c.classList.toggle('is-selected', aiSelected.indexOf(c.getAttribute('data-tool')) >= 0);
                 });
                 aiBtnText.textContent = aiSelected.length ? ('사용한 AI ' + aiSelected.length + '개 선택됨') : '사용한 AI 선택하기';
             }
@@ -1729,12 +2193,12 @@
                 var idx = aiSelected.indexOf(t);
                 if (on && idx < 0) { aiSelected.push(t); }
                 else if (!on && idx >= 0) { aiSelected.splice(idx, 1); }
-                syncPills();
+                syncCards();
                 renderAiChips();
             }
             function openAi() { aiModal.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
             function closeAi() { aiModal.classList.remove('is-open'); document.body.style.overflow = ''; }
-            aiBtn.addEventListener('click', function () { syncPills(); openAi(); });
+            aiBtn.addEventListener('click', function () { syncCards(); openAi(); });
             aiModal.querySelector('.js-ai-modal-close').addEventListener('click', closeAi);
             aiModal.querySelector('.js-ai-modal-ok').addEventListener('click', closeAi);
             aiModal.addEventListener('click', function (e) { if (e.target === aiModal) { closeAi(); } });
@@ -1797,6 +2261,13 @@
         initFaq();
         initAvatarModal();
         initMypageStudioNav();
+        initMypageBack();
+        initAiToolLogos();
+        initChannelSubscribe();
+        initStudioComments();
+        initContentGates();
+        initCreatorAvatarLinks();
+        initTastePicker();
     }
 
     if (document.readyState === 'loading') {

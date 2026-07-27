@@ -42,7 +42,7 @@
                         <p class="studio__channel-meta">{{ $channel['handle'] }} · 구독자 {{ $channel['subscribers'] }} · 영상 {{ $channel['videos'] }}개</p>
                     </div>
                     <div class="studio__channel-actions">
-                        <a href="#" class="btn btn--ghost">채널 보기</a>
+                        <a href="{{ route('channel') }}" class="btn btn--ghost">채널 보기</a>
                         <a href="#" class="btn btn--primary">채널 편집</a>
                     </div>
                 </div>

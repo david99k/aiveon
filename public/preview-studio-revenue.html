@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>수익 관리 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/studio/revenue.blade.php 정적 재현.
+        크리에이터 스튜디오 > 수익 관리.
+        마이페이지 셸(.mypage 좌측 LNB + 콘텐츠) 재사용.
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 : 마이페이지 사이드바 (크리에이터 스튜디오 아코디언 펼침 + 내 채널 관리 활성) -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                                <div class="mypage__side-group is-open is-active">
+                                    <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="true">
+                                        <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                        크리에이터 스튜디오
+                                        <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div class="mypage__side-sub">
+                                    <a href="preview-studio.html">내 채널 관리</a>
+                                    <a href="preview-studio-content.html">콘텐츠 관리</a>
+                                    <a href="preview-studio-revenue.html" class="is-active" aria-current="page">수익 관리</a>
+                                    <a href="preview-studio-comments.html">댓글 관리</a>
+                                    </div>
+                                </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : 수익(포인트) 현황 — 출금 없이 제휴 스토어에서 포인트로 사용 -->
+                <div class="mypage__content mypage__content--studio">
+                    <h2 class="studio__title">수익 관리</h2>
+                    <p class="studio__lead">적립된 수익을 포인트로 확인하고, 제휴 스토어에서 사용하세요.</p>
+
+                    <div class="rev-cards">
+                        <div class="rev-card rev-card--accent">
+                            <span class="rev-card__label">사용 가능 포인트</span>
+                            <strong class="rev-card__value">3,920,000<span class="rev-card__unit">P</span></strong>
+                            <span class="rev-card__note rev-card__note--accent">제휴 스토어에서 사용 가능</span>
+                        </div>
+                        <div class="rev-card">
+                            <span class="rev-card__label">이번 달 적립 수익</span>
+                            <strong class="rev-card__value">₩1,102,000</strong>
+                            <span class="rev-card__note rev-card__note--up">▲ 4.1% (지난달 대비)</span>
+                        </div>
+                        <div class="rev-card">
+                            <span class="rev-card__label">총 누적 수익</span>
+                            <strong class="rev-card__value">₩10,650,000</strong>
+                            <span class="rev-card__note">2026.01 ~ 현재</span>
+                        </div>
+                        <div class="rev-card">
+                            <span class="rev-card__label">이번 달 재생 수</span>
+                            <strong class="rev-card__value">128만</strong>
+                            <span class="rev-card__note rev-card__note--up">▲ 12.3%</span>
+                        </div>
+                    </div>
+
+                    <div class="rev-grid">
+                        <div class="rev-panel">
+                            <div class="rev-panel__head">
+                                <h3 class="rev-panel__title">월별 수익 추이</h3>
+                                <span class="rev-panel__hint">최근 6개월 · 단위 만원</span>
+                            </div>
+                            <div class="rev-chart">
+                                <div class="rev-bar"><span class="rev-bar__value">58</span><span class="rev-bar__fill" style="height: 43%"></span><span class="rev-bar__month">2월</span></div>
+                                <div class="rev-bar"><span class="rev-bar__value">67</span><span class="rev-bar__fill" style="height: 50%"></span><span class="rev-bar__month">3월</span></div>
+                                <div class="rev-bar"><span class="rev-bar__value">77</span><span class="rev-bar__fill" style="height: 57%"></span><span class="rev-bar__month">4월</span></div>
+                                <div class="rev-bar"><span class="rev-bar__value">84</span><span class="rev-bar__fill" style="height: 62%"></span><span class="rev-bar__month">5월</span></div>
+                                <div class="rev-bar"><span class="rev-bar__value">99</span><span class="rev-bar__fill" style="height: 73%"></span><span class="rev-bar__month">6월</span></div>
+                                <div class="rev-bar"><span class="rev-bar__value">110</span><span class="rev-bar__fill rev-bar__fill--current" style="height: 82%"></span><span class="rev-bar__month">7월</span></div>
+                            </div>
+                        </div>
+
+                        <div class="rev-panel">
+                            <div class="rev-panel__head">
+                                <h3 class="rev-panel__title">수익 구성</h3>
+                                <span class="rev-panel__hint">이번 달</span>
+                            </div>
+                            <ul class="rev-comp">
+                                <li class="rev-comp__row"><span class="rev-comp__dot" style="background-color: #a78bfa"></span>광고 수익<span class="rev-comp__track"><span class="rev-comp__bar" style="width: 67%; background-color: #a78bfa"></span></span><span class="rev-comp__pct">67%</span></li>
+                                <li class="rev-comp__row"><span class="rev-comp__dot" style="background-color: #67e8c3"></span>구독 분배<span class="rev-comp__track"><span class="rev-comp__bar" style="width: 33%; background-color: #67e8c3"></span></span><span class="rev-comp__pct">33%</span></li>
+                            </ul>
+
+                            <div class="rev-top">
+                                <span class="rev-card__label">가장 수익이 높은 콘텐츠</span>
+                                <div class="rev-top__item">
+                                    <div class="rev-top__thumb"><img src="images/main/poster_01.jpg" alt=""></div>
+                                    <div>
+                                        <p class="rev-top__title">그 계절, 우리가 사랑한 시간</p>
+                                        <p class="rev-top__meta">₩360,000 · 재생 42만</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rev-panel">
+                        <div class="rev-panel__head">
+                            <h3 class="rev-panel__title">포인트 적립 내역</h3>
+                            <span class="rev-panel__hint">최근 4개월</span>
+                        </div>
+                        <div class="rev-table">
+                            <table>
+                                <thead>
+                                    <tr><th>적립월</th><th>광고</th><th>구독 분배</th><th>적립 포인트</th><th>상태</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>2026.07</td><td class="rev-table__num">742,000</td><td class="rev-table__num">360,000</td><td class="rev-table__num rev-table__strong">1,102,000 P</td><td><span class="rev-badge rev-badge--wait">적립 예정</span></td></tr>
+                                    <tr><td>2026.06</td><td class="rev-table__num">668,000</td><td class="rev-table__num">324,000</td><td class="rev-table__num rev-table__strong">992,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
+                                    <tr><td>2026.05</td><td class="rev-table__num">552,000</td><td class="rev-table__num">286,000</td><td class="rev-table__num rev-table__strong">838,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
+                                    <tr><td>2026.04</td><td class="rev-table__num">505,000</td><td class="rev-table__num">264,000</td><td class="rev-table__num rev-table__strong">769,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="rev-point">
+                        <div>
+                            <strong class="rev-point__amount">보유 포인트 3,920,000<span class="rev-point__unit">P</span></strong>
+                            <p class="rev-point__desc">AIVEON 제휴 스토어·서비스에서 바로 사용할 수 있어요. (1P = 1원)</p>
+                        </div>
+                        <a href="#" class="rev-point__btn" target="_blank" rel="noopener">
+                            포인트 사용하기
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>
