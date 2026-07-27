@@ -35,6 +35,7 @@
             <nav class="mypage-lib__menu" aria-label="마이페이지 메뉴">
                 <a href="{{ route('mypage') }}"><span class="mypage-lib__menu-icon icon-setting" aria-hidden="true"></span>회원정보 변경</a>
                 <a href="{{ route('favorites') }}"><span class="mypage-lib__menu-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                <a href="{{ route('subscriptions') }}"><span class="mypage-lib__menu-icon icon-subscribe" aria-hidden="true"></span>구독</a>
                 <a href="{{ route('studio') }}"><span class="mypage-lib__menu-icon icon-creator" aria-hidden="true"></span>크리에이터 스튜디오</a>
                 <a href="{{ route('faq') }}"><span class="mypage-lib__menu-icon icon-faq" aria-hidden="true"></span>고객센터</a>
                 <a href="{{ route('notice') }}"><span class="mypage-lib__menu-icon icon-notice" aria-hidden="true"></span>공지사항</a>

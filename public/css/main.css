@@ -5440,6 +5440,7 @@ a.cmt__on:hover b { color: var(--brand-primary); }
 .mypage-lib__menu-icon.icon-creator { width: 26px; height: 26px; }
 
 .icon-mypage  { -webkit-mask-image: url('../images/mypage/ic_mypage.svg');   mask-image: url('../images/mypage/ic_mypage.svg'); }
+.icon-subscribe { -webkit-mask-image: url('../images/mypage/ic_subscribe.svg'); mask-image: url('../images/mypage/ic_subscribe.svg'); }
 .icon-favorite { -webkit-mask-image: url('../images/mypage/ic_favorite.svg'); mask-image: url('../images/mypage/ic_favorite.svg'); }
 .icon-creator  { -webkit-mask-image: url('../images/mypage/ic_creator.svg');  mask-image: url('../images/mypage/ic_creator.svg'); }
 .icon-faq      { -webkit-mask-image: url('../images/mypage/ic_faq.svg');      mask-image: url('../images/mypage/ic_faq.svg'); }
@@ -5546,6 +5547,23 @@ a.player__ai-chip:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px var
   color: var(--brand-primary);
 }
 .hub__more { font-size: 14px; color: var(--text-secondary); }
+.hub__note { font-size: 14px; color: var(--text-secondary); }
+
+/* 구독 : 최신 영상 카드 (NEW 배지 + 업로드 시점) */
+.sub-card__new {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background-color: var(--field-error);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #fff;
+}
+.sub-card__time { margin-top: -3px; font-size: 13px; color: rgba(255, 255, 255, 0.45); }
 .hub__more:hover { color: var(--brand-primary); }
 
 /* 허브 안의 가로 스크롤 행 : 콘텐츠 컬럼 기준으로 좌우 풀블리드 (마이페이지 패딩 상쇄) */

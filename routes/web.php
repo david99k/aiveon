@@ -61,6 +61,7 @@ Route::get('/ai-tools/{slug}', [App\Http\Controllers\AiToolController::class, 's
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
 /* 마이페이지 사이드바 진입 - 즐겨찾기 / 자주하는 질문 */
 Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('favorites');
+Route::get('/mypage/subscriptions', [MypageController::class, 'subscriptions'])->name('subscriptions');
 Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
 Route::get('/mypage/inquiry', [MypageController::class, 'inquiry'])->name('inquiry');
 /* 공지사항 (일반 게시판) / 이벤트 (갤러리) */

@@ -21,6 +21,7 @@
 
     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
         <a href="{{ route('favorites') }}"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+        <a href="{{ route('subscriptions') }}"><span class="mypage__side-nav-icon icon-subscribe" aria-hidden="true"></span>구독</a>
 
         {{-- 크리에이터 스튜디오 : 아코디언 (내 채널 관리 / 콘텐츠 관리 / 수익 관리 / 댓글 관리) --}}
         <div class="mypage__side-group{{ $studioOpen ? ' is-open' : '' }}{{ $studioSub ? ' is-active' : '' }}">

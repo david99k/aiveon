@@ -36,7 +36,8 @@ class MypageController
 
     /**
      * 마이페이지 허브 (사이드바 "마이페이지").
-     * 구독중인 크리에이터 + 시청 기록 + 즐겨찾기를 한 화면에 모아 보여준다.
+     * 시청 기록 + 즐겨찾기를 한 화면에 모아 보여준다.
+     * (구독중인 크리에이터는 "구독" 페이지에서 다룬다)
      */
     public function favorites(): View
     {
@@ -56,10 +57,58 @@ class MypageController
         }
 
         return view('mypage.favorites', [
-            'subscribed' => $this->subscribedCreators(),
             'history' => $this->watchHistory(),
             'favorites' => $items,
         ]);
+    }
+
+    /**
+     * 구독 (사이드바 "구독").
+     * 상단에 구독중인 크리에이터, 그 아래에 구독 채널들이 올린 영상을
+     * 크리에이터 구분 없이 최신순으로 모아 보여준다.
+     */
+    public function subscriptions(): View
+    {
+        return view('mypage.subscriptions', [
+            'creators' => $this->subscribedCreators(),
+            'feed' => $this->subscriptionFeed(),
+        ]);
+    }
+
+    /**
+     * 구독 채널 최신 영상 피드 (크리에이터 무관 · 최신순).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function subscriptionFeed(): array
+    {
+        // [포스터 번호, 타이틀, 크리에이터, 아바타 번호, 업로드 시점, 신규 여부, 프리미엄 여부]
+        $items = [
+            [1, '그 계절, 우리가 사랑한 시간', '거스구스', '01', '2시간 전', true, true],
+            [5, '아기 고양이의 모험', '몽글스튜디오', '02', '5시간 전', true, false],
+            [3, '밤이 우리를 부를 때', '라온', '03', '9시간 전', true, true],
+            [2, '나의 알고리즘', '거스구스', '01', '어제', false, false],
+            [6, '한 소녀의 피클볼 도전기', '이클립스', '04', '어제', false, true],
+            [4, '마법 같은 우리의 모험', '피크니콘', '05', '2일 전', false, false],
+            [3, '밤이 우리를 부를 때', '몽글스튜디오', '02', '3일 전', false, false],
+            [1, '그 계절, 우리가 사랑한 시간', '시너지 스튜디오', '06', '4일 전', false, true],
+            [5, '아기 고양이의 모험', '달빛서재', '07', '5일 전', false, false],
+            [2, '나의 알고리즘', '라온', '03', '1주 전', false, false],
+            [6, '한 소녀의 피클볼 도전기', '거스구스', '01', '1주 전', false, true],
+            [4, '마법 같은 우리의 모험', '이클립스', '04', '2주 전', false, false],
+        ];
+
+        return array_map(fn (array $it) => [
+            'title' => $it[1],
+            'creator' => $it[2],
+            'creator_avatar' => 'images/main/creator_profile_' . $it[3] . '.jpg',
+            'creator_url' => route('channel'),
+            'uploaded' => $it[4],
+            'is_new' => $it[5],
+            'is_premium' => $it[6],
+            'thumb' => 'images/main/poster_0' . $it[0] . '.jpg',
+            'url' => route('detail'),
+        ], $items);
     }
 
     /** 포스터 아트에 새겨진 실제 타이틀 @return array<int, string> */
