@@ -1120,6 +1120,9 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
   .mypage:not(.mypage--library) .mypage__side { display: none; }
   .mypage:not(.mypage--library) .mypage__content { padding: 12px 16px 64px; } /* 좌우 여백 24→16 : 콘텐츠 폭 확대(모바일 몰림 완화) */
   .mypage-back { display: inline-flex; }
+  /* 본문 내 뒤로가기 링크는 숨김 : 상단 주입 화살표와 중복 */
+  .mypage__content .board__back,
+  .mypage__content .aitool__back { display: none; }
 }
 
 /* 1:1 문의 : 좁은 폭에서 라벨을 필드 위로 스택 */
@@ -5530,6 +5533,122 @@ a.player__ai-chip:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px var
 .mypage-lib__card:focus-visible .mypage-lib__thumb {
   transform: translateY(-4px);
   box-shadow: 0 0 0 2px var(--brand-primary);
+}
+
+/* --------------------------------------------------------------------------
+   크리에이터 스튜디오 > 채널 편집 (공개 채널 페이지에 노출되는 정보 수정)
+   -------------------------------------------------------------------------- */
+.chedit { max-width: 900px; margin-top: 30px; }
+.chedit__link { color: var(--brand-primary); }
+.chedit__link:hover { text-decoration: underline; }
+
+.chedit__group { padding-bottom: 34px; margin-bottom: 34px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.chedit__group:last-of-type { border-bottom: 0; }
+.chedit__group-title { margin-bottom: 6px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.chedit__hint { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+
+/* 배너 · 프로필 이미지 */
+.chedit__banner {
+  margin-top: 16px;
+  aspect-ratio: 1920 / 300;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+.chedit__banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.chedit__file-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.chedit__file-actions .btn { padding: 11px 24px; }
+.chedit__avatar-row { display: flex; align-items: center; gap: 22px; margin-top: 16px; }
+.chedit__avatar { flex-shrink: 0; width: 98px; height: 98px; border-radius: 50%; object-fit: cover; }
+.chedit__avatar-row .chedit__file-actions { margin-top: 0; }
+
+/* 폼 (1:1 문의 폼 규칙 재사용 + 채널 편집 전용 보정) */
+.chedit .inquiry__row { margin-top: 22px; }
+.chedit .inquiry__field { flex: 1; min-width: 0; max-width: 560px; }
+.chedit .inquiry__input { width: 100%; }
+.chedit__textarea { width: 100%; height: 132px; }
+
+/* 핸들 입력 (@ 접두) */
+.chedit__handle { position: relative; }
+.chedit__handle-at {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.chedit__handle-input { padding-left: 34px; }
+
+/* 대표 AI 툴 (체크박스 핀) */
+.chedit__tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chedit__tool input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.chedit__tool span {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid var(--field-border);
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+.chedit__tool span:hover { border-color: rgba(255, 255, 255, 0.4); color: var(--text-primary); }
+.chedit__tool input:checked + span { border-color: var(--brand-primary); background-color: var(--brand-primary); color: #fff; font-weight: 600; }
+.chedit__tool input:focus-visible + span { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+/* 링크 목록 */
+.chedit__links { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.chedit__link-row { display: flex; align-items: center; gap: 10px; }
+.chedit__link-label { flex: 0 0 180px; }
+.chedit__link-url { flex: 1; min-width: 0; }
+.chedit__link-del {
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.chedit__link-del:hover { border-color: var(--field-error); color: var(--field-error); }
+.chedit__link-del svg { width: 17px; height: 17px; }
+.chedit__link-add {
+  margin-top: 12px;
+  padding: 10px 20px;
+  border: 1px dashed var(--field-border);
+  border-radius: 8px;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.chedit__link-add:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+
+/* 공개 범위 */
+.chedit__radios { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.chedit__radio { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--text-primary); cursor: pointer; }
+
+/* 저장 */
+.chedit__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 40px; }
+.chedit__actions .btn { padding: 14px 40px; }
+
+@media (max-width: 767px) {
+  .chedit { margin-top: 22px; }
+  .chedit__group { padding-bottom: 26px; margin-bottom: 26px; }
+  .chedit__group-title { font-size: 16px; }
+  .chedit__avatar-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .chedit__file-actions .btn { flex: 1 1 auto; white-space: nowrap; text-align: center; }
+  .chedit .inquiry__field { max-width: 100%; }
+  .chedit__link-row { flex-wrap: wrap; }
+  .chedit__link-label { flex: 1 1 100%; }
+  .chedit__link-url { flex: 1 1 auto; }
+  .chedit__actions { flex-direction: column-reverse; }
+  .chedit__actions .btn { width: 100%; text-align: center; }
 }
 
 /* --------------------------------------------------------------------------

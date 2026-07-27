@@ -43,7 +43,7 @@
                     </div>
                     <div class="studio__channel-actions">
                         <a href="{{ route('channel') }}" class="btn btn--ghost">채널 보기</a>
-                        <a href="#" class="btn btn--primary">채널 편집</a>
+                        <a href="{{ route('studio.edit') }}" class="btn btn--primary">채널 편집</a>
                     </div>
                 </div>
             </section>

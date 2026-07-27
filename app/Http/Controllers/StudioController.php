@@ -79,6 +79,40 @@ class StudioController
     }
 
     /**
+     * 채널 편집 (내 채널 > "채널 편집").
+     * 공개 채널 페이지(/channel)에 노출되는 정보를 수정한다.
+     * 저장은 백엔드 연동 지점이며, 시안에서는 현재 값만 채워 보여준다.
+     */
+    public function edit(): View
+    {
+        return view('studio.edit', [
+            'channel' => [
+                'name' => 'synergy 스튜디오',
+                'handle' => 'synergy_on',
+                'avatar' => 'images/common/avatar_user.jpg',
+                'banner' => 'images/channel/banner_synergy.jpg',
+                'tagline' => 'AI로 만드는 따뜻한 이야기 · 매주 목요일 업로드',
+                'description' => "AIVEON에서 활동 중인 AI 영상 크리에이터입니다.\n로맨스·힐링 드라마를 중심으로 AI 영상 콘텐츠를 제작합니다. 협업 문의는 이메일로 부탁드립니다.",
+                'email' => 'synergy@aiveon.kr',
+                'links' => [
+                    ['label' => '인스타그램', 'url' => 'https://instagram.com/synergy_on'],
+                    ['label' => '문의 메일', 'url' => 'mailto:synergy@aiveon.kr'],
+                ],
+                'tools' => ['Midjourney', 'Runway', 'ElevenLabs', 'Premiere Pro'],
+                'visibility' => 'public',
+            ],
+            // 채널 공개 범위
+            'visibilities' => [
+                'public' => '전체 공개 — 누구나 채널과 영상을 볼 수 있어요',
+                'unlisted' => '검색 비노출 — 링크를 아는 사람만 볼 수 있어요',
+                'private' => '비공개 — 나만 볼 수 있어요',
+            ],
+            // 채널에 표시할 대표 AI 툴 후보 (업로드 시 기록된 "사용한 AI" 상위)
+            'toolOptions' => ['Midjourney', 'Runway', 'ElevenLabs', 'Premiere Pro', 'Kling', 'Suno', 'Photoshop', 'ChatGPT Plus/Pro'],
+        ]);
+    }
+
+    /**
      * 수익 관리 : 적립 수익을 "포인트"로 보여주고, 사용은 제휴 스토어(외부)에서 한다.
      * 출금/정산 계좌 개념 없음. 수익원은 광고 · 구독 분배 2가지.
      */

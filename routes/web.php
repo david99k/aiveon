@@ -39,6 +39,8 @@ Route::get('/upload', [App\Http\Controllers\UploadController::class, 'show'])->n
 
 /* 크리에이터 스튜디오 - 내 채널관리 (유저 메뉴 "크리에이터 전환" / 마이페이지 "크리에이터" 진입) */
 Route::get('/studio', [App\Http\Controllers\StudioController::class, 'show'])->name('studio');
+/* 크리에이터 스튜디오 - 채널 편집 (공개 채널 페이지 정보 수정) */
+Route::get('/studio/channel/edit', [App\Http\Controllers\StudioController::class, 'edit'])->name('studio.edit');
 /* 크리에이터 스튜디오 - 콘텐츠 관리 (등록 영상 목록) */
 Route::get('/studio/content', [App\Http\Controllers\StudioController::class, 'content'])->name('studio.content');
 /* 크리에이터 스튜디오 - 수익 관리 (적립 포인트 조회 + 제휴 스토어에서 사용) */
