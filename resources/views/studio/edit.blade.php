@@ -86,17 +86,21 @@
                     </div>
                 </section>
 
-                {{-- 대표 AI 툴 --}}
+                {{-- 대표 AI 툴 : 업로드 폼과 같은 "사용한 AI 선택" 팝업(카테고리별 복수 선택) --}}
                 <section class="chedit__group">
                     <h3 class="chedit__group-title">주로 사용하는 AI 툴</h3>
-                    <p class="chedit__hint">채널 정보에 표시됩니다. 업로드 시 기록한 &ldquo;사용한 AI&rdquo; 중에서 골라주세요.</p>
-                    <div class="chedit__tools">
-                        @foreach ($toolOptions as $tool)
-                            <label class="chedit__tool">
-                                <input type="checkbox" name="tools[]" value="{{ $tool }}" @checked(in_array($tool, $channel['tools'], true))>
-                                <span>{{ $tool }}</span>
-                            </label>
-                        @endforeach
+                    <p class="chedit__hint">채널 정보에 표시됩니다 · 카테고리별로 여러 개 선택할 수 있어요</p>
+                    <div class="upload-ai chedit__ai js-upload-ai"
+                         data-ai-groups='@json($aiToolGroups)'
+                         data-ai-selected='@json($channel['tools'])'
+                         data-ai-name="tools[]"
+                         data-ai-label="AI 툴 선택하기"
+                         data-ai-noun="AI 툴">
+                        <button type="button" class="upload-ai-btn js-ai-btn" aria-haspopup="dialog">
+                            <span class="js-ai-btn-text">AI 툴 선택하기</span>
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div class="upload-chips js-ai-chips"></div>
                     </div>
                 </section>
 
@@ -139,4 +143,19 @@
             </form>
         </div>
     </section>
+
+    {{-- AI 툴 선택 팝업 (업로드 폼과 동일한 UI · initAiPicker 가 내용 구성) --}}
+    <div class="modal js-ai-modal" id="modal-ai" role="dialog" aria-modal="true" aria-labelledby="modal-ai-title">
+        <div class="modal__box modal__box--ai">
+            <div class="modal__head">
+                <h2 class="modal__title" id="modal-ai-title">AI 툴 선택</h2>
+                <button type="button" class="modal__close js-ai-modal-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            </div>
+            <p class="modal__desc">채널에 표시할 AI 툴을 선택해 주세요 (복수 선택 가능)</p>
+            <div class="ai-modal__list js-ai-modal-list"></div>
+            <div class="modal__actions">
+                <button type="button" class="btn btn--primary js-ai-modal-ok">선택 완료</button>
+            </div>
+        </div>
+    </div>
 @endsection

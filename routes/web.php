@@ -52,6 +52,11 @@ Route::get('/studio/comments', [App\Http\Controllers\StudioController::class, 'c
 Route::get('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'taste'])->name('onboarding.taste');
 Route::post('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'tasteStore'])->name('onboarding.taste.store');
 
+/* 크리에이터 신청 (일반 회원 → 크리에이터 전환) - 신청서 작성 → 접수 완료(심사중) */
+Route::get('/creator/apply', [App\Http\Controllers\CreatorApplyController::class, 'show'])->name('creator.apply');
+Route::post('/creator/apply', [App\Http\Controllers\CreatorApplyController::class, 'store'])->name('creator.apply.store');
+Route::get('/creator/applied', [App\Http\Controllers\CreatorApplyController::class, 'applied'])->name('creator.applied');
+
 /* 크리에이터 공개 채널 (일반 유저가 크리에이터명 클릭 시 진입, 유튜브 채널 페이지 구조) */
 Route::get('/channel/{handle?}', [App\Http\Controllers\ChannelController::class, 'show'])->name('channel');
 
@@ -59,18 +64,28 @@ Route::get('/channel/{handle?}', [App\Http\Controllers\ChannelController::class,
 Route::get('/ai-tools', [App\Http\Controllers\AiToolController::class, 'index'])->name('ai-tools');
 Route::get('/ai-tools/{slug}', [App\Http\Controllers\AiToolController::class, 'show'])->name('ai-tool');
 
-/* 마이페이지 (로그인 후 프로필 메뉴 "마이페이지" 클릭 진입) - 회원정보 */
+/* 마이페이지 대시보드 (프로필 메뉴·하단 독·사이드바 "마이페이지" 공통 진입) - 회원정보+허브 통합 */
 Route::get('/mypage', [MypageController::class, 'show'])->name('mypage');
-/* 마이페이지 사이드바 진입 - 즐겨찾기 / 자주하는 질문 */
+/* 즐겨찾기 전체보기 (대시보드 "전체보기" 진입, 스크롤 배치 로딩) */
 Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('favorites');
+/* 시청 기록 전체보기 (대시보드 "전체보기" 진입, 스크롤 배치 로딩) */
+Route::get('/mypage/history', [MypageController::class, 'history'])->name('history');
 Route::get('/mypage/subscriptions', [MypageController::class, 'subscriptions'])->name('subscriptions');
+/* 고객센터 : 자주하는 질문 / 문의하기 / 내 문의 내역 (탭 3종) */
 Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
 Route::get('/mypage/inquiry', [MypageController::class, 'inquiry'])->name('inquiry');
+Route::get('/mypage/inquiries', [MypageController::class, 'inquiryList'])->name('inquiries');
 /* 공지사항 (일반 게시판) / 이벤트 (갤러리) */
 Route::get('/mypage/notice', [MypageController::class, 'notice'])->name('notice');
 Route::get('/mypage/notice/{id}', [MypageController::class, 'noticeShow'])->name('notice.show');
 Route::get('/mypage/event', [MypageController::class, 'event'])->name('event');
 Route::get('/mypage/event/{id}', [MypageController::class, 'eventShow'])->name('event.show');
+
+/*
+ * AIVEON ADMIN (관리자) — SYNERGYON_ADMIN_메뉴화면설명서_V1.0.
+ * 해시 라우팅(#/섹션/화면) 데모 셸. 실서비스 연동 시 관리자 인증 미들웨어 필수.
+ */
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
 
 /*
  * 로그인 / 회원가입 (단일 페이지 3단계 온보딩).

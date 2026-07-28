@@ -753,10 +753,210 @@
         video.addEventListener('pause', function () { window.clearTimeout(idleTimer); showControls(); });
         video.addEventListener('ended', function () { window.clearTimeout(idleTimer); showControls(); });
 
+        /* 5초 스킵 · 재생속도 · 화질선택 (마크업 주입 → 블레이드/프리뷰 수정 없이 전 시청 페이지 적용) */
+        var tools = initWatchTools(wrap, video, {
+            isMenuOpen: function () { return !!wrap.querySelector('.watch__menu.is-open'); },
+            onActivity: function () { showControls(); scheduleHide(); }
+        });
+
+        /* 메뉴가 열려 있으면 컨트롤을 숨기지 않는다 */
+        var _hideControls = hideControls;
+        hideControls = function () {
+            if (tools && tools.isMenuOpen()) { return; }
+            _hideControls();
+        };
+
         syncPlayState();
         syncTime();
         syncVolumeUI();
         scheduleHide(); // 자동재생 시작 시 유휴 타이머 가동
+    }
+
+    /**
+     * 시청 플레이어 부가 컨트롤 : 5초 뒤로/앞으로 · 재생 속도 · 화질 선택.
+     *
+     * 마크업을 JS로 주입해 블레이드와 정적 프리뷰 어디서나 동일하게 동작한다.
+     * - 5초 스킵 : 버튼 + 좌우 방향키
+     * - 재생 속도 : 0.5 ~ 2배속 (video.playbackRate)
+     * - 화질 : 자동 / 1080p / 720p / 480p
+     *   시안은 단일 MP4 소스라 라벨·선택 상태만 바뀐다.
+     *   실서비스(HLS/DASH)에서는 선택값을 해당 렌디션으로 전환하는 지점이다.
+     *
+     * 라이브(.watch__live-panel)에서는 되감기·배속이 성립하지 않아 화질만 노출한다.
+     */
+    function initWatchTools(wrap, video, hooks) {
+        var bar = wrap.querySelector('.watch__controls');
+        if (!bar || bar.querySelector('.watch__menu')) { return null; }
+
+        var isLive = !!document.querySelector('.watch__live-panel');
+        var SKIP = 5;
+
+        var ICON = {
+            back: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5A7.5 7.5 0 1 1 4.7 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 2.6 8.6 5.5 12 8.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            fwd: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5A7.5 7.5 0 1 0 19.3 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 2.6 15.4 5.5 12 8.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            gear: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.6 8.6h16.8M3.6 15.4h16.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.6" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="15.4" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>'
+        };
+
+        var SPEEDS = [
+            { v: 0.5, t: '0.5배속' }, { v: 0.75, t: '0.75배속' }, { v: 1, t: '보통' },
+            { v: 1.25, t: '1.25배속' }, { v: 1.5, t: '1.5배속' }, { v: 2, t: '2배속' }
+        ];
+        var QUALITIES = [
+            { v: 'auto', t: '자동' }, { v: '1080p', t: '1080p' }, { v: '720p', t: '720p' }, { v: '480p', t: '480p' }
+        ];
+
+        function el(tag, cls, html) {
+            var n = document.createElement(tag);
+            if (cls) { n.className = cls; }
+            if (html !== undefined) { n.innerHTML = html; }
+            return n;
+        }
+
+        /* --- 5초 스킵 버튼 : 재생 버튼 뒤에 --- */
+        function seekBtn(cls, icon, label) {
+            var b = el('button', 'watch__ctrl watch__seek ' + cls, icon);
+            b.type = 'button';
+            b.setAttribute('aria-label', label);
+            var num = el('span', 'watch__seek-num', String(SKIP));
+            b.appendChild(num);
+            return b;
+        }
+        function skip(delta) {
+            if (!isFinite(video.duration)) { return; }
+            var t = video.currentTime + delta;
+            video.currentTime = Math.min(Math.max(t, 0), video.duration);
+            if (hooks && hooks.onActivity) { hooks.onActivity(); }
+        }
+
+        var playBtn = bar.querySelector('.watch__ctrl--play');
+        if (!isLive && playBtn) {
+            var back = seekBtn('js-watch-back', ICON.back, SKIP + '초 뒤로');
+            var fwd = seekBtn('js-watch-fwd', ICON.fwd, SKIP + '초 앞으로');
+            back.addEventListener('click', function () { skip(-SKIP); });
+            fwd.addEventListener('click', function () { skip(SKIP); });
+            // 배치 : 재생 · 볼륨 · 시간 다음(시간 오른쪽)에 스킵 두 개
+            var timeAnchor = bar.querySelector('.watch__time') || playBtn;
+            timeAnchor.insertAdjacentElement('afterend', fwd);
+            timeAnchor.insertAdjacentElement('afterend', back);
+        }
+
+        /* --- 메뉴(속도/화질) --- */
+        function buildMenu(opts) {
+            var box = el('div', 'watch__menu');
+            var btn = el('button', 'watch__ctrl watch__menu-btn');
+            btn.type = 'button';
+            btn.setAttribute('aria-haspopup', 'true');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', opts.title);
+            if (opts.icon) { btn.innerHTML = opts.icon; }
+            var val = el('span', 'watch__menu-val', opts.initialLabel);
+            btn.appendChild(val);
+
+            var pop = el('div', 'watch__menu-pop');
+            pop.hidden = true;
+            pop.setAttribute('role', 'menu');
+            pop.appendChild(el('p', 'watch__menu-title', opts.title));
+
+            opts.items.forEach(function (it) {
+                var item = el('button', 'watch__menu-item' + (it.v === opts.initial ? ' is-on' : ''));
+                item.type = 'button';
+                item.setAttribute('role', 'menuitemradio');
+                item.setAttribute('aria-checked', String(it.v === opts.initial));
+                item.setAttribute('data-val', String(it.v));
+                item.appendChild(el('span', 'watch__menu-check', '<svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'));
+                item.appendChild(document.createTextNode(it.t));
+                item.addEventListener('click', function () {
+                    Array.prototype.forEach.call(pop.querySelectorAll('.watch__menu-item'), function (o) {
+                        o.classList.remove('is-on');
+                        o.setAttribute('aria-checked', 'false');
+                    });
+                    item.classList.add('is-on');
+                    item.setAttribute('aria-checked', 'true');
+                    val.textContent = opts.label(it);
+                    opts.onPick(it);
+                    setOpen(box, false);
+                    if (hooks && hooks.onActivity) { hooks.onActivity(); }
+                });
+                pop.appendChild(item);
+            });
+
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var open = box.classList.contains('is-open');
+                closeAll();
+                setOpen(box, !open);
+            });
+
+            box.appendChild(btn);
+            box.appendChild(pop);
+            return box;
+        }
+
+        function setOpen(box, open) {
+            box.classList.toggle('is-open', open);
+            var b = box.querySelector('.watch__menu-btn');
+            var p = box.querySelector('.watch__menu-pop');
+            if (b) { b.setAttribute('aria-expanded', String(open)); }
+            if (p) { p.hidden = !open; }
+        }
+        function closeAll() {
+            Array.prototype.forEach.call(wrap.querySelectorAll('.watch__menu.is-open'), function (o) { setOpen(o, false); });
+        }
+
+        var fullBtn = bar.querySelector('.watch__ctrl--full');
+
+        if (!isLive) {
+            var speedMenu = buildMenu({
+                title: '재생 속도',
+                initial: 1,
+                initialLabel: '1x',
+                items: SPEEDS,
+                label: function (it) { return it.v + 'x'; },
+                onPick: function (it) { video.playbackRate = it.v; }
+            });
+            if (fullBtn) { fullBtn.insertAdjacentElement('beforebegin', speedMenu); }
+            else { bar.appendChild(speedMenu); }
+        }
+
+        var qualityMenu = buildMenu({
+            title: '화질',
+            initial: 'auto',
+            initialLabel: '자동',
+            icon: ICON.gear,
+            items: QUALITIES,
+            label: function (it) { return it.t; },
+            // 실서비스 : 여기서 HLS/DASH 렌디션을 전환한다(시안은 단일 소스라 표시만 변경)
+            onPick: function (it) { video.setAttribute('data-quality', it.v); }
+        });
+        if (fullBtn) { fullBtn.insertAdjacentElement('beforebegin', qualityMenu); }
+        else { bar.appendChild(qualityMenu); }
+
+        /* 배속·화질·전체화면을 한 묶음으로 우측 정렬 (첫 메뉴가 여백을 밀어낸다) */
+        var firstMenu = bar.querySelector('.watch__menu');
+        if (firstMenu) { firstMenu.classList.add('watch__menu--push'); }
+
+        /* 바깥 클릭 · Esc 로 닫기 */
+        document.addEventListener('click', function (e) {
+            if (!wrap.contains(e.target)) { closeAll(); }
+            else if (!e.target.closest('.watch__menu')) { closeAll(); }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { closeAll(); }
+        });
+
+        /* 좌우 방향키로 5초 이동 (입력 요소에 포커스가 있을 때는 제외) */
+        if (!isLive) {
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') { return; }
+                var t = e.target;
+                // 입력 요소·가로 스크롤 목록에 포커스가 있으면 그쪽 키 조작을 방해하지 않는다
+                if (t && t.closest && t.closest('input, textarea, select, [contenteditable="true"], [data-scroll-x]')) { return; }
+                e.preventDefault();
+                skip(e.key === 'ArrowLeft' ? -SKIP : SKIP);
+            });
+        }
+
+        return { isMenuOpen: hooks && hooks.isMenuOpen ? hooks.isMenuOpen : function () { return false; } };
     }
 
     /**
@@ -1273,19 +1473,23 @@
             duckSrc = base + 'images/common/avatar_user.jpg';
         }
 
-        // 마이페이지 링크 : 정적 프리뷰(.html)면 preview-mypage.html, 실앱이면 /mypage
-        var mypageUrl = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage';
+        // 마이페이지 링크 : 통합 대시보드(회원정보+허브). 프리뷰 파일명은 기존 사이드바 링크와 맞춰 preview-favorites.html
+        var mypageUrl = /\.html$/.test(location.pathname) ? 'preview-favorites.html' : '/mypage';
         var studioUrl = /\.html$/.test(location.pathname) ? 'preview-studio.html' : '/studio';
         var csUrl = /\.html$/.test(location.pathname) ? 'preview-faq.html' : '/mypage/faq'; // 고객센터 = 자주하는 질문(고객센터) 페이지
+        // 크리에이터 신청 : 아직 크리에이터가 아닌 회원의 전환 진입점
+        var applyUrl = /\.html$/.test(location.pathname) ? 'preview-creator-apply.html' : '/creator/apply';
+        var uploadUrl = /\.html$/.test(location.pathname) ? 'preview-upload.html' : '/upload';
 
-        // 데모 상태 3종 : 로그인 / 성인인증 / 프리미엄 구독. 각각 body 클래스 + localStorage 로 유지.
+        // 데모 상태 4종 : 로그인 / 성인인증 / 프리미엄 구독 / 크리에이터 승인. 각각 body 클래스 + localStorage 로 유지.
         // 인증·구독 여부를 미리보기로 확인하기 위한 토글(로그인 상태와 동일 방식). 실서비스에선 서버 상태로 대체.
         var STATES = [
             { key: 'auth',    cls: 'is-authed',  on: '로그인 상태',     off: '비로그인 상태' },
             { key: 'adult',   cls: 'is-adult',   on: '성인인증 완료',   off: '성인인증 전' },
-            { key: 'premium', cls: 'is-premium', on: '프리미엄 구독중', off: '프리미엄 미구독' }
+            { key: 'premium', cls: 'is-premium', on: '프리미엄 구독중', off: '프리미엄 미구독' },
+            { key: 'creator', cls: 'is-creator', on: '크리에이터 승인됨', off: '크리에이터 신청 전' }
         ];
-        var demo = { auth: false, adult: false, premium: false };
+        var demo = { auth: false, adult: false, premium: false, creator: false };
         STATES.forEach(function (s) { try { demo[s.key] = localStorage.getItem('aiveon-demo-' + s.key) === '1'; } catch (e) {} });
 
         function demoRowHtml(s) {
@@ -1294,7 +1498,7 @@
                     '<button type="button" class="authbar__toggle js-demo-toggle" data-demo="' + s.key + '" role="switch" aria-checked="' + demo[s.key] + '" aria-label="' + s.on + ' 전환"><span class="authbar__knob"></span></button>' +
                 '</div>';
         }
-        // 로그인 후 메뉴 : 3종 토글 그룹 / 게스트 팝업 : 로그인 토글만
+        // 로그인 후 메뉴 : 4종 토글 그룹 / 게스트 팝업 : 로그인 토글만
         var groupHtml = '<div class="gnb__demo-group">' + STATES.map(demoRowHtml).join('') + '</div>';
         var loginGroupHtml = '<div class="gnb__demo-group">' + demoRowHtml(STATES[0]) + '</div>';
 
@@ -1311,7 +1515,9 @@
                 '</div>' +
                 '<ul class="gnb__usermenu-list">' +
                     '<li><a href="' + mypageUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.user + '마이페이지</a></li>' +
-                    '<li><a href="' + studioUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 스튜디오</a></li>' +
+                    // 크리에이터 승인 여부에 따라 둘 중 하나만 노출 (CSS : body.is-creator)
+                    '<li class="js-creator-only"><a href="' + studioUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 스튜디오</a></li>' +
+                    '<li class="js-noncreator-only"><a href="' + applyUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 신청</a></li>' +
                     '<li><a href="' + csUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
                     '<li><button type="button" class="gnb__usermenu-item js-demo-logout" role="menuitem">' + ICON.logout + '로그아웃</button></li>' +
                 '</ul>' +
@@ -1323,6 +1529,27 @@
         var pop = wrap ? wrap.querySelector('.gnb__profile-pop') : null;
         if (pop && !pop.querySelector('.gnb__demo-group')) {
             pop.insertAdjacentHTML('beforeend', loginGroupHtml);
+        }
+
+        /*
+         * 크리에이터 진입점 전환.
+         * 신청 전 : GNB "크리에이터 신청하기" · 모바일 독 "신청" → 신청 페이지
+         * 승인 후 : GNB "업로드 +" · 모바일 독 "업로드" → 업로드 페이지
+         * 실서비스에서는 서버가 내려주는 크리에이터 승인 상태로 판정한다.
+         */
+        function syncCreatorEntry() {
+            var isCreator = demo.creator;
+            Array.prototype.forEach.call(document.querySelectorAll('.gnb__upload'), function (a) {
+                a.textContent = isCreator ? '업로드 +' : '크리에이터 신청하기';
+                a.setAttribute('href', isCreator ? uploadUrl : applyUrl);
+                a.classList.toggle('gnb__upload--apply', !isCreator);
+            });
+            var dockUp = document.querySelector('.mobile-dock__item[data-dock="upload"]');
+            if (dockUp) {
+                dockUp.setAttribute('href', isCreator ? uploadUrl : applyUrl);
+                var lbl = dockUp.querySelector('.mobile-dock__label');
+                if (lbl) { lbl.textContent = isCreator ? '업로드' : '신청'; }
+            }
         }
 
         function apply() {
@@ -1338,6 +1565,7 @@
                 });
             });
             if (avatarImg) { avatarImg.setAttribute('src', demo.auth ? duckSrc : guestSrc); }
+            syncCreatorEntry();
             // 프리미엄 상태를 메뉴 헤드 플랜 라벨에 반영 (구독중=Premium / 미구독=Free)
             Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) {
                 el.textContent = demo.premium ? 'Premium' : 'Free';
@@ -1877,7 +2105,7 @@
         back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         back.addEventListener('click', function () {
             if (window.history.length > 1) { window.history.back(); }
-            else { location.href = /\.html$/.test(location.pathname) ? 'preview-mypage.html' : '/mypage'; }
+            else { location.href = /\.html$/.test(location.pathname) ? 'preview-favorites.html' : '/mypage'; }
         });
         content.insertBefore(back, content.firstChild);
     }
@@ -1908,16 +2136,16 @@
             { key: 'home', label: '홈', href: link('/', 'preview.html'), icon: ICON.home },
             { key: 'search', label: '검색', href: link('/search', 'preview-search.html'), icon: ICON.search },
             { key: 'upload', label: '업로드', href: link('/upload', 'preview-upload.html'), icon: ICON.upload },
-            { key: 'favorites', label: '즐겨찾기', href: link('/mypage/favorites', 'preview-favorites.html'), icon: ICON.favorites },
-            { key: 'mypage', label: '마이페이지', href: link('/mypage', 'preview-mypage.html'), icon: ICON.mypage }
+            { key: 'favorites', label: '즐겨찾기', href: link('/mypage#favorites', 'preview-favorites.html#favorites'), icon: ICON.favorites },
+            { key: 'mypage', label: '마이페이지', href: link('/mypage', 'preview-favorites.html'), icon: ICON.mypage }
         ];
 
         // 현재 경로 기준 활성 탭 판정 (그 외 브라우즈 페이지는 모두 '홈')
         var path = location.pathname;
         var active = /upload/.test(path) ? 'upload'
             : /search/.test(path) ? 'search'
-            : /favorite/.test(path) ? 'favorites'
-            : /(mypage|faq)/.test(path) ? 'mypage'
+            // 통합 후 preview-favorites.html = 마이페이지 홈 (즐겨찾기는 같은 페이지의 섹션)
+            : /(mypage|favorite|faq)/.test(path) ? 'mypage'
             : 'home';
 
         var nav = document.createElement('nav');
@@ -1925,7 +2153,7 @@
         nav.setAttribute('aria-label', '하단 메뉴');
         nav.innerHTML = ITEMS.map(function (it) {
             var on = it.key === active;
-            return '<a href="' + it.href + '" class="mobile-dock__item' + (on ? ' is-active' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' +
+            return '<a href="' + it.href + '" data-dock="' + it.key + '" class="mobile-dock__item' + (on ? ' is-active' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' +
                 '<span class="mobile-dock__icon">' + it.icon + '</span>' +
                 '<span class="mobile-dock__label">' + it.label + '</span></a>';
         }).join('');
@@ -2087,51 +2315,102 @@
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && genreModal.classList.contains('is-open')) { closeGenre(); } });
         }
 
-        // 사용한 AI 선택 팝업 (카테고리별 툴, 복수 선택 → 하단 칩) — AI_영상제작_툴_목록_2026
-        var aiWrap = document.querySelector('.js-upload-ai');
-        var aiModal = document.getElementById('modal-ai');
-        if (aiWrap && aiModal) {
-            var aiGroups = [];
-            try { aiGroups = JSON.parse(aiWrap.getAttribute('data-ai-groups') || '[]'); } catch (e) {}
+        // 닫기(X) / 오버레이 클릭 / Esc (주의사항 모달)
+        Array.prototype.forEach.call(document.querySelectorAll('.js-modal-close'), function (b) { b.addEventListener('click', closeAll); });
+        Array.prototype.forEach.call(document.querySelectorAll('.js-upload-modal'), function (m) {
+            m.addEventListener('click', function (e) { if (e.target === m) { closeAll(); } });
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.querySelector('.js-upload-modal.is-open')) { closeAll(); }
+        });
+
+        // 영상 등록하기 → 주의사항 확인 모달
+        form.addEventListener('submit', function (e) { e.preventDefault(); show('modal-notice'); });
+        // 확인 → 완료(홈으로)
+        var ok = document.querySelector('.js-notice-ok');
+        if (ok) {
+            ok.addEventListener('click', function () {
+                closeAll();
+                location.href = /\.html$/.test(location.pathname) ? 'preview.html' : '/';
+            });
+        }
+
+        // 셀렉트 placeholder 색상 + AI 칩 삭제
+        Array.prototype.forEach.call(document.querySelectorAll('.upload-select'), function (sel) {
+            sel.addEventListener('change', function () { sel.classList.toggle('is-placeholder', !sel.value); });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.upload-chip button'), function (b) {
+            b.addEventListener('click', function () { var c = b.closest('.upload-chip'); if (c) { c.remove(); } });
+        });
+    }
+
+    /**
+     * "사용한 AI" 선택 팝업 (카테고리별 툴, 복수 선택 → 하단 칩).
+     * 업로드 폼과 채널 편집이 같은 목록 · 같은 UI 를 공유한다.
+     *
+     * 마크업 계약 :
+     *   .js-upload-ai[data-ai-groups]    선택지 JSON (필수)
+     *                [data-ai-selected]  초기 선택값 JSON 배열
+     *                [data-ai-modal]     팝업 id (기본 : modal-ai)
+     *                [data-ai-name]      폼 전송용 hidden input name
+     *                [data-ai-label]     미선택 시 버튼 문구
+     *                [data-ai-noun]      "OO N개 선택됨" 의 OO
+     */
+    function initAiPicker() {
+        var wraps = document.querySelectorAll('.js-upload-ai');
+        if (!wraps.length) { return; }
+
+        // 카테고리별 아이콘 (각 타이틀에 맞춘 라인 아이콘)
+        var AI_ICONS = {
+            'plan': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8.9.8 1.5v.6h5.4v-.6c0-.6.3-1.1.8-1.5A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 19h5M10 21.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            'image': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l4.5-4.5L13 17m2-3 2-2 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            'image-edit': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="14" height="12" rx="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="7.5" cy="8.5" r="1.4" stroke="currentColor" stroke-width="1.3"/><path d="M4 14l3.5-3.5L11 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 15.5 20 10l2 2-5.5 5.5-2.6.6.6-2.6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+            'video': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="13" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M16 10.5 21 8v8l-5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 9.5v5l4-2.5-4-2.5Z" fill="currentColor"/></svg>',
+            'avatar': '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3.1-5.8 7-5.8s7 2.4 7 5.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            'lipsync': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 3.5 6.6L4 20l1-3.2A7.9 7.9 0 0 1 4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11.5c1 1.5 5 1.5 6 0M9.5 14.5c.9.8 4.1.8 5 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+            'motion': '<svg viewBox="0 0 24 24" fill="none"><circle cx="14" cy="5.5" r="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M15 9l-4 2.5.5 3.5m0 0L14 20m-2.5-5-3.5-1M15 9l3 1.5M11 11.5 8 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            'voice': '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9.5 21h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            'music': '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v11" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="6.5" cy="18" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16.5" cy="15" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/></svg>',
+            'sfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h3l5 4V5L7 9H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            'edit': '<svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="17" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 8.5 20 16M8.2 15.5 20 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            'color': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+            'upscale': '<svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M20 4l-6 6M10 20H4v-6M4 20l6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            'denoise': '<svg viewBox="0 0 24 24" fill="none"><path d="M3 12h2l2-5 3 10 3-13 3 16 2-8h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            'bg-remove': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 4h3M4 4v3M20 4h-3M20 4v3M4 20h3M4 20v-3M20 20h-3M20 20v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 17c.8-2 2.5-3.2 4.5-3.2s3.7 1.2 4.5 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            '3d': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+            'vfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" fill="currentColor"/></svg>'
+        };
+
+        // 로고가 없는 툴 폴백 : 첫 글자 모노그램(툴별 고유 색) — 추후 실제 로고 교체 지점.
+        function aiMonogram(name) {
+            var m = String(name).replace(/[^0-9A-Za-z가-힣]/g, '');
+            return (m.charAt(0) || '?').toUpperCase();
+        }
+        function aiHue(name) {
+            var h = 0;
+            for (var i = 0; i < name.length; i++) { h = (h * 31 + name.charCodeAt(i)) % 360; }
+            return h;
+        }
+
+        Array.prototype.forEach.call(wraps, function (aiWrap) {
+            var aiModal = document.getElementById(aiWrap.getAttribute('data-ai-modal') || 'modal-ai');
+            if (!aiModal) { return; }
+
             var aiBtn = aiWrap.querySelector('.js-ai-btn');
             var aiBtnText = aiWrap.querySelector('.js-ai-btn-text');
             var aiChips = aiWrap.querySelector('.js-ai-chips');
             var aiList = aiModal.querySelector('.js-ai-modal-list');
+            if (!aiBtn || !aiList || !aiChips) { return; }
+
+            var aiName = aiWrap.getAttribute('data-ai-name') || '';
+            var aiLabel = aiWrap.getAttribute('data-ai-label') || '사용한 AI 선택하기';
+            var aiNoun = aiWrap.getAttribute('data-ai-noun') || '사용한 AI';
+            var aiGroups = [];
             var aiSelected = [];
+            try { aiGroups = JSON.parse(aiWrap.getAttribute('data-ai-groups') || '[]'); } catch (e) {}
+            try { aiSelected = JSON.parse(aiWrap.getAttribute('data-ai-selected') || '[]'); } catch (e) {}
 
-            // 카테고리별 아이콘 (각 타이틀에 맞춘 라인 아이콘)
-            var AI_ICONS = {
-                'plan': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8.9.8 1.5v.6h5.4v-.6c0-.6.3-1.1.8-1.5A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 19h5M10 21.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                'image': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l4.5-4.5L13 17m2-3 2-2 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                'image-edit': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="14" height="12" rx="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="7.5" cy="8.5" r="1.4" stroke="currentColor" stroke-width="1.3"/><path d="M4 14l3.5-3.5L11 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 15.5 20 10l2 2-5.5 5.5-2.6.6.6-2.6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-                'video': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="13" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M16 10.5 21 8v8l-5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 9.5v5l4-2.5-4-2.5Z" fill="currentColor"/></svg>',
-                'avatar': '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3.1-5.8 7-5.8s7 2.4 7 5.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                'lipsync': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 3.5 6.6L4 20l1-3.2A7.9 7.9 0 0 1 4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11.5c1 1.5 5 1.5 6 0M9.5 14.5c.9.8 4.1.8 5 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-                'motion': '<svg viewBox="0 0 24 24" fill="none"><circle cx="14" cy="5.5" r="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M15 9l-4 2.5.5 3.5m0 0L14 20m-2.5-5-3.5-1M15 9l3 1.5M11 11.5 8 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                'voice': '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9.5 21h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                'music': '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v11" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="6.5" cy="18" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16.5" cy="15" rx="2.5" ry="2" stroke="currentColor" stroke-width="1.6"/></svg>',
-                'sfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h3l5 4V5L7 9H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                'edit': '<svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="7" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="17" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 8.5 20 16M8.2 15.5 20 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                'color': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
-                'upscale': '<svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M20 4l-6 6M10 20H4v-6M4 20l6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                'denoise': '<svg viewBox="0 0 24 24" fill="none"><path d="M3 12h2l2-5 3 10 3-13 3 16 2-8h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                'bg-remove': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 4h3M4 4v3M20 4h-3M20 4v3M4 20h3M4 20v-3M20 20h-3M20 20v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 17c.8-2 2.5-3.2 4.5-3.2s3.7 1.2 4.5 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-                '3d': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
-                'vfx': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" fill="currentColor"/></svg>'
-            };
-
-            // 로고가 없는 툴 폴백 : 첫 글자 모노그램(툴별 고유 색) — 추후 실제 로고 교체 지점.
-            function aiMonogram(name) {
-                var m = String(name).replace(/[^0-9A-Za-z가-힣]/g, '');
-                return (m.charAt(0) || '?').toUpperCase();
-            }
-            function aiHue(name) {
-                var h = 0;
-                for (var i = 0; i < name.length; i++) { h = (h * 31 + name.charCodeAt(i)) % 360; }
-                return h;
-            }
-
-            // 모달 내용 구성 (카테고리 헤더 + 툴 핀[앞에 작은 아이콘]). 처음엔 아무것도 선택 안 됨.
+            // 모달 내용 구성 (카테고리 헤더 + 툴 핀[앞에 작은 아이콘])
             aiGroups.forEach(function (g) {
                 var sec = document.createElement('div');
                 sec.className = 'ai-group';
@@ -2172,7 +2451,7 @@
                 Array.prototype.forEach.call(aiList.querySelectorAll('.ai-tool-pill'), function (c) {
                     c.classList.toggle('is-selected', aiSelected.indexOf(c.getAttribute('data-tool')) >= 0);
                 });
-                aiBtnText.textContent = aiSelected.length ? ('사용한 AI ' + aiSelected.length + '개 선택됨') : '사용한 AI 선택하기';
+                if (aiBtnText) { aiBtnText.textContent = aiSelected.length ? (aiNoun + ' ' + aiSelected.length + '개 선택됨') : aiLabel; }
             }
             function renderAiChips() {
                 aiChips.innerHTML = '';
@@ -2186,6 +2465,14 @@
                     x.innerHTML = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
                     x.addEventListener('click', function () { setAi(t, false); });
                     chip.appendChild(x);
+                    // 폼 전송용 값 (name 이 지정된 화면에서만)
+                    if (aiName) {
+                        var hid = document.createElement('input');
+                        hid.type = 'hidden';
+                        hid.name = aiName;
+                        hid.value = t;
+                        chip.appendChild(hid);
+                    }
                     aiChips.appendChild(chip);
                 });
             }
@@ -2203,35 +2490,251 @@
             aiModal.querySelector('.js-ai-modal-ok').addEventListener('click', closeAi);
             aiModal.addEventListener('click', function (e) { if (e.target === aiModal) { closeAi(); } });
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && aiModal.classList.contains('is-open')) { closeAi(); } });
+
+            syncCards();
+            renderAiChips();
+        });
+    }
+
+    /**
+     * 크리에이터 신청 (원페이지 신청서).
+     * - 그룹(기본/채널/활동/약관)별 완료 여부 → 우측 체크리스트 + 진행률
+     * - 주력 카테고리 최대 개수 제한(초과 선택 차단)
+     * - 핸들 입력 → 채널 주소 미리보기
+     * - 필수 4그룹이 모두 채워져야 "신청서 제출" 활성화
+     * 실제 저장·검증은 서버(CreatorApplyController::store)에서 한 번 더 한다.
+     */
+    function initCreatorApply() {
+        var form = document.querySelector('.js-capply');
+        if (!form) { return; }
+
+        var pct = form.querySelector('.js-capply-pct');
+        var fill = form.querySelector('.js-capply-fill');
+        var submit = form.querySelector('.js-capply-submit');
+        var checks = form.querySelectorAll('[data-capply-check]');
+        var cats = form.querySelector('.js-capply-cats');
+        var handle = form.querySelector('.js-capply-handle');
+        var handleUrl = form.querySelector('.js-capply-handle-url');
+
+        // 그룹별 완료 조건
+        function groupDone(key) {
+            if (key === 'basic') {
+                var email = form.querySelector('#ca-email');
+                return !!(email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim()));
+            }
+            if (key === 'channel') {
+                var ok = true;
+                Array.prototype.forEach.call(form.querySelectorAll('[data-capply-group="channel"] .js-capply-required'), function (f) {
+                    if (!f.value.trim()) { ok = false; }
+                });
+                return ok;
+            }
+            if (key === 'activity') {
+                var catOn = form.querySelectorAll('.js-capply-cats input:checked').length > 0;
+                var aiOn = form.querySelectorAll('.capply-ai .upload-chip').length > 0;
+                var plan = form.querySelector('#ca-plan');
+                return catOn && aiOn && !!(plan && plan.value);
+            }
+            if (key === 'terms') {
+                var all = form.querySelectorAll('.js-capply-req-term');
+                var on = form.querySelectorAll('.js-capply-req-term:checked');
+                return all.length > 0 && all.length === on.length;
+            }
+            return false;
         }
 
-        // 닫기(X) / 오버레이 클릭 / Esc (주의사항 모달)
-        Array.prototype.forEach.call(document.querySelectorAll('.js-modal-close'), function (b) { b.addEventListener('click', closeAll); });
-        Array.prototype.forEach.call(document.querySelectorAll('.js-upload-modal'), function (m) {
-            m.addEventListener('click', function (e) { if (e.target === m) { closeAll(); } });
-        });
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && document.querySelector('.js-upload-modal.is-open')) { closeAll(); }
-        });
-
-        // 영상 등록하기 → 주의사항 확인 모달
-        form.addEventListener('submit', function (e) { e.preventDefault(); show('modal-notice'); });
-        // 확인 → 완료(홈으로)
-        var ok = document.querySelector('.js-notice-ok');
-        if (ok) {
-            ok.addEventListener('click', function () {
-                closeAll();
-                location.href = /\.html$/.test(location.pathname) ? 'preview.html' : '/';
+        function sync() {
+            var done = 0;
+            Array.prototype.forEach.call(checks, function (li) {
+                var ok = groupDone(li.getAttribute('data-capply-check'));
+                li.classList.toggle('is-done', ok);
+                if (ok) { done += 1; }
             });
+            var rate = checks.length ? Math.round(done / checks.length * 100) : 0;
+            if (pct) { pct.textContent = rate + '%'; }
+            if (fill) { fill.style.width = rate + '%'; }
+            if (submit) { submit.disabled = done !== checks.length; }
         }
 
-        // 셀렉트 placeholder 색상 + AI 칩 삭제
-        Array.prototype.forEach.call(document.querySelectorAll('.upload-select'), function (sel) {
-            sel.addEventListener('change', function () { sel.classList.toggle('is-placeholder', !sel.value); });
+        // 주력 카테고리 : 최대 개수 초과 시 선택 차단
+        if (cats) {
+            var max = parseInt(cats.getAttribute('data-max'), 10) || 2;
+            cats.addEventListener('change', function (e) {
+                var boxes = cats.querySelectorAll('input');
+                var on = cats.querySelectorAll('input:checked');
+                if (on.length > max && e.target.checked) {
+                    e.target.checked = false;
+                    on = cats.querySelectorAll('input:checked');
+                }
+                cats.classList.toggle('is-full', on.length >= max);
+                if (boxes.length) { sync(); }
+            });
+            cats.classList.toggle('is-full', cats.querySelectorAll('input:checked').length >= max);
+        }
+
+        // 핸들 → 채널 주소 미리보기 (허용 문자만 남김)
+        if (handle && handleUrl) {
+            var baseUrl = 'aiveon.kr/@';
+            var updateUrl = function () {
+                handle.value = handle.value.replace(/[^0-9A-Za-z_]/g, '');
+                handleUrl.textContent = baseUrl + handle.value;
+            };
+            handle.addEventListener('input', updateUrl);
+            updateUrl();
+        }
+
+        form.addEventListener('input', sync);
+        form.addEventListener('change', sync);
+        // AI 툴은 팝업에서 칩이 바뀌므로 DOM 변화를 관찰해 반영
+        var chips = form.querySelector('.capply-ai .js-ai-chips');
+        if (chips && window.MutationObserver) {
+            new MutationObserver(sync).observe(chips, { childList: true });
+        }
+        sync();
+    }
+
+    /**
+     * 1:1 문의 > 내 문의 내역 아코디언.
+     * 행을 누르면 문의 본문과 답변을 펼치고, 다른 행은 접는다(FAQ와 동일한 동작).
+     */
+    function initMyInquiries() {
+        var rows = document.querySelectorAll('.js-myq-toggle');
+        if (!rows.length) { return; }
+
+        Array.prototype.forEach.call(rows, function (row) {
+            row.addEventListener('click', function () {
+                var item = row.closest('.myq__item');
+                var panel = item.querySelector('.myq__panel');
+                var open = item.classList.contains('is-open');
+
+                // 하나만 펼침
+                Array.prototype.forEach.call(document.querySelectorAll('.myq__item.is-open'), function (o) {
+                    o.classList.remove('is-open');
+                    var p = o.querySelector('.myq__panel');
+                    if (p) { p.hidden = true; }
+                    var b = o.querySelector('.js-myq-toggle');
+                    if (b) { b.setAttribute('aria-expanded', 'false'); }
+                });
+
+                if (!open) {
+                    item.classList.add('is-open');
+                    if (panel) { panel.hidden = false; }
+                    row.setAttribute('aria-expanded', 'true');
+                }
+            });
         });
-        Array.prototype.forEach.call(document.querySelectorAll('.upload-chip button'), function (b) {
-            b.addEventListener('click', function () { var c = b.closest('.upload-chip'); if (c) { c.remove(); } });
+    }
+
+    /**
+     * 마이페이지 대시보드 (통합 화면).
+     * 모바일 라이브러리 메뉴의 "회원정보 변경" → 회원정보 카드만 보이는 화면으로 전환하고,
+     * 카드의 뒤로가기(화살표)로 라이브러리에 복귀한다. 데스크톱은 #account 앵커 이동 그대로.
+     */
+    function initMypageDashboard() {
+        var dash = document.querySelector('.mypage--library');
+        if (!dash || !dash.querySelector('.mydash-account')) { return; }
+
+        function setOpen(on) {
+            dash.classList.toggle('is-account-open', on);
+            if (on) { window.scrollTo(0, 0); }
+        }
+        Array.prototype.forEach.call(dash.querySelectorAll('.js-account-open'), function (b) {
+            b.addEventListener('click', function (e) {
+                if (window.matchMedia && window.matchMedia('(max-width: 767px)').matches) {
+                    e.preventDefault();
+                    setOpen(true);
+                }
+            });
         });
+        var back = dash.querySelector('.js-account-back');
+        if (back) { back.addEventListener('click', function () { setOpen(false); }); }
+    }
+
+    /**
+     * 마이페이지 사이드바 드로어 (태블릿 768~1023).
+     * 데스크톱은 좌측 고정 사이드바 그대로, 태블릿에서는 본문 위에 쌓이는 대신
+     * 우측 상단 햄버거 버튼 → 우측 슬라이드 드로어로 연다. (마크업 주입 · 전 마이페이지 공통)
+     * 모바일(≤767)은 기존 패턴(라이브러리 메뉴 / 뒤로가기) 유지.
+     */
+    function initMypageSideDrawer() {
+        var mypage = document.querySelector('.mypage');
+        if (!mypage || !mypage.querySelector('.mypage__side')) { return; }
+        if (mypage.querySelector('.mypage-menu-btn')) { return; }
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mypage-menu-btn';
+        btn.setAttribute('aria-label', '마이페이지 메뉴 열기');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+        var dim = document.createElement('div');
+        dim.className = 'mypage-side-dim';
+        dim.setAttribute('aria-hidden', 'true');
+
+        function setOpen(on) {
+            mypage.classList.toggle('side-open', on);
+            btn.setAttribute('aria-expanded', String(on));
+            document.body.style.overflow = on ? 'hidden' : '';
+        }
+        btn.addEventListener('click', function () { setOpen(!mypage.classList.contains('side-open')); });
+        dim.addEventListener('click', function () { setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && mypage.classList.contains('side-open')) { setOpen(false); }
+        });
+        /* 드로어 안 링크 이동 시 잠금 해제 */
+        mypage.querySelector('.mypage__side').addEventListener('click', function (e) {
+            if (e.target.closest('a')) { setOpen(false); }
+        });
+
+        /* 버튼은 GNB 우측(프로필 옆)에, 딤은 본문에 (GNB 없으면 본문 폴백) */
+        var utils = document.querySelector('.gnb__utils');
+        if (utils) { utils.appendChild(btn); } else { mypage.appendChild(btn); }
+        mypage.appendChild(dim);
+    }
+
+    /**
+     * 스크롤 자동 로딩 (시청 기록·즐겨찾기 전체보기).
+     * .js-more 컨테이너의 .js-more-item[hidden] 을 data-more-batch 개수만큼씩,
+     * 하단 센티널(.js-more-sentinel)이 뷰포트에 가까워질 때마다 자동 공개한다.
+     * 남은 항목이 없으면 스피너를 숨긴다. 버튼 없이 스크롤만으로 이어진다.
+     * 실서비스에서는 reveal() 자리에서 다음 페이지 API 를 호출하면 된다.
+     */
+    function initLoadMore() {
+        var wrap = document.querySelector('.js-more');
+        if (!wrap) { return; }
+
+        var batch = parseInt(wrap.getAttribute('data-more-batch'), 10) || 8;
+        var sentinel = document.querySelector('.js-more-sentinel');
+
+        function hiddenItems() { return wrap.querySelectorAll('.js-more-item[hidden]'); }
+        function sync() {
+            if (sentinel) { sentinel.hidden = !hiddenItems().length; }
+        }
+        function reveal() {
+            Array.prototype.slice.call(hiddenItems(), 0, batch).forEach(function (el) { el.hidden = false; });
+            sync();
+        }
+        /* 공개 후에도 센티널이 여전히 화면 근처면 다음 묶음을 이어서 공개 (넓은 화면 채움) */
+        function maybeReveal() {
+            if (!sentinel || !hiddenItems().length) { return; }
+            var r = sentinel.getBoundingClientRect();
+            if (r.top < window.innerHeight + 300) {
+                reveal();
+                window.requestAnimationFrame(maybeReveal);
+            }
+        }
+
+        if (sentinel && window.IntersectionObserver) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) { if (en.isIntersecting) { maybeReveal(); } });
+            }, { rootMargin: '300px 0px' });
+            io.observe(sentinel);
+        } else {
+            /* IntersectionObserver 미지원 : 전부 공개 */
+            while (hiddenItems().length) { reveal(); }
+        }
+        sync();
     }
 
     function init() {
@@ -2243,6 +2746,8 @@
         initMobileDock();
         initMobileGnbLabels();
         initUploadFlow();
+        initAiPicker();
+        initCreatorApply();
         initStickyGnb();
         initPasswordToggles();
         initTermsAgree();
@@ -2259,6 +2764,10 @@
         initCommentReply();
         initAuthDemo();
         initFaq();
+        initMyInquiries();
+        initMypageDashboard();
+        initMypageSideDrawer();
+        initLoadMore();
         initAvatarModal();
         initMypageStudioNav();
         initMypageBack();

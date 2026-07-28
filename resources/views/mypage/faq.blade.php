@@ -16,6 +16,7 @@
             <div class="cs-tabs" role="tablist">
                 <a href="{{ route('faq') }}" class="cs-tab is-active" aria-current="page">자주하는 질문</a>
                 <a href="{{ route('inquiry') }}" class="cs-tab">문의하기</a>
+                <a href="{{ route('inquiries') }}" class="cs-tab">내 문의 내역</a>
             </div>
 
             <div class="faq__search">

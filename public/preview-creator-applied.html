@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>크리에이터 신청 완료 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/creator/applied.blade.php 정적 재현.
+        신청 접수(심사중) 안내 + 승인 후 진행 순서. -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+        <!-- 크리에이터 신청 완료 (심사중) -->
+        <section class="capply capply--done">
+            <div class="capply-done">
+                <span class="capply-done__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5.2l3.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <h1 class="capply-done__title">신청이 접수되었습니다</h1>
+                <p class="capply-done__desc">담당자가 계정 정보와 활동 계획을 확인하고 있어요.<br>결과는 <strong>3영업일 이내</strong>에 이메일과 알림으로 안내드립니다.</p>
+                <dl class="capply-done__meta">
+                    <div><dt>신청 번호</dt><dd>CR-2026-0728-041</dd></div>
+                    <div><dt>신청일</dt><dd>2026-07-28 14:20</dd></div>
+                    <div><dt>현재 상태</dt><dd class="is-review">심사중</dd></div>
+                </dl>
+                <div class="capply-done__actions">
+                    <a href="preview-creator-apply.html" class="btn btn--ghost">신청 내용 보기</a>
+                    <a href="preview.html" class="btn btn--primary">홈으로</a>
+                </div>
+            </div>
+            <div class="capply-next">
+                <h2 class="capply-next__title">승인 후 이렇게 진행됩니다</h2>
+                <ol class="capply-next__list">
+                    <li class="capply-next__item"><p class="capply-next__no">NEXT 01</p><p class="capply-next__name">데뷔 영상 3편 업로드</p><p class="capply-next__desc">승인 안내를 받으면 크리에이터 스튜디오에서 영상을 올려주세요.</p></li>
+                    <li class="capply-next__item"><p class="capply-next__no">NEXT 02</p><p class="capply-next__name">최종 검토</p><p class="capply-next__desc">품질검사와 정책 심사를 거칩니다.</p></li>
+                    <li class="capply-next__item"><p class="capply-next__no">NEXT 03</p><p class="capply-next__name">채널 공개 · 수익 집계 시작</p><p class="capply-next__desc">채널이 공개되고 광고·구독 수익이 쌓이기 시작합니다.</p></li>
+                </ol>
+            </div>
+        </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>

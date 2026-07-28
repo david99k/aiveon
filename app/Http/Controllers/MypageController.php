@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -13,33 +14,12 @@ use Illuminate\View\View;
  */
 class MypageController
 {
-    /** 회원정보 */
-    public function show(): View
-    {
-        return view('mypage.show', [
-            'account' => [
-                'avatar' => 'images/common/avatar_user.jpg',
-                'username' => 'User1555846',
-                'posts' => '10',
-                'subscribers' => '36만',
-            ],
-            // 모든 항목에 '변경' 링크 노출 (시안 업데이트로 아이디 필드 제거됨)
-            'fields' => [
-                ['label' => '닉네임', 'value' => 'synergy_on', 'change' => true],
-                ['label' => '비번', 'value' => '*************', 'change' => true],
-                ['label' => '이메일', 'value' => 'abc****@gmail.com', 'change' => true],
-                ['label' => '전화번호', 'value' => '010-****-88777', 'change' => true],
-            ],
-            'subscription' => 'Free',
-        ]);
-    }
-
     /**
-     * 마이페이지 허브 (사이드바 "마이페이지").
-     * 시청 기록 + 즐겨찾기를 한 화면에 모아 보여준다.
-     * (구독중인 크리에이터는 "구독" 페이지에서 다룬다)
+     * 마이페이지 대시보드 (회원정보 + 허브 통합 · 단일 진입점).
+     * 프로필 헤더 + 요약 카드(플랜·시청기록·즐겨찾기·내 문의) + 시청 기록 + 즐겨찾기 + 회원정보 카드.
+     * 우측 상단 프로필 메뉴·하단 독·사이드바 "마이페이지"가 모두 이 화면으로 온다.
      */
-    public function favorites(): View
+    public function show(): View
     {
         $posters = ['poster_01', 'poster_02', 'poster_03', 'poster_04', 'poster_05', 'poster_06'];
         $items = [];
@@ -56,9 +36,79 @@ class MypageController
             ];
         }
 
-        return view('mypage.favorites', [
+        $inquiries = $this->inquiries();
+
+        return view('mypage.dashboard', [
+            'account' => [
+                'avatar' => 'images/common/avatar_user.jpg',
+                'username' => 'User1555846',
+                'posts' => '10',
+                'subscribers' => '36만',
+            ],
+            // 모든 항목에 '변경' 링크 노출 (시안 업데이트로 아이디 필드 제거됨)
+            'fields' => [
+                ['label' => '닉네임', 'value' => 'synergy_on'],
+                ['label' => '비번', 'value' => '*************'],
+                ['label' => '이메일', 'value' => 'abc****@gmail.com'],
+                ['label' => '전화번호', 'value' => '010-****-88777'],
+            ],
+            'subscription' => 'Free',
             'history' => $this->watchHistory(),
             'favorites' => $items,
+            'inquirySummary' => [
+                'total' => count($inquiries),
+                'progress' => count(array_filter($inquiries, fn ($q) => $q['status'] === 'progress')),
+                'answered' => count(array_filter($inquiries, fn ($q) => $q['status'] === 'answered')),
+            ],
+        ]);
+    }
+
+    /**
+     * 즐겨찾기 전체보기 (대시보드 "즐겨찾기 > 전체보기").
+     * 시청 기록 전체보기와 동일한 포스터 그리드 + 스크롤 배치 로딩(initLoadMore).
+     */
+    public function favorites(): View
+    {
+        $posters = ['poster_01', 'poster_02', 'poster_03', 'poster_04', 'poster_05', 'poster_06'];
+        $items = [];
+        for ($i = 0; $i < 12; $i++) {
+            $n = $i % count($posters);
+            $items[] = [
+                'title' => $this->posterTitles()[$n],
+                'creator' => $n % 2 === 0 ? '거스구스' : '몽글스튜디오',
+                'creator_avatar' => 'images/main/creator_profile_0' . ($n + 1) . '.jpg',
+                'views' => '12만',
+                'thumb' => 'images/main/' . $posters[$n] . '.jpg',
+                'url' => route('detail'),
+            ];
+        }
+
+        return view('mypage.favorites', [
+            'favorites' => $items,
+            'batch' => 8,
+        ]);
+    }
+
+    /**
+     * 시청 기록 전체보기 (대시보드 "시청 기록 > 전체보기").
+     * 포스터 썸네일 그리드 + 스크롤 배치 로딩(8개 단위, initLoadMore).
+     * 실서비스 : 페이지네이션 API 로 교체하는 지점 (시안은 전체 렌더 후 배치 공개).
+     */
+    public function history(): View
+    {
+        $base = $this->watchHistory();
+        $dates = ['오늘', '어제', '2일 전', '3일 전', '5일 전', '1주 전', '2주 전', '3주 전'];
+        $items = [];
+        for ($i = 0; $i < 24; $i++) {
+            $item = $base[$i % count($base)];
+            $item['progress'] = str_replace('지난 시청 ', '', $item['progress']);
+            $item['watched'] = $dates[intdiv($i, 3) % count($dates)];
+            $items[] = $item;
+        }
+
+        return view('mypage.history', [
+            'history' => $items,
+            'batch' => 8,
         ]);
     }
 
@@ -182,7 +232,7 @@ class MypageController
         ]);
     }
 
-    /** 1:1 문의 (자주 찾는 질문 칩 + 문의 폼) */
+    /** 1:1 문의 - 문의하기 (자주 찾는 질문 칩 + 문의 폼. 내역은 "내 문의 내역" 탭으로 분리) */
     public function inquiry(): View
     {
         return view('mypage.inquiry', [
@@ -194,6 +244,76 @@ class MypageController
             ],
             'types' => ['사이트 이용', '회원/로그인', '환불/해지 신청', '장애신고', '기타'],
         ]);
+    }
+
+    /** 내 문의 내역 (고객센터 3번째 탭 · 접수한 문의와 답변 확인) */
+    public function inquiryList(): View
+    {
+        return view('mypage.inquiries', [
+            'inquiries' => $this->inquiries(),
+        ]);
+    }
+
+    /**
+     * 내 문의 내역 (최신순).
+     * status : answered(답변 완료) / progress(처리중) / received(접수)
+     * 실서비스에서는 로그인 사용자의 문의 목록을 조회한다.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function inquiries(): array
+    {
+        return [
+            [
+                'no' => 'Q-20260726-0142',
+                'type' => '환불/해지 신청',
+                'title' => '프리미엄 구독 해지 후 환불 문의',
+                'body' => "7월 24일에 프리미엄 월간을 결제했는데 당일에 해지했습니다.\n환불이 가능한지 확인 부탁드립니다.",
+                'date' => '2026-07-26',
+                'status' => 'answered',
+                'statusLabel' => '답변 완료',
+                'answer' => [
+                    'date' => '2026-07-27',
+                    'body' => "안녕하세요, AIVEON 고객센터입니다.\n결제 후 7일 이내이고 시청 이력이 없어 전액 환불 대상입니다. 결제하신 수단으로 3~5영업일 내 환불 처리되며, 처리 완료 시 이메일로 안내드리겠습니다.\n이용에 불편을 드려 죄송합니다.",
+                ],
+            ],
+            [
+                'no' => 'Q-20260722-0098',
+                'type' => '장애신고',
+                'title' => '모바일에서 영상이 자꾸 끊깁니다',
+                'body' => "안드로이드 앱에서 드라마 재생 시 2~3분마다 버퍼링이 발생합니다.\nWi-Fi 환경이고 다른 앱은 정상입니다.",
+                'date' => '2026-07-22',
+                'status' => 'answered',
+                'statusLabel' => '답변 완료',
+                'answer' => [
+                    'date' => '2026-07-23',
+                    'body' => "안녕하세요, AIVEON 고객센터입니다.\n해당 시간대 특정 지역 전송망 지연이 확인되어 조치를 완료했습니다. 앱을 최신 버전으로 업데이트하신 뒤에도 동일한 증상이 있으면 접속 시간과 콘텐츠명을 남겨주세요.\n감사합니다.",
+                ],
+            ],
+            [
+                'no' => 'Q-20260728-0007',
+                'type' => '회원/로그인',
+                'title' => '크리에이터 신청 후 심사 기간 문의',
+                'body' => "어제 크리에이터 신청을 접수했는데 결과가 언제 나오는지 궁금합니다.",
+                'date' => '2026-07-28',
+                'status' => 'progress',
+                'statusLabel' => '처리중',
+                'answer' => null,
+            ],
+            [
+                'no' => 'Q-20260718-0361',
+                'type' => '사이트 이용',
+                'title' => '찜한 콘텐츠가 목록에서 사라졌어요',
+                'body' => "즐겨찾기에 담아둔 작품 일부가 보이지 않습니다.",
+                'date' => '2026-07-18',
+                'status' => 'answered',
+                'statusLabel' => '답변 완료',
+                'answer' => [
+                    'date' => '2026-07-19',
+                    'body' => "안녕하세요, AIVEON 고객센터입니다.\n권리사 사정으로 서비스가 종료된 작품은 즐겨찾기 목록에서도 자동으로 제외됩니다. 확인 결과 2편이 이에 해당하며, 나머지 목록은 정상입니다.\n감사합니다.",
+                ],
+            ],
+        ];
     }
 
     /** 공지사항 목록 (일반 게시판 형태 : 고정 공지 + 목록 + 검색 + 페이지네이션) */

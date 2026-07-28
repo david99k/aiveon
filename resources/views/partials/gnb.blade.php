@@ -38,7 +38,17 @@
         <a href="{{ route('search') }}" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
             <img src="{{ asset('images/common/ic_search.svg') }}" alt="">
         </a>
-        <a href="{{ route('upload') }}" class="gnb__upload">업로드 +</a>
+        {{--
+            크리에이터 진입점 : 승인 전에는 신청 페이지로, 승인 후에는 업로드로 보낸다.
+            실서비스에서는 로그인 사용자의 크리에이터 승인 상태를 $isCreator 로 내려주면 된다.
+            (시안 데모에서는 main.js 의 상태 토글이 텍스트·링크를 바꾼다)
+        --}}
+        @php($isCreator = $isCreator ?? false)
+        @if ($isCreator)
+            <a href="{{ route('upload') }}" class="gnb__upload">업로드 +</a>
+        @else
+            <a href="{{ route('creator.apply') }}" class="gnb__upload gnb__upload--apply">크리에이터 신청하기</a>
+        @endif
 
         {{-- 프로필 : 로그인 전 기본 아이콘 + 호버 시 로그인 유도 팝업 / 로그인 후 유저 아바타 --}}
         <div class="gnb__profile-wrap">

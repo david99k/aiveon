@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="preview-favorites.html#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
                     <a href="#" class="mypage__subscribe">Premium 구독</a>
 
                     <hr class="mypage__side-divider">
@@ -161,16 +161,13 @@
 
                         <section class="chedit__group">
                             <h3 class="chedit__group-title">주로 사용하는 AI 툴</h3>
-                            <p class="chedit__hint">채널 정보에 표시됩니다. 업로드 시 기록한 &ldquo;사용한 AI&rdquo; 중에서 골라주세요.</p>
-                            <div class="chedit__tools">
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Midjourney" checked><span>Midjourney</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Runway" checked><span>Runway</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="ElevenLabs" checked><span>ElevenLabs</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Premiere Pro" checked><span>Premiere Pro</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Kling"><span>Kling</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Suno"><span>Suno</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="Photoshop"><span>Photoshop</span></label>
-                                <label class="chedit__tool"><input type="checkbox" name="tools[]" value="ChatGPT Plus/Pro"><span>ChatGPT Plus/Pro</span></label>
+                            <p class="chedit__hint">채널 정보에 표시됩니다 · 카테고리별로 여러 개 선택할 수 있어요</p>
+                            <div class="upload-ai chedit__ai js-upload-ai" data-ai-groups='[{"title":"기획","icon":"plan","tools":["ChatGPT Plus/Pro","Claude Pro","Gemini Advanced","Sudowrite","NovelCrafter","Notion AI"]},{"title":"이미지 생성","icon":"image","tools":["Midjourney","Flux API","Ideogram Pro","DALL·E","Adobe Firefly","Leonardo AI","Recraft Pro"]},{"title":"이미지 편집","icon":"image-edit","tools":["Photoshop","Magnific AI","Krea AI","ClipDrop Pro","Topaz Photo AI"]},{"title":"영상 생성","icon":"video","tools":["Veo","Kling","Runway","Hailuo","Luma Dream Machine","Pika","PixVerse","Genmo","Haiper"]},{"title":"AI 아바타","icon":"avatar","tools":["HeyGen","Synthesia","Tavus","D-ID","Captions AI"]},{"title":"립싱크","icon":"lipsync","tools":["HeyGen","SyncLabs"]},{"title":"모션캡처","icon":"motion","tools":["Move AI","Rokoko Vision","Wonder Studio","RADiCAL","Plask"]},{"title":"음성 생성","icon":"voice","tools":["ElevenLabs","Cartesia","PlayHT","Resemble AI","Azure TTS","Google TTS"]},{"title":"음악 생성","icon":"music","tools":["Suno","Udio","Stable Audio","Loudly","AIVA","Soundraw"]},{"title":"효과음","icon":"sfx","tools":["ElevenLabs SFX","Stable Audio"]},{"title":"영상 편집","icon":"edit","tools":["Premiere Pro","DaVinci Resolve Studio","Filmora","Descript","CapCut Pro"]},{"title":"색보정","icon":"color","tools":["Colourlab AI","DaVinci Studio","Premiere AI"]},{"title":"업스케일링","icon":"upscale","tools":["Topaz Video AI"]},{"title":"노이즈 제거","icon":"denoise","tools":["Adobe Enhance Premium","Topaz Audio","Krisp","Auphonic"]},{"title":"배경 제거","icon":"bg-remove","tools":["Remove.bg","ClipDrop","Firefly"]},{"title":"3D 생성","icon":"3d","tools":["Tripo AI","Meshy","Rodin","Luma Genie"]},{"title":"AI VFX","icon":"vfx","tools":["Wonder Studio","Runway","Adobe Firefly","Cascadeur Pro"]}]' data-ai-selected='["Midjourney","Runway","ElevenLabs","Premiere Pro"]' data-ai-name="tools[]" data-ai-label="AI 툴 선택하기" data-ai-noun="AI 툴">
+                                <button type="button" class="upload-ai-btn js-ai-btn" aria-haspopup="dialog">
+                                    <span class="js-ai-btn-text">AI 툴 선택하기</span>
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <div class="upload-chips js-ai-chips"></div>
                             </div>
                         </section>
 
@@ -223,6 +220,21 @@
             </div>
             <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
         </footer>
+    </div>
+
+    <!-- AI 툴 선택 팝업 (업로드 폼과 동일한 UI · initAiPicker 가 내용 구성) -->
+    <div class="modal js-ai-modal" id="modal-ai" role="dialog" aria-modal="true" aria-labelledby="modal-ai-title">
+        <div class="modal__box modal__box--ai">
+            <div class="modal__head">
+                <h2 class="modal__title" id="modal-ai-title">AI 툴 선택</h2>
+                <button type="button" class="modal__close js-ai-modal-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            </div>
+            <p class="modal__desc">채널에 표시할 AI 툴을 선택해 주세요 (복수 선택 가능)</p>
+            <div class="ai-modal__list js-ai-modal-list"></div>
+            <div class="modal__actions">
+                <button type="button" class="btn btn--primary js-ai-modal-ok">선택 완료</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/main.js" defer></script>

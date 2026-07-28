@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>마이페이지 · AIVEON (QA 프리뷰)</title>
     <!--
-        [QA 전용] resources/views/mypage/favorites.blade.php 정적 재현.
+        [QA 전용] resources/views/mypage/dashboard.blade.php 정적 재현.
         마이페이지 좌측 사이드바 "즐겨찾기" 클릭 시 진입. (Figma 699:7870)
     -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -48,7 +48,7 @@
         </header>
 
         <main id="content" class="content">
-            <section class="mypage">
+            <section class="mypage mypage--library">
                 <!-- 좌측 계정 사이드바 -->
                 <aside class="mypage__side" aria-label="계정 메뉴">
                     <div class="mypage__profile">
@@ -59,13 +59,13 @@
                         </div>
                     </div>
 
-                    <a href="preview-mypage.html" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="preview-favorites.html#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
                     <a href="#" class="mypage__subscribe">Premium 구독</a>
 
                     <hr class="mypage__side-divider">
 
                     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
-                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                        <a href="preview-favorites.html" class="is-active" aria-current="page"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
                         <a href="preview-subscriptions.html"><span class="mypage__side-nav-icon icon-subscribe" aria-hidden="true"></span>구독</a>
                         <div class="mypage__side-group">
                             <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
@@ -88,47 +88,219 @@
                     </nav>
                 </aside>
 
-                <!-- 우측 : 마이페이지 허브 (시청 기록 + 즐겨찾기) -->
-                <div class="mypage__content">
+                <div class="mypage-lib">
+                    <div class="mypage-lib__profile">
+                        <img class="mypage-lib__avatar" src="images/common/avatar_user.jpg" alt="프로필 이미지">
+                        <div class="mypage-lib__id">
+                            <strong class="mypage-lib__name">User1555846</strong>
+                            <a href="#" class="mypage-lib__channel">@synergy_on · 채널 보기 <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        </div>
+                    </div>
+
+                    <section class="mypage-lib__section" aria-label="시청 기록">
+                        <a href="#" class="mypage-lib__section-head">시청 기록 <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        <div class="scroll-x mypage-lib__row" data-scroll-x tabindex="0" role="region" aria-label="시청 기록">
+                            <a href="preview-detail.html" class="mypage-lib__card"><div class="mypage-lib__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"></div><p class="mypage-lib__card-title">그 계절, 우리가 사랑한 시간</p><p class="mypage-lib__card-meta">거스구스</p></a>
+                            <a href="preview-detail.html" class="mypage-lib__card"><div class="mypage-lib__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"></div><p class="mypage-lib__card-title">나의 알고리즘</p><p class="mypage-lib__card-meta">몽글스튜디오</p></a>
+                            <a href="preview-detail.html" class="mypage-lib__card"><div class="mypage-lib__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></div><p class="mypage-lib__card-title">밤이 우리를 부를 때</p><p class="mypage-lib__card-meta">거스구스</p></a>
+                            <a href="preview-detail.html" class="mypage-lib__card"><div class="mypage-lib__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"></div><p class="mypage-lib__card-title">아기 고양이의 모험</p><p class="mypage-lib__card-meta">몽글스튜디오</p></a>
+                            <a href="preview-detail.html" class="mypage-lib__card"><div class="mypage-lib__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"></div><p class="mypage-lib__card-title">한 소녀의 피클볼 도전기</p><p class="mypage-lib__card-meta">거스구스</p></a>
+                        </div>
+                    </section>
+
+                    <nav class="mypage-lib__menu" aria-label="마이페이지 메뉴">
+                        <a href="#account" class="js-account-open"><span class="mypage-lib__menu-icon icon-setting" aria-hidden="true"></span>회원정보 변경</a>
+                        <a href="preview-subscriptions.html"><span class="mypage-lib__menu-icon icon-subscribe" aria-hidden="true"></span>구독</a>
+                        <a href="preview-studio.html"><span class="mypage-lib__menu-icon icon-creator" aria-hidden="true"></span>크리에이터 스튜디오</a>
+                        <a href="preview-faq.html"><span class="mypage-lib__menu-icon icon-faq" aria-hidden="true"></span>고객센터</a>
+                        <a href="preview-my-inquiries.html"><span class="mypage-lib__menu-icon icon-inquiry" aria-hidden="true"></span>내 문의 내역</a>
+                        <a href="preview-notice.html"><span class="mypage-lib__menu-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage-lib__menu-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage-lib__menu-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </div>
+
+                <!-- 데스크톱 : 대시보드 (회원정보 + 허브 통합) -->
+                <div class="mypage__content mypage__content--dash">
                     <h2 class="mypage__page-title">마이페이지</h2>
 
+                    <div class="mypage__header">
+                        <div class="mypage__avatar-wrap">
+                            <img class="mypage__avatar" src="images/common/avatar_user.jpg" alt="프로필 이미지">
+                            <button type="button" class="mypage__avatar-gear" aria-label="프로필 이미지 변경">
+                                <img src="images/mypage/ic_setting.svg" alt="">
+                            </button>
+                        </div>
+                        <div class="mypage__identity">
+                            <strong class="mypage__username">User1555846</strong>
+                            <div class="mypage__stats">
+                                <span>게시물 10</span>
+                                <span>구독자 36만</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <section class="hub">
-                        <div class="hub__head">
-                            <h3 class="hub__title">시청 기록</h3>
-                            <a href="#" class="hub__more">전체보기 &gt;</a>
+                    <!-- 요약 카드 : 구독 플랜 / 시청 기록 / 즐겨찾기 / 내 문의 -->
+                    <div class="mydash-cards">
+                        <a href="#" class="mydash-card">
+                            <p class="mydash-card__label">구독 중인 플랜</p>
+                            <p class="mydash-card__value js-plan-label">Free</p>
+                            <p class="mydash-card__sub">프리미엄으로 더 많은 콘텐츠 보기</p>
+                        </a>
+                        <a href="#history" class="mydash-card">
+                            <p class="mydash-card__label">시청 기록</p>
+                            <p class="mydash-card__value"><em>6</em>편</p>
+                            <p class="mydash-card__sub">이어보기 : 그 계절, 우리가 사랑한 시간</p>
+                        </a>
+                        <a href="#favorites" class="mydash-card">
+                            <p class="mydash-card__label">즐겨찾기</p>
+                            <p class="mydash-card__value"><em>12</em>편</p>
+                            <p class="mydash-card__sub">찜한 콘텐츠 모아보기</p>
+                        </a>
+                        <a href="preview-my-inquiries.html" class="mydash-card">
+                            <p class="mydash-card__label">내 문의 내역</p>
+                            <p class="mydash-card__value"><em>4</em>건</p>
+                            <p class="mydash-card__sub">처리중 1건 · 답변 완료 3건</p>
+                        </a>
+                    </div>
+
+                    <!-- 회원정보 (사이드바 "회원정보 변경 >" · 모바일 라이브러리 메뉴에서 진입) -->
+                    <section class="mydash-account" id="account" aria-label="회원정보">
+                        <button type="button" class="mydash-back js-account-back" aria-label="마이페이지로 돌아가기">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <h3 class="mydash-account__title">회원정보</h3>
+
+                    <div class="mypage__form">
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">닉네임</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">synergy_on</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
                         </div>
-                        <div class="scroll-x hub__row" data-scroll-x tabindex="0" role="region" aria-label="시청 기록">
-                            <ul class="poster-list">
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 82%</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 45%</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 100%</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 30%</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 12%</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
-                                <li><div class="poster-card hub-history"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="hub-history__progress">지난 시청 68%</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div></li>
-                            </ul>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">비번</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">*************</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
                         </div>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">이메일</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">abc****@gmail.com</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+                        <div class="mypage__field">
+                            <span class="mypage__field-label">전화번호</span>
+                            <div class="mypage__field-box">
+                                <span class="mypage__field-value">010-****-88777</span>
+                                <button type="button" class="mypage__field-change">변경</button>
+                            </div>
+                        </div>
+
+                        <div class="mypage__field mypage__field--plain">
+                            <span class="mypage__field-label">구독 내용</span>
+                            <span class="mypage__field-plan js-plan-label">Free</span>
+                        </div>
+                    </div>
+
+                    <div class="mypage__actions">
+                        <button type="button" class="mypage__btn mypage__btn--primary">완료</button>
+                        <button type="button" class="mypage__btn mypage__btn--cancel">취소</button>
+                    </div>
                     </section>
 
-                    <section class="hub">
-                        <div class="hub__head">
-                            <h3 class="hub__title">즐겨찾기 <span class="hub__count">12</span></h3>
-                        </div>
-                        <div class="fav-grid">
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">나의 알고리즘</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_02.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">밤이 우리를 부를 때</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">마법 같은 우리의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_04.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">아기 고양이의 모험</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_05.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div>
-                            <div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">한 소녀의 피클볼 도전기</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_06.jpg" alt="" loading="lazy">몽글스튜디오 · 조회수 12만</span></div></a></div>
-                        </div>
-                    </section>
+                    <!-- 시청 기록 · 즐겨찾기 : 좌우 패널 (크리에이터 스튜디오 "최근 콘텐츠 성과" 패턴 재사용) -->
+                    <div class="studio__grid mydash-grid">
+                        <section class="studio__panel mydash-section" id="history" aria-label="시청 기록">
+                            <h3 class="studio__panel-title">시청 기록 <a href="preview-history.html" class="studio__panel-more">전체보기 &gt;</a></h3>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">그 계절, 우리가 사랑한 시간</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--review">82%</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">밤이 우리를 부를 때</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--review">45%</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">나의 알고리즘</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--review">100%</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">아기 고양이의 모험</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--review">30%</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">한 소녀의 피클볼 도전기</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--review">12%</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">마법 같은 우리의 모험</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--review">68%</span>
+                        </a>
+                        </section>
+
+                        <section class="studio__panel mydash-section" id="favorites" aria-label="즐겨찾기">
+                            <h3 class="studio__panel-title">즐겨찾기 <a href="preview-favorites-all.html" class="studio__panel-more">전체보기 &gt;</a></h3>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">그 계절, 우리가 사랑한 시간</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_02.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">나의 알고리즘</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">밤이 우리를 부를 때</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_04.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">마법 같은 우리의 모험</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_05.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">아기 고양이의 모험</span>
+                            <span class="studio__row-meta">거스구스</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        <a href="preview-detail.html" class="studio__row">
+                            <span class="studio__row-thumb"><img src="images/main/poster_06.jpg" alt="" loading="lazy"></span>
+                            <span class="studio__row-title">한 소녀의 피클볼 도전기</span>
+                            <span class="studio__row-meta">몽글스튜디오</span>
+                            <span class="st-badge st-badge--live">PREMIUM</span>
+                        </a>
+                        </section>
+                    </div>
+
+
+
+
+
+
                 </div>
             </section>
         </main>
@@ -155,6 +327,24 @@
             </div>
             <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
         </footer>
+    </div>
+
+    <!-- 프로필 이미지 변경 팝업 (아바타 기어 배지 클릭 시) -->
+    <div class="modal js-avatar-modal" id="modal-avatar" role="dialog" aria-modal="true" aria-labelledby="modal-avatar-title">
+        <div class="modal__box">
+            <div class="modal__head">
+                <h2 class="modal__title" id="modal-avatar-title">프로필 이미지 변경</h2>
+                <button type="button" class="modal__close js-avatar-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="avatar-modal">
+                <img class="avatar-modal__preview js-avatar-preview" src="images/common/avatar_user.jpg" alt="현재 프로필 이미지">
+                <input type="file" accept="image/*" class="js-avatar-file" hidden>
+                <div class="avatar-modal__buttons">
+                    <button type="button" class="btn btn--primary js-avatar-change">사진 변경</button>
+                    <button type="button" class="btn btn--ghost js-avatar-delete">사진 삭제</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/main.js" defer></script>

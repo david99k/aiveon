@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\AiTools;
 use Illuminate\View\View;
 
 /**
@@ -107,8 +108,8 @@ class StudioController
                 'unlisted' => '검색 비노출 — 링크를 아는 사람만 볼 수 있어요',
                 'private' => '비공개 — 나만 볼 수 있어요',
             ],
-            // 채널에 표시할 대표 AI 툴 후보 (업로드 시 기록된 "사용한 AI" 상위)
-            'toolOptions' => ['Midjourney', 'Runway', 'ElevenLabs', 'Premiere Pro', 'Kling', 'Suno', 'Photoshop', 'ChatGPT Plus/Pro'],
+            // 채널에 표시할 대표 AI 툴 : 업로드 폼과 동일한 팝업(카테고리별 복수 선택)으로 고른다.
+            'aiToolGroups' => AiTools::groups(),
         ]);
     }
 

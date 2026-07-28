@@ -14,13 +14,14 @@
         </div>
     </div>
 
-    <a href="{{ route('mypage') }}" class="mypage__side-edit">회원정보 변경 &gt;</a>
+    {{-- 회원정보는 마이페이지 대시보드의 #account 카드로 통합됨 --}}
+    <a href="{{ route('mypage') }}#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
     <a href="#" class="mypage__subscribe">Premium 구독</a>
 
     <hr class="mypage__side-divider">
 
     <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
-        <a href="{{ route('favorites') }}"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+        <a href="{{ route('mypage') }}"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
         <a href="{{ route('subscriptions') }}"><span class="mypage__side-nav-icon icon-subscribe" aria-hidden="true"></span>구독</a>
 
         {{-- 크리에이터 스튜디오 : 아코디언 (내 채널 관리 / 콘텐츠 관리 / 수익 관리 / 댓글 관리) --}}
