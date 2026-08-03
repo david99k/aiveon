@@ -52,6 +52,9 @@ Route::get('/studio/comments', [App\Http\Controllers\StudioController::class, 'c
 Route::get('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'taste'])->name('onboarding.taste');
 Route::post('/onboarding/taste', [App\Http\Controllers\OnboardingController::class, 'tasteStore'])->name('onboarding.taste.store');
 
+/* 프리미엄 구독 신청 (페이월·마이페이지 "Premium 구독" 진입) - 플랜 선택 → 완료 */
+Route::get('/premium', [App\Http\Controllers\PremiumController::class, 'show'])->name('premium');
+
 /* 크리에이터 신청 (일반 회원 → 크리에이터 전환) - 신청서 작성 → 접수 완료(심사중) */
 Route::get('/creator/apply', [App\Http\Controllers\CreatorApplyController::class, 'show'])->name('creator.apply');
 Route::post('/creator/apply', [App\Http\Controllers\CreatorApplyController::class, 'store'])->name('creator.apply.store');
@@ -71,6 +74,8 @@ Route::get('/mypage/favorites', [MypageController::class, 'favorites'])->name('f
 /* 시청 기록 전체보기 (대시보드 "전체보기" 진입, 스크롤 배치 로딩) */
 Route::get('/mypage/history', [MypageController::class, 'history'])->name('history');
 Route::get('/mypage/subscriptions', [MypageController::class, 'subscriptions'])->name('subscriptions');
+/* 회원 탈퇴 (회원정보 하단 진입) - 안내 → 사유 → 동의 → 비밀번호 확인 */
+Route::get('/mypage/withdraw', [MypageController::class, 'withdraw'])->name('withdraw');
 /* 고객센터 : 자주하는 질문 / 문의하기 / 내 문의 내역 (탭 3종) */
 Route::get('/mypage/faq', [MypageController::class, 'faq'])->name('faq');
 Route::get('/mypage/inquiry', [MypageController::class, 'inquiry'])->name('inquiry');

@@ -73,7 +73,7 @@
 
             {{-- 요약 카드 : 구독 플랜 / 시청 기록 / 즐겨찾기 / 내 문의 --}}
             <div class="mydash-cards">
-                <a href="#" class="mydash-card">
+                <a href="{{ route('premium') }}" class="mydash-card">
                     <p class="mydash-card__label">구독 중인 플랜</p>
                     {{-- .js-plan-label : 프리미엄 데모 토글(initAuthDemo)이 Free/Premium 을 동기화 --}}
                     <p class="mydash-card__value js-plan-label">{{ $subscription }}</p>
@@ -124,6 +124,11 @@
                     <button type="button" class="mypage__btn mypage__btn--primary">완료</button>
                     <button type="button" class="mypage__btn mypage__btn--cancel">취소</button>
                 </div>
+
+                {{-- 계정 삭제 진입점 (되돌릴 수 없는 동작이라 눈에 띄지 않게 하단에 배치) --}}
+                <p class="mydash-withdraw">
+                    더 이상 이용하지 않으시나요? <a href="{{ route('withdraw') }}">회원 탈퇴</a>
+                </p>
             </section>
 
             {{-- 시청 기록 · 즐겨찾기 : 좌우 패널 (크리에이터 스튜디오 "최근 콘텐츠 성과" 패턴 재사용) --}}

@@ -63,19 +63,6 @@
     }
 
     /**
-     * TOP6 랭킹 숫자용 Gothic A1 숫자 글리프 프리로드.
-     * Google Fonts는 unicode-range 슬라이스 단위로 폰트를 나눠 제공하는데,
-     * 숫자 슬라이스 로드가 지연되면 랭킹 숫자가 폴백 폰트로 그려지므로 명시적으로 로드한다.
-     */
-    function preloadRankDigits() {
-        if (!document.fonts || typeof document.fonts.load !== 'function') { return; }
-
-        document.fonts.load('700 200px "Gothic A1"', '0123456789').catch(function () {
-            /* 로드 실패 시 폴백 폰트로 표시 - 치명적이지 않음 */
-        });
-    }
-
-    /**
      * 비밀번호 표시/숨김 토글.
      * .js-pw-toggle 버튼이 같은 .field__control 안의 password input을 제어한다.
      */
@@ -2014,7 +2001,7 @@
             wall.innerHTML =
                 '<div class="paywall__inner">' +
                     '<p class="paywall__title">이 콘텐츠는 <b>프리미엄 전용</b>입니다. 구독 후 시청하실 수 있습니다.</p>' +
-                    '<a href="#" class="paywall__cta">프리미엄 구독하러 가기</a>' +
+                    '<a href="' + (/\.html$/.test(location.pathname) ? 'preview-premium.html' : '/premium') + '" class="paywall__cta">프리미엄 구독하러 가기</a>' +
                     '<ul class="paywall__benefits">' +
                         '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>최신 콘텐츠 먼저보기</li>' +
                         '<li><span class="paywall__icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 10v4M7.5 12h2.6M10.1 10v4M13.4 10v4h1.8a1.6 1.6 0 0 0 1.6-1.6v-.8a1.6 1.6 0 0 0-1.6-1.6h-1.8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1080P (Full HD)</li>' +
@@ -2023,14 +2010,8 @@
                     '</ul>' +
                 '</div>';
             premiumHost.appendChild(wall);
-
-            // 데모 : 구독하러 가기 → 구독 상태로 전환하고 재생 가능하게
-            wall.querySelector('.paywall__cta').addEventListener('click', function (e) {
-                e.preventDefault();
-                try { localStorage.setItem('aiveon-demo-premium', '1'); } catch (err) {}
-                document.body.classList.add('is-premium');
-                wall.remove();
-            });
+            // CTA 는 프리미엄 구독 페이지(/premium)로 이동한다.
+            // 구독 완료(initPremium)에서 is-premium 을 켜므로 돌아오면 페이월이 사라진다.
         }
     }
 
@@ -2737,6 +2718,183 @@
         sync();
     }
 
+    /**
+     * 프리미엄 구독 신청 페이지.
+     * - 혜택 아이콘 렌더 · 플랜 카드 선택 · 약관 동의 시 CTA 활성
+     * - "프리미엄 시작하기" → 완료 모달 + 데모 프리미엄 상태(body.is-premium) ON
+     *   (localStorage 를 함께 갱신해 다른 페이지에서도 유지. 실서비스는 PG 결제 → 서버 구독 생성)
+     */
+    function initPremium() {
+        var page = document.querySelector('.prem');
+        if (!page) { return; }
+
+        /* 혜택 아이콘 (페이월과 같은 라인 스타일) */
+        var ICONS = {
+            crown: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 8 4 3 4-6 4 6 4-3-1.4 9.5H5.4L4 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.5 20.5h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+            bolt: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+            hd: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 10v4M7.5 12h2.6M10.1 10v4M13.4 10v4h1.8a1.6 1.6 0 0 0 1.6-1.6v-.8a1.6 1.6 0 0 0-1.6-1.6h-1.8Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            devices: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="5" width="13" height="10" rx="1.8" stroke="currentColor" stroke-width="1.6"/><rect x="16.5" y="9" width="5" height="10" rx="1.4" stroke="currentColor" stroke-width="1.6"/><path d="M6 18h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+        };
+        Array.prototype.forEach.call(page.querySelectorAll('.prem-bene__icon[data-icon]'), function (s) {
+            s.innerHTML = ICONS[s.getAttribute('data-icon')] || '';
+        });
+
+        /* 플랜 카드 선택 표시 */
+        var plans = page.querySelectorAll('.prem-plan');
+        Array.prototype.forEach.call(plans, function (card) {
+            card.querySelector('input').addEventListener('change', function () {
+                Array.prototype.forEach.call(plans, function (c) {
+                    c.classList.toggle('is-on', c.querySelector('input').checked);
+                });
+            });
+        });
+
+        /* 약관 동의 → CTA 활성 */
+        var agree = page.querySelector('.js-prem-agree');
+        var cta = page.querySelector('.js-prem-cta');
+        if (agree && cta) {
+            agree.addEventListener('change', function () { cta.disabled = !agree.checked; });
+        }
+
+        /* 이미 구독 중이면 안내 배너 노출 */
+        var current = page.querySelector('.js-prem-current');
+        if (current && document.body.classList.contains('is-premium')) { current.hidden = false; }
+
+        /* 구독 시작 → 완료 모달 + 데모 프리미엄 ON */
+        var modal = document.querySelector('.js-prem-modal');
+        if (cta && modal) {
+            cta.addEventListener('click', function () {
+                var yearly = page.querySelector('input[name="plan"][value="yearly"]');
+                var next = modal.querySelector('.js-prem-next');
+                if (next) { next.textContent = (yearly && yearly.checked) ? '2027-07-30' : '2026-08-30'; }
+
+                /* 데모 상태 반영 (initAuthDemo 와 같은 저장 키) */
+                try { localStorage.setItem('aiveon-demo-premium', '1'); } catch (e) { /* 무시 */ }
+                document.body.classList.add('is-premium');
+                Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) { el.textContent = 'Premium'; });
+                Array.prototype.forEach.call(document.querySelectorAll('.gnb__demo-row[data-demo="premium"]'), function (row) {
+                    row.classList.add('is-on');
+                    var lbl = row.querySelector('.js-demo-label');
+                    if (lbl) { lbl.textContent = '프리미엄 구독중'; }
+                    var tog = row.querySelector('.js-demo-toggle');
+                    if (tog) { tog.setAttribute('aria-checked', 'true'); }
+                });
+                if (current) { current.hidden = false; }
+
+                modal.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            });
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) { modal.classList.remove('is-open'); document.body.style.overflow = ''; }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('is-open')) { modal.classList.remove('is-open'); document.body.style.overflow = ''; }
+            });
+        }
+    }
+
+    /**
+     * TOP 10 랭킹 숫자용 Gothic A1 숫자 글리프 프리로드.
+     * 200px 대형 아웃라인 숫자라 폰트가 늦게 적용되면 형태 변화가 눈에 띈다.
+     * (본문 등 나머지 텍스트는 모두 Pretendard)
+     */
+    function preloadRankDigits() {
+        if (!document.fonts || typeof document.fonts.load !== 'function') { return; }
+        if (!document.querySelector('.rank-card__num')) { return; }
+
+        document.fonts.load('700 200px "Gothic A1"', '0123456789').catch(function () {
+            /* 로드 실패 시 폴백 폰트(Pretendard)로 표시 - 치명적이지 않음 */
+        });
+    }
+
+    /**
+     * 회원 탈퇴.
+     * - 삭제 항목 아이콘 렌더
+     * - 사유 선택 + 유의사항 전체 동의 + 비밀번호 입력이 모두 채워져야 "탈퇴하기" 활성
+     * - 탈퇴하기 → 최종 확인 모달 → 확인 → 완료 모달 (실제 처리는 백엔드 연동 지점)
+     */
+    function initWithdraw() {
+        var page = document.querySelector('.js-withdraw');
+        if (!page) { return; }
+
+        /* 삭제 항목 아이콘 */
+        var ICONS = {
+            history: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            bookmark: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14.2l-6.5-3.7-6.5 3.7V5.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            subscribe: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9.5" cy="8" r="3.3" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 19.5c0-2.9 2.7-5 6-5s6 2.1 6 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16 5.2a3.3 3.3 0 0 1 0 6.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+            comment: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-5 3.5V6.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>'
+        };
+        Array.prototype.forEach.call(document.querySelectorAll('.wd-lose__icon[data-wd-icon]'), function (s) {
+            s.innerHTML = ICONS[s.getAttribute('data-wd-icon')] || '';
+        });
+
+        var reasons = page.querySelectorAll('.js-wd-reasons input');
+        var agrees = page.querySelectorAll('.js-wd-agree');
+        var allBox = page.querySelector('.js-wd-all');
+        var pw = page.querySelector('.js-wd-password');
+        var submit = page.querySelector('.js-wd-submit');
+
+        function reasonPicked() {
+            for (var i = 0; i < reasons.length; i++) { if (reasons[i].checked) { return true; } }
+            return false;
+        }
+        function allAgreed() {
+            for (var i = 0; i < agrees.length; i++) { if (!agrees[i].checked) { return false; } }
+            return agrees.length > 0;
+        }
+        /* 제출 버튼 활성 조건 : 사유 + 전체 동의 + 비밀번호 */
+        function refresh() {
+            submit.disabled = !(reasonPicked() && allAgreed() && pw.value.trim().length > 0);
+        }
+
+        /*
+         * 주의 : 폼 전체에 change/input 을 한 번에 걸면 안 된다.
+         * 체크박스는 input 이 change 보다 먼저 발생하므로, 전체 동의를 눌렀을 때
+         * 개별 항목이 반영되기 전에 allBox 가 다시 꺼져 버린다.
+         * → 개별 항목 ↔ 전체 동의를 각각 명시적으로 연결한다.
+         */
+        function syncAllBox() {
+            if (allBox) { allBox.checked = allAgreed(); }
+            refresh();
+        }
+        Array.prototype.forEach.call(agrees, function (a) { a.addEventListener('change', syncAllBox); });
+        if (allBox) {
+            allBox.addEventListener('change', function () {
+                Array.prototype.forEach.call(agrees, function (a) { a.checked = allBox.checked; });
+                refresh();
+            });
+        }
+        Array.prototype.forEach.call(reasons, function (r) { r.addEventListener('change', refresh); });
+        if (pw) { pw.addEventListener('input', refresh); }
+
+        /* 탈퇴하기 → 최종 확인 → 완료 */
+        var confirmModal = document.querySelector('.js-wd-modal');
+        var doneModal = document.querySelector('.js-wd-done');
+        function open(m) { m.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+        function close(m) { m.classList.remove('is-open'); document.body.style.overflow = ''; }
+
+        if (submit && confirmModal) {
+            submit.addEventListener('click', function () { if (!submit.disabled) { open(confirmModal); } });
+            var cancel = confirmModal.querySelector('.js-wd-cancel');
+            if (cancel) { cancel.addEventListener('click', function () { close(confirmModal); }); }
+            confirmModal.addEventListener('click', function (e) { if (e.target === confirmModal) { close(confirmModal); } });
+
+            var ok = confirmModal.querySelector('.js-wd-confirm');
+            if (ok && doneModal) {
+                ok.addEventListener('click', function () {
+                    // TODO: 서버에 탈퇴 요청 후 세션 종료
+                    close(confirmModal);
+                    open(doneModal);
+                });
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && confirmModal.classList.contains('is-open')) { close(confirmModal); }
+            });
+        }
+
+        refresh();
+    }
+
     function init() {
         var lists = document.querySelectorAll('[data-scroll-x]');
 
@@ -2768,6 +2926,8 @@
         initMypageDashboard();
         initMypageSideDrawer();
         initLoadMore();
+        initPremium();
+        initWithdraw();
         initAvatarModal();
         initMypageStudioNav();
         initMypageBack();

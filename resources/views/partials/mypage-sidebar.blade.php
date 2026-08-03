@@ -16,7 +16,7 @@
 
     {{-- 회원정보는 마이페이지 대시보드의 #account 카드로 통합됨 --}}
     <a href="{{ route('mypage') }}#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
-    <a href="#" class="mypage__subscribe">Premium 구독</a>
+    <a href="{{ route('premium') }}" class="mypage__subscribe">Premium 구독</a>
 
     <hr class="mypage__side-divider">
 

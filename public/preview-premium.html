@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>프리미엄 구독 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/premium/show.blade.php 정적 재현.
+        플랜 선택 → 결제 수단 → 동의 → 완료(데모 프리미엄 ON, initPremium). -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+        <!-- 프리미엄 구독 신청 (플랜 선택 → 결제 수단 → 동의 → 완료 모달) -->
+        <section class="prem">
+            <div class="prem__hero">
+                <span class="prem__badge">PREMIUM</span>
+                <h1 class="prem__title">AIVEON 프리미엄으로<br><em>모든 이야기</em>를 끝까지</h1>
+                <p class="prem__lead">프리미엄 전용 콘텐츠부터 신작 먼저보기까지, 하나의 구독으로 전부 즐기세요.</p>
+            </div>
+
+            <div class="prem__current js-prem-current" hidden>
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                이미 프리미엄 구독 중입니다. 다음 결제일은 <strong>2026-08-02</strong> 입니다.
+            </div>
+
+            <div class="prem__benefits">
+                <div class="prem-bene">
+                    <span class="prem-bene__icon" data-icon="crown" aria-hidden="true"></span>
+                    <strong class="prem-bene__title">프리미엄 전용 콘텐츠</strong>
+                    <p class="prem-bene__desc">PREMIUM 배지가 붙은 시리즈·영화를 제한 없이 시청</p>
+                </div>
+                <div class="prem-bene">
+                    <span class="prem-bene__icon" data-icon="bolt" aria-hidden="true"></span>
+                    <strong class="prem-bene__title">최신 콘텐츠 먼저보기</strong>
+                    <p class="prem-bene__desc">신작을 공개 즉시, 누구보다 먼저</p>
+                </div>
+                <div class="prem-bene">
+                    <span class="prem-bene__icon" data-icon="hd" aria-hidden="true"></span>
+                    <strong class="prem-bene__title">1080P (Full HD) 화질</strong>
+                    <p class="prem-bene__desc">지원 콘텐츠를 최고 화질로 감상</p>
+                </div>
+                <div class="prem-bene">
+                    <span class="prem-bene__icon" data-icon="devices" aria-hidden="true"></span>
+                    <strong class="prem-bene__title">여러 기기에서 시청</strong>
+                    <p class="prem-bene__desc">TV·태블릿·모바일 최대 4대 동시 이용</p>
+                </div>
+            </div>
+
+            <table class="prem-compare">
+                <thead>
+                    <tr><th scope="col"></th><th scope="col">무료</th><th scope="col" class="is-prem">프리미엄</th></tr>
+                </thead>
+                <tbody>
+                    <tr><th scope="row">프리미엄 전용관</th><td>잠김</td><td class="is-prem">전체 시청</td></tr>
+                    <tr><th scope="row">신작 공개</th><td>순차 공개</td><td class="is-prem">먼저 보기</td></tr>
+                    <tr><th scope="row">최고 화질</th><td>720P</td><td class="is-prem">1080P (Full HD)</td></tr>
+                    <tr><th scope="row">동시 시청 기기</th><td>1대</td><td class="is-prem">최대 4대</td></tr>
+                </tbody>
+            </table>
+
+            <h2 class="prem__sec-title">플랜 선택</h2>
+            <div class="prem-plans js-prem-plans" role="radiogroup" aria-label="구독 플랜">
+                <label class="prem-plan is-on">
+                    <input type="radio" name="plan" value="monthly" checked>
+                    <span class="prem-plan__name">월간</span>
+                    <span class="prem-plan__price">₩14,900<em>/월</em></span>
+                    <span class="prem-plan__note">언제든 해지 가능</span>
+                </label>
+                <label class="prem-plan">
+                    <input type="radio" name="plan" value="yearly">
+                    <span class="prem-plan__badge">2개월 무료</span>
+                    <span class="prem-plan__name">연간</span>
+                    <span class="prem-plan__price">₩149,000<em>/년</em></span>
+                    <span class="prem-plan__note">월 환산 ₩12,417</span>
+                </label>
+            </div>
+
+            <h2 class="prem__sec-title">결제 수단</h2>
+            <div class="prem-pays" role="radiogroup" aria-label="결제 수단">
+                <label class="prem-pay"><input type="radio" name="pay" value="신용·체크카드" checked><span>신용·체크카드</span></label>
+                <label class="prem-pay"><input type="radio" name="pay" value="카카오페이"><span>카카오페이</span></label>
+                <label class="prem-pay"><input type="radio" name="pay" value="네이버페이"><span>네이버페이</span></label>
+                <label class="prem-pay"><input type="radio" name="pay" value="휴대폰 결제"><span>휴대폰 결제</span></label>
+            </div>
+
+            <ul class="prem-notices">
+                <li>구독은 결제일 기준 매월(연간은 매년) 자동 갱신되며, 다음 결제일 전에 언제든 해지할 수 있습니다.</li>
+                <li>해지해도 남은 이용 기간 동안 프리미엄 혜택이 유지됩니다.</li>
+                <li>시청 이력이 없는 경우 결제 후 7일 이내 전액 환불됩니다.</li>
+            </ul>
+            <label class="prem-agree">
+                <input type="checkbox" class="js-prem-agree">
+                <span class="prem-agree__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="prem-agree__text">구독 이용약관 및 자동갱신 결제에 동의합니다 <em>(필수)</em></span>
+            </label>
+
+            <button type="button" class="btn btn--primary prem-cta js-prem-cta" disabled>프리미엄 시작하기</button>
+            <p class="prem-cta__hint">오늘 결제 · 다음 결제일 전 언제든 해지할 수 있어요</p>
+        </section>
+
+        <!-- 완료 모달 : 데모 프리미엄 상태(body.is-premium)를 켜서 사이트 전체에 반영 -->
+        <div class="modal js-prem-modal" id="modal-premium" role="dialog" aria-modal="true" aria-labelledby="modal-prem-title">
+            <div class="modal__box">
+                <div class="prem-done">
+                    <span class="prem-done__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <h2 class="prem-done__title" id="modal-prem-title">프리미엄이 시작되었습니다!</h2>
+                    <p class="prem-done__desc">지금부터 프리미엄 전용 콘텐츠를 시청할 수 있어요.<br>다음 결제일 : <strong class="js-prem-next">2026-08-30</strong></p>
+                    <div class="prem-done__actions">
+                        <a href="preview.html" class="btn btn--ghost">홈으로</a>
+                        <a href="preview-category-drama.html" class="btn btn--primary">프리미엄 콘텐츠 보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>

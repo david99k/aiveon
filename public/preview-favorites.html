@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="is-mypage">
@@ -60,7 +60,7 @@
                     </div>
 
                     <a href="preview-favorites.html#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
-                    <a href="#" class="mypage__subscribe">Premium 구독</a>
+                    <a href="preview-premium.html" class="mypage__subscribe">Premium 구독</a>
 
                     <hr class="mypage__side-divider">
 
@@ -142,7 +142,7 @@
 
                     <!-- 요약 카드 : 구독 플랜 / 시청 기록 / 즐겨찾기 / 내 문의 -->
                     <div class="mydash-cards">
-                        <a href="#" class="mydash-card">
+                        <a href="preview-premium.html" class="mydash-card">
                             <p class="mydash-card__label">구독 중인 플랜</p>
                             <p class="mydash-card__value js-plan-label">Free</p>
                             <p class="mydash-card__sub">프리미엄으로 더 많은 콘텐츠 보기</p>
@@ -211,6 +211,11 @@
                         <button type="button" class="mypage__btn mypage__btn--primary">완료</button>
                         <button type="button" class="mypage__btn mypage__btn--cancel">취소</button>
                     </div>
+
+                    <!-- 계정 삭제 진입점 (되돌릴 수 없는 동작이라 눈에 띄지 않게 하단에 배치) -->
+                    <p class="mydash-withdraw">
+                        더 이상 이용하지 않으시나요? <a href="preview-withdraw.html">회원 탈퇴</a>
+                    </p>
                     </section>
 
                     <!-- 시청 기록 · 즐겨찾기 : 좌우 패널 (크리에이터 스튜디오 "최근 콘텐츠 성과" 패턴 재사용) -->
@@ -295,11 +300,6 @@
                         </a>
                         </section>
                     </div>
-
-
-
-
-
 
                 </div>
             </section>

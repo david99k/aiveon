@@ -153,7 +153,10 @@
       return (i ? 'L' : 'M') + (i * step).toFixed(1) + ' ' + (h - 3 - ((p - min) / span) * (h - 6)).toFixed(1);
     }).join(' ');
     var svg = svgEl('svg', { width: w, height: h, viewBox: '0 0 ' + w + ' ' + h, 'aria-hidden': 'true' });
-    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: color, 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    var sp = svgEl('path', { d: d, fill: 'none', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    sp.style.stroke = color; /* var() 지원을 위해 style 로 지정 (테마 전환 시 자동 반영) */
+    sp.style.opacity = '0.85';
+    svg.appendChild(sp);
     return svg;
   }
   function areaChart(chart) {
@@ -527,7 +530,7 @@
       card.appendChild(el('p', 'adm-kpi__value', k.value));
       card.appendChild(el('p', 'adm-kpi__diff ' + k.dir, k.diff));
       var sp = el('span', 'adm-kpi__spark');
-      sp.appendChild(sparkline(k.spark, k.dir === 'down' ? 'rgba(241,96,99,0.8)' : 'rgba(94,234,212,0.8)'));
+      sp.appendChild(sparkline(k.spark, k.dir === 'down' ? 'var(--adm-err)' : 'var(--adm-mint)'));
       card.appendChild(sp);
       kpis.appendChild(card);
     });
@@ -721,6 +724,49 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
   }
 
+  /* ---------- 다크 / 라이트 테마 ---------- */
+  function initTheme() {
+    var KEY = 'aiveon-adm-theme';
+    var right = document.querySelector('.adm-top__right');
+    if (!right || right.querySelector('.adm-theme')) { return; }
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) { /* 프라이빗 모드 등 - 무시 */ }
+
+    var box = el('div', 'adm-theme');
+    box.setAttribute('role', 'radiogroup');
+    box.setAttribute('aria-label', '화면 테마');
+
+    var MODES = [
+      { key: 'dark', label: '다크', icon: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 13.5A8 8 0 0 1 10.5 4 8 8 0 1 0 20 13.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>' },
+      { key: 'light', label: '라이트', icon: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2M12 19v2M21 12h-2M5 12H3M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4M17.7 17.7l-1.4-1.4M7.7 7.7 6.3 6.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' }
+    ];
+    var btns = {};
+
+    function apply(mode) {
+      document.documentElement.setAttribute('data-adm-theme', mode);
+      MODES.forEach(function (m) {
+        btns[m.key].classList.toggle('is-on', m.key === mode);
+        btns[m.key].setAttribute('aria-checked', String(m.key === mode));
+      });
+      try { localStorage.setItem(KEY, mode); } catch (e) { /* 무시 */ }
+    }
+
+    MODES.forEach(function (m) {
+      var b = el('button', 'adm-theme__btn');
+      b.type = 'button';
+      b.setAttribute('role', 'radio');
+      b.innerHTML = m.icon;
+      b.appendChild(el('span', null, m.label));
+      b.addEventListener('click', function () { apply(m.key); });
+      btns[m.key] = b;
+      box.appendChild(b);
+    });
+
+    right.insertBefore(box, right.firstChild);
+    apply(saved === 'light' ? 'light' : 'dark');
+  }
+
   /* ---------- 초기화 ---------- */
   function init() {
     var burger = document.querySelector('.adm-top__menu-btn');
@@ -731,6 +777,7 @@
       if (dim) { dim.addEventListener('click', function () { adm.classList.remove('side-open'); }); }
     }
     initSearch();
+    initTheme();
     window.addEventListener('hashchange', render);
     render();
   }

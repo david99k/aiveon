@@ -25,6 +25,10 @@
   --adm-err: #f16063;
   --adm-info: #60a5fa;
 
+  /* 차트 (그리드·라벨) */
+  --adm-chart-grid: rgba(255, 255, 255, 0.06);
+  --adm-chart-label: rgba(255, 255, 255, 0.35);
+
   --adm-radius: 12px;
   --adm-radius-sm: 8px;
   --adm-font: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
@@ -644,4 +648,91 @@ img { max-width: 100%; display: block; }
   .adm-kpi__value { font-size: 17px; word-break: break-all; }
   .adm-kpi__spark { display: none; }
   .adm-filter__submit { margin-left: 0; width: 100%; }
+}
+
+/* ===== 차트 색 토큰 적용 (SVG presentation 속성보다 CSS 가 우선) ===== */
+.adm-chart-svg line { stroke: var(--adm-chart-grid); }
+.adm-chart-svg text { fill: var(--adm-chart-label); }
+
+/* ===== 테마 토글 (상단바 세그먼트) ===== */
+.adm-theme {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--adm-border);
+  border-radius: 999px;
+  background-color: var(--adm-surface);
+}
+.adm-theme__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--adm-text-3);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.adm-theme__btn svg { width: 13px; height: 13px; }
+.adm-theme__btn:hover { color: var(--adm-text); }
+.adm-theme__btn.is-on { background-color: var(--adm-brand); color: #14111f; }
+@media (max-width: 640px) {
+  .adm-theme__btn span { display: none; }
+  .adm-theme__btn { padding: 0 9px; }
+}
+
+/* ===== 라이트 모드 =====
+   html[data-adm-theme='light'] 로 전환. 선택은 localStorage(aiveon-adm-theme)에 유지. */
+:root[data-adm-theme='light'] {
+  --adm-bg: #f3f4f8;
+  --adm-side: #ffffff;
+  --adm-surface: #ffffff;
+  --adm-surface-2: #f1f2f7;
+  --adm-border: rgba(18, 20, 40, 0.09);
+  --adm-border-strong: rgba(18, 20, 40, 0.18);
+  --adm-brand: #6d4fe0;              /* 흰 배경 대비용 딥 퍼플 */
+  --adm-brand-deep: #5b3fd1;
+  --adm-mint: #0e9d8e;
+  --adm-text: #1a1c2a;
+  --adm-text-2: rgba(24, 26, 46, 0.66);
+  --adm-text-3: rgba(24, 26, 46, 0.45);
+  --adm-ok: #0a9a6c;
+  --adm-warn: #b45309;
+  --adm-err: #dc3b3e;
+  --adm-info: #2563eb;
+  --adm-chart-grid: rgba(18, 20, 40, 0.08);
+  --adm-chart-label: rgba(24, 26, 46, 0.45);
+}
+/* 토큰 밖 하드코딩 지점 오버라이드 */
+:root[data-adm-theme='light'] .adm-body ::-webkit-scrollbar-thumb { background: rgba(18, 20, 40, 0.22); }
+:root[data-adm-theme='light'] .adm-side__home:hover,
+:root[data-adm-theme='light'] .adm-side__group-head:hover,
+:root[data-adm-theme='light'] .adm-side__sub a:hover,
+:root[data-adm-theme='light'] .adm-top__search-result a:hover { background-color: rgba(18, 20, 40, 0.05); }
+:root[data-adm-theme='light'] .adm-top { background-color: rgba(255, 255, 255, 0.9); }
+:root[data-adm-theme='light'] .adm-top__search-result { box-shadow: 0 16px 40px rgba(30, 34, 60, 0.16); }
+:root[data-adm-theme='light'] .adm-side__logo-badge,
+:root[data-adm-theme='light'] .adm-btn--primary,
+:root[data-adm-theme='light'] .adm-paging__nav button.is-cur,
+:root[data-adm-theme='light'] .adm-theme__btn.is-on,
+:root[data-adm-theme='light'] .adm-top__avatar { color: #ffffff; }
+:root[data-adm-theme='light'] .adm-btn--primary:hover { background-color: #7c5cf0; }
+:root[data-adm-theme='light'] .adm-btn--ghost:hover { border-color: rgba(18, 20, 40, 0.32); }
+:root[data-adm-theme='light'] .adm-note { border-color: rgba(180, 83, 9, 0.3); background-color: rgba(217, 119, 6, 0.08); color: #92400e; }
+:root[data-adm-theme='light'] .adm-table th { background-color: #eef0f6; }
+:root[data-adm-theme='light'] .adm-table tbody tr:hover { background-color: rgba(18, 20, 40, 0.03); }
+:root[data-adm-theme='light'] .adm-badge--mute { background-color: rgba(18, 20, 40, 0.06); }
+:root[data-adm-theme='light'] .adm-panel__row { border-bottom-color: rgba(18, 20, 40, 0.09); }
+:root[data-adm-theme='light'] .adm-timeline__item::after { background-color: rgba(18, 20, 40, 0.12); }
+:root[data-adm-theme='light'] .adm-form__readonly { background-color: rgba(18, 20, 40, 0.045); }
+:root[data-adm-theme='light'] .adm-list__item { border-bottom-color: rgba(18, 20, 40, 0.07); }
+:root[data-adm-theme='light'] .adm-health__bar { background-color: rgba(18, 20, 40, 0.09); }
+:root[data-adm-theme='light'] .adm-side { box-shadow: none; }
+@media (max-width: 1080px) {
+  :root[data-adm-theme='light'] .adm.side-open .adm-side { box-shadow: 0 0 60px rgba(30, 34, 60, 0.3); }
 }

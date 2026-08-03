@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>회원 탈퇴 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/mypage/withdraw.blade.php 정적 재현. 사유·동의·비밀번호 게이트 후 확인/완료 모달(initWithdraw).
+        마이페이지 좌측 사이드바 "1:1 문의" 클릭 시 진입. (Figma 732:9718)
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 계정 사이드바 -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-favorites.html#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="preview-premium.html" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                        <a href="preview-subscriptions.html"><span class="mypage__side-nav-icon icon-subscribe" aria-hidden="true"></span>구독</a>
+                        <div class="mypage__side-group">
+                            <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
+                                <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                크리에이터 스튜디오
+                                <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="mypage__side-sub">
+                            <a href="preview-studio.html">내 채널 관리</a>
+                            <a href="preview-studio-content.html">콘텐츠 관리</a>
+                            <a href="preview-studio-revenue.html">수익 관리</a>
+                            <a href="preview-studio-comments.html">댓글 관리</a>
+                            </div>
+                        </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : 자주 찾는 질문 칩 + 문의 폼 (Figma "Main - 1:1 문의" 732:9718) -->
+                <!-- 우측 : 회원 탈퇴 (안내 → 사유 → 동의 → 비밀번호 확인) -->
+                <div class="mypage__content mypage__content--dash">
+                    <h2 class="mypage__page-title">회원 탈퇴</h2>
+                    <p class="wd-lead">탈퇴하시면 아래 정보가 모두 삭제되며 복구할 수 없습니다. 신중하게 결정해 주세요.</p>
+
+                    <div class="wd-account">
+                        <div class="wd-account__id">
+                            <strong class="wd-account__name">User1555846</strong>
+                            <span class="wd-account__meta">@synergy_on · 2026-06-02 가입 · Free 플랜</span>
+                        </div>
+                    </div>
+
+                    <h3 class="wd-sec-title">탈퇴 시 삭제되는 정보</h3>
+                    <div class="wd-losing">
+                        <div class="wd-lose">
+                            <span class="wd-lose__icon" data-wd-icon="history" aria-hidden="true"></span>
+                            <span class="wd-lose__label">시청 기록</span>
+                            <strong class="wd-lose__value">24편</strong>
+                        </div>
+                        <div class="wd-lose">
+                            <span class="wd-lose__icon" data-wd-icon="bookmark" aria-hidden="true"></span>
+                            <span class="wd-lose__label">즐겨찾기</span>
+                            <strong class="wd-lose__value">12편</strong>
+                        </div>
+                        <div class="wd-lose">
+                            <span class="wd-lose__icon" data-wd-icon="subscribe" aria-hidden="true"></span>
+                            <span class="wd-lose__label">구독 중인 크리에이터</span>
+                            <strong class="wd-lose__value">7명</strong>
+                        </div>
+                        <div class="wd-lose">
+                            <span class="wd-lose__icon" data-wd-icon="comment" aria-hidden="true"></span>
+                            <span class="wd-lose__label">작성한 댓글</span>
+                            <strong class="wd-lose__value">87건</strong>
+                        </div>
+                    </div>
+
+                    <form class="wd-form js-withdraw" method="post" action="#" onsubmit="return false">
+                        <h3 class="wd-sec-title">탈퇴 사유<span class="req">*</span></h3>
+                        <div class="wd-reasons js-wd-reasons" role="radiogroup" aria-label="탈퇴 사유">
+                            <label class="wd-reason"><input type="radio" name="reason" value="보고 싶은 콘텐츠가 부족해요"><span>보고 싶은 콘텐츠가 부족해요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="이용 빈도가 낮아요"><span>이용 빈도가 낮아요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="구독료가 부담돼요"><span>구독료가 부담돼요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="앱·재생 오류가 잦아요"><span>앱·재생 오류가 잦아요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="개인정보가 걱정돼요"><span>개인정보가 걱정돼요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="다른 서비스를 이용해요"><span>다른 서비스를 이용해요</span></label>
+                            <label class="wd-reason"><input type="radio" name="reason" value="기타"><span>기타</span></label>
+                        </div>
+                        <textarea class="wd-detail js-wd-detail" maxlength="500" placeholder="불편했던 점을 남겨주시면 서비스 개선에 반영하겠습니다. (선택)"></textarea>
+
+                        <h3 class="wd-sec-title">유의사항 확인<span class="req">*</span></h3>
+                        <ul class="wd-notices js-wd-notices">
+                            <li>
+                                <label class="wd-check">
+                                    <input type="checkbox" name="agree_erase" class="js-wd-agree">
+                                    <span class="wd-check__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                    <span class="wd-check__text">시청 기록·즐겨찾기·구독·댓글 등 모든 활동 정보가 삭제되며 복구할 수 없습니다.</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="wd-check">
+                                    <input type="checkbox" name="agree_point" class="js-wd-agree">
+                                    <span class="wd-check__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                    <span class="wd-check__text">보유 중인 포인트와 진행 중인 이벤트 혜택이 모두 소멸됩니다.</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="wd-check">
+                                    <input type="checkbox" name="agree_rejoin" class="js-wd-agree">
+                                    <span class="wd-check__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                    <span class="wd-check__text">동일한 이메일로 30일간 재가입할 수 없습니다.</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="wd-check">
+                                    <input type="checkbox" name="agree_keep" class="js-wd-agree">
+                                    <span class="wd-check__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                    <span class="wd-check__text">전자상거래법에 따라 결제 기록은 5년간 분리 보관 후 파기됩니다.</span>
+                                </label>
+                            </li>
+                        </ul>
+                        <label class="wd-all">
+                            <input type="checkbox" class="js-wd-all">
+                            <span class="wd-check__box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                            <span class="wd-check__text">위 내용을 모두 확인했으며 이에 동의합니다</span>
+                        </label>
+
+                        <h3 class="wd-sec-title">비밀번호 확인<span class="req">*</span></h3>
+                        <p class="wd-hint">본인 확인을 위해 현재 비밀번호를 입력해 주세요.</p>
+                        <input type="password" class="wd-password js-wd-password" placeholder="현재 비밀번호" autocomplete="current-password">
+
+                        <div class="wd-actions">
+                            <a href="preview-favorites.html" class="mypage__btn mypage__btn--cancel">취소</a>
+                            <button type="button" class="mypage__btn wd-submit js-wd-submit" disabled>탈퇴하기</button>
+                        </div>
+                        <p class="wd-foot">탈퇴 대신 <a href="preview-inquiry.html">1:1 문의</a>로 알려주시면 문제 해결을 도와드릴 수 있어요.</p>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 최종 확인 모달 -->
+    <div class="modal js-wd-modal" id="modal-withdraw" role="dialog" aria-modal="true" aria-labelledby="modal-wd-title">
+        <div class="modal__box">
+            <div class="wd-confirm">
+                <span class="wd-confirm__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4 21.5 20h-19L12 4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10.5v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/></svg></span>
+                <h2 class="wd-confirm__title" id="modal-wd-title">정말 탈퇴하시겠습니까?</h2>
+                <p class="wd-confirm__desc">탈퇴하면 모든 활동 정보가 삭제되며<br><strong>복구할 수 없습니다.</strong></p>
+                <div class="wd-confirm__actions">
+                    <button type="button" class="mypage__btn mypage__btn--cancel js-wd-cancel">돌아가기</button>
+                    <button type="button" class="mypage__btn wd-submit js-wd-confirm">탈퇴하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탈퇴 완료 모달 -->
+    <div class="modal js-wd-done" id="modal-withdraw-done" role="dialog" aria-modal="true" aria-labelledby="modal-wd-done-title">
+        <div class="modal__box">
+            <div class="wd-confirm">
+                <span class="wd-confirm__icon wd-confirm__icon--done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <h2 class="wd-confirm__title" id="modal-wd-done-title">탈퇴가 완료되었습니다</h2>
+                <p class="wd-confirm__desc">그동안 AIVEON을 이용해 주셔서 감사합니다.<br>더 나은 서비스로 다시 만나뵙기를 바랍니다.</p>
+                <div class="wd-confirm__actions">
+                    <a href="preview.html" class="mypage__btn mypage__btn--primary">홈으로</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

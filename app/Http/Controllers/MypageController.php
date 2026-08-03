@@ -246,6 +246,46 @@ class MypageController
         ]);
     }
 
+    /**
+     * 회원 탈퇴 (회원정보 하단 "회원 탈퇴" 진입).
+     * 탈퇴 시 사라지는 것 안내 → 사유 선택 → 유의사항 동의 → 비밀번호 확인 → 탈퇴.
+     * 실제 처리는 백엔드 연동 지점이며, 시안에서는 완료 화면만 보여준다.
+     */
+    public function withdraw(): View
+    {
+        return view('mypage.withdraw', [
+            'account' => [
+                'username' => 'User1555846',
+                'handle' => 'synergy_on',
+                'joinedAt' => '2026-06-02',
+                'plan' => 'Free',
+            ],
+            // 탈퇴 시 삭제되는 데이터 (되돌릴 수 없음을 명확히 보여준다)
+            'losing' => [
+                ['icon' => 'history', 'label' => '시청 기록', 'value' => '24편'],
+                ['icon' => 'bookmark', 'label' => '즐겨찾기', 'value' => '12편'],
+                ['icon' => 'subscribe', 'label' => '구독 중인 크리에이터', 'value' => '7명'],
+                ['icon' => 'comment', 'label' => '작성한 댓글', 'value' => '87건'],
+            ],
+            'reasons' => [
+                '보고 싶은 콘텐츠가 부족해요',
+                '이용 빈도가 낮아요',
+                '구독료가 부담돼요',
+                '앱·재생 오류가 잦아요',
+                '개인정보가 걱정돼요',
+                '다른 서비스를 이용해요',
+                '기타',
+            ],
+            // 탈퇴 전 반드시 확인해야 하는 사항 (모두 동의해야 진행)
+            'notices' => [
+                ['key' => 'erase', 'text' => '시청 기록·즐겨찾기·구독·댓글 등 모든 활동 정보가 삭제되며 복구할 수 없습니다.'],
+                ['key' => 'point', 'text' => '보유 중인 포인트와 진행 중인 이벤트 혜택이 모두 소멸됩니다.'],
+                ['key' => 'rejoin', 'text' => '동일한 이메일로 30일간 재가입할 수 없습니다.'],
+                ['key' => 'keep', 'text' => '전자상거래법에 따라 결제 기록은 5년간 분리 보관 후 파기됩니다.'],
+            ],
+        ]);
+    }
+
     /** 내 문의 내역 (고객센터 3번째 탭 · 접수한 문의와 답변 확인) */
     public function inquiryList(): View
     {

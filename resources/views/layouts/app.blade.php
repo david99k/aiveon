@@ -8,13 +8,9 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <script>
-        /* TOP6 랭킹 숫자용 Gothic A1 숫자 글리프 선로드 (unicode-range 슬라이스 FOUT 방지) */
-        if (document.fonts && document.fonts.load) { document.fonts.load('700 200px "Gothic A1"', '0123456789'); }
-    </script>
     @stack('styles')
 </head>
 <body class="@yield('body-class')">
