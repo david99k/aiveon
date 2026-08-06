@@ -29,10 +29,24 @@
                 </div>
             </dl>
 
+            {{-- 진행 단계 : 서버가 내려주는 상태로 is-done / is-now 를 결정한다 --}}
+            <ol class="capply-steps" aria-label="신청 진행 단계">
+                @foreach ($steps as $step)
+                    <li @class(['capply-step', 'is-done' => $step['state'] === 'done', 'is-now' => $step['state'] === 'now'])
+                        @if ($step['state'] === 'now') aria-current="step" @endif>
+                        <span class="capply-step__dot" aria-hidden="true"></span>
+                        <p class="capply-step__name">{{ $step['name'] }}</p>
+                        <p class="capply-step__when">{{ $step['when'] }}</p>
+                    </li>
+                @endforeach
+            </ol>
+
             <div class="capply-done__actions">
                 <a href="{{ route('creator.apply') }}" class="btn btn--ghost">신청 내용 보기</a>
+                <a href="{{ route('notifications') }}" class="btn btn--ghost">알림함</a>
                 <a href="{{ route('main') }}" class="btn btn--primary">홈으로</a>
             </div>
+            <p class="capply-done__hint">이 화면은 상단 <strong>신청 진행 상황</strong> 버튼이나 프로필 메뉴에서 다시 볼 수 있어요.</p>
         </div>
 
         <div class="capply-next">

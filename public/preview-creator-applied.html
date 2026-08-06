@@ -34,6 +34,10 @@
             </div>
             <div class="gnb__utils">
                 <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-notifications.html" class="gnb__icon-btn gnb__bell" aria-label="알림">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    <span class="gnb__bell-dot" aria-hidden="true"></span>
+                </a>
                 <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
                 <div class="gnb__profile-wrap">
                     <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
@@ -59,10 +63,31 @@
                     <div><dt>신청일</dt><dd>2026-07-28 14:20</dd></div>
                     <div><dt>현재 상태</dt><dd class="is-review">심사중</dd></div>
                 </dl>
+                <!-- 진행 단계 : 현재 위치를 한눈에 (실서비스는 서버 상태로 is-done/is-now 를 결정) -->
+                <ol class="capply-steps" aria-label="신청 진행 단계">
+                    <li class="capply-step is-done">
+                        <span class="capply-step__dot" aria-hidden="true"></span>
+                        <p class="capply-step__name">신청 접수</p>
+                        <p class="capply-step__when">2026-07-28 14:20</p>
+                    </li>
+                    <li class="capply-step is-now" aria-current="step">
+                        <span class="capply-step__dot" aria-hidden="true"></span>
+                        <p class="capply-step__name">서류 · 계정 심사</p>
+                        <p class="capply-step__when">진행중 · 3영업일 이내</p>
+                    </li>
+                    <li class="capply-step">
+                        <span class="capply-step__dot" aria-hidden="true"></span>
+                        <p class="capply-step__name">승인 결과 안내</p>
+                        <p class="capply-step__when">이메일 · 알림함</p>
+                    </li>
+                </ol>
+
                 <div class="capply-done__actions">
                     <a href="preview-creator-apply.html" class="btn btn--ghost">신청 내용 보기</a>
+                    <a href="preview-notifications.html" class="btn btn--ghost">알림함</a>
                     <a href="preview.html" class="btn btn--primary">홈으로</a>
                 </div>
+                <p class="capply-done__hint">이 화면은 상단 <strong>신청 진행 상황</strong> 버튼이나 프로필 메뉴에서 다시 볼 수 있어요.</p>
             </div>
             <div class="capply-next">
                 <h2 class="capply-next__title">승인 후 이렇게 진행됩니다</h2>
@@ -83,15 +108,15 @@
                 </div>
                 <nav class="footer__col" aria-label="회사">
                     <h3 class="footer__col-title">회사</h3>
-                    <ul><li><a href="#">회사소개</a></li><li><a href="#">채용</a></li><li><a href="#">뉴스룸</a></li></ul>
+                    <ul><li><a href="preview-doc-about.html">회사소개</a></li><li><a href="preview-doc-careers.html">채용</a></li><li><a href="preview-doc-newsroom.html">뉴스룸</a></li></ul>
                 </nav>
                 <nav class="footer__col" aria-label="약관·정책">
                     <h3 class="footer__col-title">약관·정책</h3>
-                    <ul><li><a href="#">이용약관</a></li><li><a href="#">개인정보처리방침</a></li><li><a href="#">정산정책</a></li></ul>
+                    <ul><li><a href="preview-doc-terms.html">이용약관</a></li><li><a href="preview-doc-privacy.html">개인정보처리방침</a></li><li><a href="preview-doc-settlement.html">정산정책</a></li></ul>
                 </nav>
                 <nav class="footer__col" aria-label="고객지원">
                     <h3 class="footer__col-title">고객지원</h3>
-                    <ul><li><a href="#">고객센터</a></li><li><a href="#">크리에이터 지원센터</a></li><li><a href="#">공지사항</a></li></ul>
+                    <ul><li><a href="preview-faq.html">고객센터</a></li><li><a href="preview-doc-creator-support.html">크리에이터 지원센터</a></li><li><a href="preview-notice.html">공지사항</a></li></ul>
                 </nav>
             </div>
             <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>

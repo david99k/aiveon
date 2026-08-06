@@ -35,11 +35,12 @@ class ChannelController
                 ],
                 'tools' => ['Midjourney', 'Runway', 'ElevenLabs', 'Premiere Pro'],
             ],
+            // key 는 채널 탭 전환(js initChannelTabs)이 섹션을 고르는 기준
             'tabs' => [
-                ['label' => '홈', 'active' => true],
-                ['label' => '동영상'],
-                ['label' => '재생목록'],
-                ['label' => '정보'],
+                ['key' => 'home', 'label' => '홈', 'active' => true],
+                ['key' => 'videos', 'label' => '동영상'],
+                ['key' => 'playlists', 'label' => '재생목록'],
+                ['key' => 'info', 'label' => '정보'],
             ],
             // 대표 영상 (채널 홈 최상단)
             'featured' => [

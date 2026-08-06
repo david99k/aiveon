@@ -37,7 +37,7 @@
         {{-- 탭 (고객센터 탭 패턴 재사용) --}}
         <div class="cs-tabs channel__tabs" role="tablist" aria-label="채널 메뉴">
             @foreach ($tabs as $tab)
-                <button type="button" @class(['cs-tab', 'is-active' => !empty($tab['active'])]) role="tab" aria-selected="{{ !empty($tab['active']) ? 'true' : 'false' }}">{{ $tab['label'] }}</button>
+                <button type="button" @class(['cs-tab', 'is-active' => !empty($tab['active'])]) role="tab" data-ch-tab="{{ $tab['key'] }}" aria-selected="{{ !empty($tab['active']) ? 'true' : 'false' }}">{{ $tab['label'] }}</button>
             @endforeach
         </div>
 

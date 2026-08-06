@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>아이디 · 비밀번호 찾기 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/auth/find.blade.php 정적 재현. 탭 전환 + 인증 단계(initAccountFind). -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-notifications.html" class="gnb__icon-btn gnb__bell" aria-label="알림">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    <span class="gnb__bell-dot" aria-hidden="true"></span>
+                </a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+        <!-- 아이디 찾기 · 비밀번호 재설정 (탭 전환 + 인증 단계) -->
+        <section class="find js-find">
+            <h1 class="find__title">아이디 · 비밀번호 찾기</h1>
+
+            <div class="find__tabs" role="tablist">
+                <button type="button" class="find__tab is-active" data-find-tab="id" role="tab" aria-selected="true">아이디 찾기</button>
+                <button type="button" class="find__tab" data-find-tab="pw" role="tab" aria-selected="false">비밀번호 재설정</button>
+            </div>
+
+            <div class="find__panel" data-find-panel="id">
+                <p class="find__lead">가입 시 등록한 정보로 본인 확인 후 아이디를 알려드립니다.</p>
+
+                <div class="find__step js-find-step" data-step="1">
+                    <label class="find__label" for="fid-name">이름</label>
+                    <input type="text" id="fid-name" class="find__input" placeholder="이름을 입력해주세요">
+
+                    <span class="find__label">인증 방법</span>
+                    <div class="find__methods">
+                        <label class="find__method"><input type="radio" name="find-id-method" value="phone" checked><span>휴대폰 인증</span></label>
+                        <label class="find__method"><input type="radio" name="find-id-method" value="email"><span>이메일 인증</span></label>
+                    </div>
+
+                    <label class="find__label" for="fid-contact">휴대폰 번호</label>
+                    <div class="find__row">
+                        <input type="tel" id="fid-contact" class="find__input js-find-contact" placeholder="&ldquo;-&rdquo; 없이 입력">
+                        <button type="button" class="btn btn--ghost find__send js-find-send">인증번호 받기</button>
+                    </div>
+
+                    <div class="find__code js-find-code" hidden>
+                        <label class="find__label" for="fid-code">인증번호</label>
+                        <div class="find__row">
+                            <input type="text" id="fid-code" class="find__input js-find-code-input" placeholder="6자리 숫자" maxlength="6">
+                            <span class="find__timer js-find-timer">03:00</span>
+                        </div>
+                        <p class="find__hint">인증번호를 받지 못하셨나요? 입력한 정보를 확인한 뒤 다시 요청해 주세요.</p>
+                    </div>
+
+                    <button type="button" class="btn btn--primary find__submit js-find-next" disabled>아이디 찾기</button>
+                </div>
+
+                <div class="find__step js-find-step" data-step="2" hidden>
+                    <div class="find__result">
+                        <p class="find__result-lead">회원님의 아이디입니다.</p>
+                        <div class="find__account">
+                            <strong class="find__account-id">syn****@gmail.com</strong>
+                            <span class="find__account-meta">이메일 가입 · 2026-06-02 가입</span>
+                        </div>
+                    </div>
+                    <div class="find__actions">
+                        <button type="button" class="btn btn--ghost js-find-topw">비밀번호 재설정</button>
+                        <a href="preview-login.html" class="btn btn--primary">로그인하기</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="find__panel" data-find-panel="pw" hidden>
+                <p class="find__lead">본인 확인 후 새 비밀번호를 설정할 수 있습니다.</p>
+
+                <div class="find__step js-find-step" data-step="1">
+                    <label class="find__label" for="fpw-id">아이디(이메일)</label>
+                    <input type="email" id="fpw-id" class="find__input" placeholder="가입한 이메일을 입력해주세요">
+
+                    <label class="find__label" for="fpw-contact">휴대폰 번호</label>
+                    <div class="find__row">
+                        <input type="tel" id="fpw-contact" class="find__input js-find-contact" placeholder="&ldquo;-&rdquo; 없이 입력">
+                        <button type="button" class="btn btn--ghost find__send js-find-send">인증번호 받기</button>
+                    </div>
+
+                    <div class="find__code js-find-code" hidden>
+                        <label class="find__label" for="fpw-code">인증번호</label>
+                        <div class="find__row">
+                            <input type="text" id="fpw-code" class="find__input js-find-code-input" placeholder="6자리 숫자" maxlength="6">
+                            <span class="find__timer js-find-timer">03:00</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn--primary find__submit js-find-next" disabled>다음</button>
+                </div>
+
+                <div class="find__step js-find-step" data-step="2" hidden>
+                    <label class="find__label" for="fpw-new">새 비밀번호</label>
+                    <input type="password" id="fpw-new" class="find__input js-find-pw" placeholder="8자 이상, 영문·숫자 조합">
+                    <label class="find__label" for="fpw-new2">새 비밀번호 확인</label>
+                    <input type="password" id="fpw-new2" class="find__input js-find-pw2" placeholder="비밀번호를 다시 입력해주세요">
+                    <p class="find__error js-find-pw-error" hidden>비밀번호가 일치하지 않습니다.</p>
+                    <button type="button" class="btn btn--primary find__submit js-find-reset" disabled>비밀번호 변경</button>
+                </div>
+
+                <div class="find__step js-find-step" data-step="3" hidden>
+                    <div class="find__done">
+                        <span class="find__done-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <p class="find__done-title">비밀번호가 변경되었습니다</p>
+                        <p class="find__done-desc">새 비밀번호로 다시 로그인해 주세요.</p>
+                    </div>
+                    <div class="find__actions">
+                        <a href="preview-login.html" class="btn btn--primary">로그인하기</a>
+                    </div>
+                </div>
+            </div>
+
+            <p class="find__foot">계정을 찾을 수 없나요? <a href="preview-inquiry.html">1:1 문의</a>로 알려주세요.</p>
+        </section>
+
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="preview-doc-about.html">회사소개</a></li><li><a href="preview-doc-careers.html">채용</a></li><li><a href="preview-doc-newsroom.html">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="preview-doc-terms.html">이용약관</a></li><li><a href="preview-doc-privacy.html">개인정보처리방침</a></li><li><a href="preview-doc-settlement.html">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="preview-faq.html">고객센터</a></li><li><a href="preview-doc-creator-support.html">크리에이터 지원센터</a></li><li><a href="preview-notice.html">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>

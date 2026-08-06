@@ -111,6 +111,12 @@ class CreatorApplyController
                 'appliedAt' => '2026-07-28 14:20',
                 'status' => '심사중',
             ],
+            // state : done(완료) / now(진행중) / 그 외(대기)
+            'steps' => [
+                ['state' => 'done', 'name' => '신청 접수', 'when' => '2026-07-28 14:20'],
+                ['state' => 'now', 'name' => '서류 · 계정 심사', 'when' => '진행중 · ' . self::REVIEW_DAYS . '영업일 이내'],
+                ['state' => 'wait', 'name' => '승인 결과 안내', 'when' => '이메일 · 알림함'],
+            ],
         ]);
     }
 }

@@ -18,7 +18,7 @@
             @if (!empty($apply))
                 <section class="studio__apply" aria-label="데뷔 영상 업로드 안내">
                     <div class="studio__apply-info">
-                        <span class="studio__apply-badge">신청완료</span>
+                        <span class="studio__apply-badge">승인 완료 · 데뷔 준비중</span>
                         <h3 class="studio__apply-title">데뷔 영상을 올려주세요</h3>
                         <p class="studio__apply-desc">{{ $apply['total'] }}개의 영상을 올려주시면 내부 심사(IP · 계정 중복 확인)가 시작됩니다.</p>
                         <div class="studio__apply-progress">

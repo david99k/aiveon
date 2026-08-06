@@ -59,8 +59,8 @@
                     <h2 class="watch__title">{{ $video['title'] }}</h2>
                 </div>
                 <div class="watch__actions">
-                    <a href="#" class="btn btn--ghost btn--icon">공유하기 <img src="{{ asset('images/common/ic_share.svg') }}" alt=""></a>
-                    <a href="#" class="btn btn--ghost btn--icon">저장하기 <img src="{{ asset('images/common/ic_bookmark.svg') }}" alt=""></a>
+                    <a href="#" class="btn btn--ghost btn--icon">공유<img src="{{ asset('images/common/ic_share.svg') }}" alt=""></a>
+                    <a href="#" class="btn btn--ghost btn--icon">저장<img src="{{ asset('images/common/ic_bookmark.svg') }}" alt=""></a>
                 </div>
             </div>
 

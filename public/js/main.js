@@ -169,6 +169,9 @@
 
         Array.prototype.forEach.call(tels, function (input) {
             function apply() {
+                /* 계정 찾기처럼 런타임에 type이 email 등으로 바뀌는 필드는 건너뛴다 */
+                if (input.type !== 'tel') { return; }
+
                 var caret = input.selectionStart === null ? input.value.length : input.selectionStart;
                 var digitsBeforeCaret = input.value.slice(0, caret).replace(/\D/g, '').length;
                 var digits = input.value.replace(/\D/g, '').slice(0, 11);
@@ -781,8 +784,19 @@
         var ICON = {
             back: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5A7.5 7.5 0 1 1 4.7 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 2.6 8.6 5.5 12 8.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             fwd: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5A7.5 7.5 0 1 0 19.3 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 2.6 15.4 5.5 12 8.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-            gear: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.6 8.6h16.8M3.6 15.4h16.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.6" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="15.4" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>'
+            gear: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.6 8.6h16.8M3.6 15.4h16.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.6" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="15.4" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>',
+            /* 자막 : CC 박스. 꺼짐 상태는 사선을 덧그린다 */
+            ccOn: '<svg class="icon-cc-on" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.6" y="5" width="18.8" height="14" rx="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M10.2 10.3a2.4 2.4 0 1 0 0 3.4M17 10.3a2.4 2.4 0 1 0 0 3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+            ccOff: '<svg class="icon-cc-off" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.6" y="5" width="18.8" height="14" rx="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M10.2 10.3a2.4 2.4 0 1 0 0 3.4M17 10.3a2.4 2.4 0 1 0 0 3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m3.6 20.4 16.8-16.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
         };
+
+        /* 시안용 자막 대사 : 실서비스에서는 <track> 의 VTT 를 그대로 쓴다 */
+        var DEMO_CC = [
+            '당신의 하루에, 가장 따뜻한 빛이 되기를',
+            '어떤 밤은 혼자 견디기엔 너무 길었다',
+            '그래서 우리는 서로의 빛이 되기로 했다',
+            '괜찮아, 오늘은 여기까지만 걸어도 돼'
+        ];
 
         var SPEEDS = [
             { v: 0.5, t: '0.5배속' }, { v: 0.75, t: '0.75배속' }, { v: 1, t: '보통' },
@@ -892,6 +906,51 @@
 
         var fullBtn = bar.querySelector('.watch__ctrl--full');
 
+        /* --- 자막 켜기/끄기 ---
+           <track> 이 있으면 textTracks 를 직접 제어하고, 없으면(시안) 데모 자막을 영상 위에 띄운다. */
+        var ccBtn = el('button', 'watch__ctrl watch__cc js-watch-cc', ICON.ccOn + ICON.ccOff);
+        ccBtn.type = 'button';
+        ccBtn.setAttribute('aria-label', '자막');
+        ccBtn.setAttribute('aria-pressed', 'false');
+
+        var realTracks = [];
+        try {
+            realTracks = Array.prototype.filter.call(video.textTracks || [], function (t) {
+                return t.kind === 'subtitles' || t.kind === 'captions';
+            });
+        } catch (e) { realTracks = []; }
+
+        var ccLine = null;
+        if (!realTracks.length) {
+            ccLine = el('p', 'watch__cc-line js-watch-cc-line');
+            ccLine.hidden = true;
+            var stage = wrap.querySelector('.watch__player') || wrap;
+            stage.appendChild(ccLine);
+            video.addEventListener('timeupdate', function () {
+                if (!ccLine || ccLine.hidden) { return; }
+                var i = Math.floor((video.currentTime || 0) / 4) % DEMO_CC.length;
+                if (ccLine.textContent !== DEMO_CC[i]) { ccLine.textContent = DEMO_CC[i]; }
+            });
+        }
+
+        function setCc(on) {
+            ccBtn.classList.toggle('is-on', on);
+            ccBtn.setAttribute('aria-pressed', String(on));
+            if (realTracks.length) {
+                realTracks.forEach(function (t, i) { t.mode = (on && i === 0) ? 'showing' : 'disabled'; });
+            } else if (ccLine) {
+                ccLine.hidden = !on;
+                if (on && !ccLine.textContent) { ccLine.textContent = DEMO_CC[0]; }
+            }
+        }
+        ccBtn.addEventListener('click', function () {
+            setCc(!ccBtn.classList.contains('is-on'));
+            if (hooks && hooks.onActivity) { hooks.onActivity(); }
+        });
+        setCc(false);
+        if (fullBtn) { fullBtn.insertAdjacentElement('beforebegin', ccBtn); }
+        else { bar.appendChild(ccBtn); }
+
         if (!isLive) {
             var speedMenu = buildMenu({
                 title: '재생 속도',
@@ -918,9 +977,9 @@
         if (fullBtn) { fullBtn.insertAdjacentElement('beforebegin', qualityMenu); }
         else { bar.appendChild(qualityMenu); }
 
-        /* 배속·화질·전체화면을 한 묶음으로 우측 정렬 (첫 메뉴가 여백을 밀어낸다) */
-        var firstMenu = bar.querySelector('.watch__menu');
-        if (firstMenu) { firstMenu.classList.add('watch__menu--push'); }
+        /* 자막·배속·화질·전체화면을 한 묶음으로 우측 정렬 (그룹의 첫 요소가 여백을 밀어낸다) */
+        var groupFirst = bar.querySelector('.watch__cc, .watch__menu');
+        if (groupFirst) { groupFirst.classList.add('watch__menu--push'); }
 
         /* 바깥 클릭 · Esc 로 닫기 */
         document.addEventListener('click', function (e) {
@@ -1466,18 +1525,36 @@
         var csUrl = /\.html$/.test(location.pathname) ? 'preview-faq.html' : '/mypage/faq'; // 고객센터 = 자주하는 질문(고객센터) 페이지
         // 크리에이터 신청 : 아직 크리에이터가 아닌 회원의 전환 진입점
         var applyUrl = /\.html$/.test(location.pathname) ? 'preview-creator-apply.html' : '/creator/apply';
+        var appliedUrl = /\.html$/.test(location.pathname) ? 'preview-creator-applied.html' : '/creator/applied';
         var uploadUrl = /\.html$/.test(location.pathname) ? 'preview-upload.html' : '/upload';
 
-        // 데모 상태 4종 : 로그인 / 성인인증 / 프리미엄 구독 / 크리에이터 승인. 각각 body 클래스 + localStorage 로 유지.
-        // 인증·구독 여부를 미리보기로 확인하기 위한 토글(로그인 상태와 동일 방식). 실서비스에선 서버 상태로 대체.
+        // 데모 상태 5종 : 로그인 / 성인인증 / 프리미엄 구독 / 크리에이터 신청(심사중) / 크리에이터 승인.
+        // 각각 body 클래스 + localStorage 로 유지. 실서비스에선 서버가 내려주는 상태로 대체.
         var STATES = [
             { key: 'auth',    cls: 'is-authed',  on: '로그인 상태',     off: '비로그인 상태' },
             { key: 'adult',   cls: 'is-adult',   on: '성인인증 완료',   off: '성인인증 전' },
             { key: 'premium', cls: 'is-premium', on: '프리미엄 구독중', off: '프리미엄 미구독' },
-            { key: 'creator', cls: 'is-creator', on: '크리에이터 승인됨', off: '크리에이터 신청 전' }
+            /* 크리에이터 승인 파이프라인 : 신청 → 데뷔 심사 → 승인.
+               앞 단계를 밟아야 다음 단계가 되므로 누적(사다리)으로 동작한다. */
+            { key: 'applied', cls: 'is-applied', on: '크리에이터 신청함',  off: '크리에이터 신청 전' },
+            { key: 'debut',   cls: 'is-debut',   on: '데뷔 영상 심사중',   off: '데뷔 단계 전' },
+            { key: 'creator', cls: 'is-creator', on: '크리에이터 승인됨',  off: '크리에이터 미승인' }
         ];
-        var demo = { auth: false, adult: false, premium: false, creator: false };
+        var STAGE_KEYS = ['applied', 'debut', 'creator'];   /* 낮은 단계 → 높은 단계 */
+        var demo = { auth: false, adult: false, premium: false, applied: false, debut: false, creator: false };
         STATES.forEach(function (s) { try { demo[s.key] = localStorage.getItem('aiveon-demo-' + s.key) === '1'; } catch (e) {} });
+
+        /* 저장된 값이 사다리 규칙에 어긋나면(예전 배타 방식으로 저장된 경우) 읽을 때 바로잡는다 */
+        (function normalizeStages() {
+            var top = -1;
+            STAGE_KEYS.forEach(function (k, i) { if (demo[k]) { top = i; } });
+            STAGE_KEYS.forEach(function (k, i) {
+                var want = i <= top;
+                if (demo[k] === want) { return; }
+                demo[k] = want;
+                try { localStorage.setItem('aiveon-demo-' + k, want ? '1' : '0'); } catch (e) { /* 무시 */ }
+            });
+        }());
 
         function demoRowHtml(s) {
             return '<div class="gnb__demo-row" data-demo="' + s.key + '">' +
@@ -1504,6 +1581,7 @@
                     '<li><a href="' + mypageUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.user + '마이페이지</a></li>' +
                     // 크리에이터 승인 여부에 따라 둘 중 하나만 노출 (CSS : body.is-creator)
                     '<li class="js-creator-only"><a href="' + studioUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 스튜디오</a></li>' +
+                    '<li class="js-applied-only"><a href="' + appliedUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '신청 진행 상황</a></li>' +
                     '<li class="js-noncreator-only"><a href="' + applyUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.swap + '크리에이터 신청</a></li>' +
                     '<li><a href="' + csUrl + '" class="gnb__usermenu-item" role="menuitem">' + ICON.help + '고객센터</a></li>' +
                     '<li><button type="button" class="gnb__usermenu-item js-demo-logout" role="menuitem">' + ICON.logout + '로그아웃</button></li>' +
@@ -1525,17 +1603,23 @@
          * 실서비스에서는 서버가 내려주는 크리에이터 승인 상태로 판정한다.
          */
         function syncCreatorEntry() {
-            var isCreator = demo.creator;
+            /* 승인됨 > 데뷔(승인중) > 승인 대기 > 신청 전 순으로 판정한다.
+               데뷔 단계는 영상을 올려야 하는 시기이므로 업로드 진입점을 그대로 연다. */
+            var stage = (demo.creator || demo.debut) ? 'creator' : (demo.applied ? 'applied' : 'none');
+            var TEXT = { creator: '업로드 +', applied: '신청 진행 상황', none: '크리에이터 신청하기' };
+            var DOCK = { creator: '업로드', applied: '진행 상황', none: '신청' };
+            var URL = { creator: uploadUrl, applied: appliedUrl, none: applyUrl };
+
             Array.prototype.forEach.call(document.querySelectorAll('.gnb__upload'), function (a) {
-                a.textContent = isCreator ? '업로드 +' : '크리에이터 신청하기';
-                a.setAttribute('href', isCreator ? uploadUrl : applyUrl);
-                a.classList.toggle('gnb__upload--apply', !isCreator);
+                a.textContent = TEXT[stage];
+                a.setAttribute('href', URL[stage]);
+                a.classList.toggle('gnb__upload--apply', stage !== 'creator');
             });
             var dockUp = document.querySelector('.mobile-dock__item[data-dock="upload"]');
             if (dockUp) {
-                dockUp.setAttribute('href', isCreator ? uploadUrl : applyUrl);
+                dockUp.setAttribute('href', URL[stage]);
                 var lbl = dockUp.querySelector('.mobile-dock__label');
-                if (lbl) { lbl.textContent = isCreator ? '업로드' : '신청'; }
+                if (lbl) { lbl.textContent = DOCK[stage]; }
             }
         }
 
@@ -1553,16 +1637,29 @@
             });
             if (avatarImg) { avatarImg.setAttribute('src', demo.auth ? duckSrc : guestSrc); }
             syncCreatorEntry();
-            // 프리미엄 상태를 메뉴 헤드 플랜 라벨에 반영 (구독중=Premium / 미구독=Free)
-            Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) {
-                el.textContent = demo.premium ? 'Premium' : 'Free';
-            });
+            // 프리미엄 상태를 메뉴 헤드 플랜 라벨에 반영 (구독중=Premium / 해지 예약 / 미구독=Free)
+            syncPlanLabels();
+            syncPremiumEntries();
         }
         apply();
 
         function setState(key, val) {
             demo[key] = val;
             try { localStorage.setItem('aiveon-demo-' + key, val ? '1' : '0'); } catch (e) {}
+            /* 구독을 직접 켜고 끄면 해지 예약은 의미가 없으므로 함께 초기화 */
+            if (key === 'premium') { setPremCancel(false); }
+            /* 승인 단계는 누적 : 켜면 앞 단계도 함께 켜고(신청 없이 심사중일 수 없다),
+               끄면 뒤 단계는 함께 끈다(신청 전으로 돌아가면 심사·승인도 무효). */
+            var idx = STAGE_KEYS.indexOf(key);
+            if (idx >= 0) {
+                STAGE_KEYS.forEach(function (k, i) {
+                    if (i === idx) { return; }
+                    var next = val ? (i < idx ? true : demo[k]) : (i > idx ? false : demo[k]);
+                    if (demo[k] === next) { return; }
+                    demo[k] = next;
+                    try { localStorage.setItem('aiveon-demo-' + k, next ? '1' : '0'); } catch (e) { /* 무시 */ }
+                });
+            }
             apply(); // 메뉴는 열린 채로 두어 상태 전환을 바로 확인
         }
 
@@ -2066,13 +2163,135 @@
         sync();
     }
 
-    /* 채널 구독 버튼 (데모 : 구독 ↔ 구독중 토글) */
+    /**
+     * 확인 모달 (되돌리는 게 번거로운 동작 전 한 번 되묻는 용도).
+     * 마크업은 최초 호출 때 한 번만 주입하고 이후 재사용한다.
+     * opts : { title, desc, target, avatar, ok, cancel, danger, onOk }
+     */
+    var confirmModal = null;
+    function openConfirm(opts) {
+        if (!confirmModal) {
+            var m = document.createElement('div');
+            m.className = 'modal js-confirm-modal';
+            m.setAttribute('role', 'dialog');
+            m.setAttribute('aria-modal', 'true');
+            m.innerHTML =
+                '<div class="modal__box">' +
+                    '<div class="modal__head">' +
+                        '<h2 class="modal__title js-confirm-title"></h2>' +
+                        '<button type="button" class="modal__close js-confirm-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>' +
+                    '</div>' +
+                    '<div class="confirm__target js-confirm-target" hidden><img class="confirm__avatar js-confirm-avatar" src="" alt=""><strong class="js-confirm-name"></strong></div>' +
+                    '<p class="confirm__desc js-confirm-desc"></p>' +
+                    '<div class="modal__actions modal__actions--split">' +
+                        '<button type="button" class="btn btn--ghost js-confirm-close"></button>' +
+                        '<button type="button" class="btn btn--primary js-confirm-ok"></button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(m);
+            confirmModal = m;
+
+            m.addEventListener('click', function (e) { if (e.target === m) { closeConfirm(); } });
+            Array.prototype.forEach.call(m.querySelectorAll('.js-confirm-close'), function (b) {
+                b.addEventListener('click', closeConfirm);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && m.classList.contains('is-open')) { closeConfirm(); }
+            });
+        }
+
+        var box = confirmModal;
+        var okBtn = box.querySelector('.js-confirm-ok');
+        var target = box.querySelector('.js-confirm-target');
+
+        box.querySelector('.js-confirm-title').textContent = opts.title || '확인';
+        box.querySelector('.js-confirm-desc').textContent = opts.desc || '';
+        box.querySelector('.js-confirm-close.btn').textContent = opts.cancel || '취소';
+
+        if (opts.target) {
+            target.hidden = false;
+            box.querySelector('.js-confirm-name').textContent = opts.target;
+            var av = box.querySelector('.js-confirm-avatar');
+            if (opts.avatar) { av.src = opts.avatar; av.hidden = false; } else { av.hidden = true; }
+        } else {
+            target.hidden = true;
+        }
+
+        /* 이전 호출의 핸들러가 남지 않도록 버튼을 통째로 갈아끼운다 */
+        var fresh = okBtn.cloneNode(false);
+        fresh.className = 'btn js-confirm-ok ' + (opts.danger ? 'btn--danger' : 'btn--primary');
+        fresh.textContent = opts.ok || '확인';
+        fresh.addEventListener('click', function () {
+            closeConfirm();
+            if (typeof opts.onOk === 'function') { opts.onOk(); }
+        });
+        okBtn.parentNode.replaceChild(fresh, okBtn);
+
+        box.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        fresh.focus();
+    }
+    function closeConfirm() {
+        if (!confirmModal) { return; }
+        confirmModal.classList.remove('is-open');
+        document.body.style.overflow = '';
+    }
+
+    /* 채널 구독 버튼 (데모 : 구독 ↔ 구독중 토글, 취소할 때만 한 번 되묻는다) */
     function initChannelSubscribe() {
         var btn = document.querySelector('.js-channel-subscribe');
         if (!btn) { return; }
-        btn.addEventListener('click', function () {
-            var on = btn.classList.toggle('is-subscribed');
+        function apply(on) {
+            btn.classList.toggle('is-subscribed', on);
             btn.textContent = on ? '구독중' : '구독';
+        }
+        btn.addEventListener('click', function () {
+            if (!btn.classList.contains('is-subscribed')) { apply(true); return; }
+            var nameEl = document.querySelector('.channel__name');
+            var avatarEl = document.querySelector('.channel__avatar');
+            openConfirm({
+                title: '구독을 취소할까요?',
+                target: nameEl ? nameEl.textContent.trim() : '',
+                avatar: avatarEl ? avatarEl.getAttribute('src') : '',
+                desc: '구독을 취소하면 이 채널의 새 영상 알림을 더 이상 받을 수 없어요. 언제든 다시 구독할 수 있습니다.',
+                cancel: '유지하기',
+                ok: '구독 취소',
+                danger: true,
+                onOk: function () { apply(false); }
+            });
+        });
+    }
+
+    /* 크리에이터 팔로우 버튼 (데모 : 팔로우 ↔ 팔로잉, 취소할 때만 되묻는다)
+       상태 표기는 기존 CSS 계약을 따른다 — .player__follow--primary = 미팔로우, 없으면 팔로잉 */
+    function initFollow() {
+        var btns = document.querySelectorAll('.player__follow');
+        if (!btns.length) { return; }
+        Array.prototype.forEach.call(btns, function (btn) {
+            var box = btn.closest ? btn.closest('.player__channel') : null;
+            function apply(on) {
+                btn.classList.toggle('player__follow--primary', !on);
+                btn.textContent = on ? '팔로잉' : '팔로우';
+                btn.setAttribute('aria-pressed', String(on));
+            }
+            /* 마크업이 이미 담고 있는 초기 상태를 그대로 반영(문구는 바뀌지 않는다) */
+            apply(!btn.classList.contains('player__follow--primary'));
+
+            btn.addEventListener('click', function () {
+                if (btn.classList.contains('player__follow--primary')) { apply(true); return; }
+                var nameEl = box ? box.querySelector('.player__channel-name') : null;
+                var avatarEl = box ? box.querySelector('.player__channel-avatar img') : null;
+                openConfirm({
+                    title: '팔로우를 취소할까요?',
+                    target: nameEl ? nameEl.textContent.trim() : '',
+                    avatar: avatarEl ? avatarEl.getAttribute('src') : '',
+                    desc: '팔로우를 취소하면 이 크리에이터의 새 영상 알림을 더 이상 받을 수 없어요. 언제든 다시 팔로우할 수 있습니다.',
+                    cancel: '유지하기',
+                    ok: '팔로우 취소',
+                    danger: true,
+                    onOk: function () { apply(false); }
+                });
+            });
         });
     }
 
@@ -2564,6 +2783,12 @@
             updateUrl();
         }
 
+        /* 제출 → 심사중 상태로 전환(진행 상황 화면 진입점이 열린다).
+           실서비스에서는 서버가 신청 레코드를 만들고 상태를 내려준다. */
+        form.addEventListener('submit', function () {
+            try { localStorage.setItem('aiveon-demo-applied', '1'); } catch (e) { /* 프라이빗 모드 - 무시 */ }
+        });
+
         form.addEventListener('input', sync);
         form.addEventListener('change', sync);
         // AI 툴은 팝업에서 칩이 바뀌므로 DOM 변화를 관찰해 반영
@@ -2771,7 +2996,9 @@
                 /* 데모 상태 반영 (initAuthDemo 와 같은 저장 키) */
                 try { localStorage.setItem('aiveon-demo-premium', '1'); } catch (e) { /* 무시 */ }
                 document.body.classList.add('is-premium');
-                Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) { el.textContent = 'Premium'; });
+                setPremCancel(false);
+                syncPlanLabels();
+                syncPremiumEntries();
                 Array.prototype.forEach.call(document.querySelectorAll('.gnb__demo-row[data-demo="premium"]'), function (row) {
                     row.classList.add('is-on');
                     var lbl = row.querySelector('.js-demo-label');
@@ -2895,6 +3122,826 @@
         refresh();
     }
 
+    /**
+     * 아이디 찾기 / 비밀번호 재설정.
+     * 탭 전환 + 인증번호 발송(타이머) + 단계 이동. 실제 발송·검증은 백엔드 연동 지점.
+     */
+    function initAccountFind() {
+        var page = document.querySelector('.js-find');
+        if (!page) { return; }
+
+        /* 탭 */
+        function showPanel(key) {
+            Array.prototype.forEach.call(page.querySelectorAll('.find__tab'), function (t) {
+                var on = t.getAttribute('data-find-tab') === key;
+                t.classList.toggle('is-active', on);
+                t.setAttribute('aria-selected', String(on));
+            });
+            Array.prototype.forEach.call(page.querySelectorAll('[data-find-panel]'), function (p) {
+                p.hidden = p.getAttribute('data-find-panel') !== key;
+            });
+        }
+        Array.prototype.forEach.call(page.querySelectorAll('.find__tab'), function (t) {
+            t.addEventListener('click', function () { showPanel(t.getAttribute('data-find-tab')); });
+        });
+        if (location.hash === '#pw') { showPanel('pw'); }
+
+        /* 패널별 : 인증번호 발송 → 코드 입력 → 다음 */
+        Array.prototype.forEach.call(page.querySelectorAll('[data-find-panel]'), function (panel) {
+            var send = panel.querySelector('.js-find-send');
+            var codeBox = panel.querySelector('.js-find-code');
+            var codeInput = panel.querySelector('.js-find-code-input');
+            var timerEl = panel.querySelector('.js-find-timer');
+            var next = panel.querySelector('.js-find-next');
+            var contact = panel.querySelector('.js-find-contact');
+            var timer = null;
+
+            /*
+             * 인증 방법(휴대폰 / 이메일) 전환 → 아래 입력 필드를 함께 바꾼다.
+             * 라벨은 for 속성으로 찾으므로 마크업에 별도 훅이 필요 없다.
+             */
+            var methods = panel.querySelectorAll('input[name$="-method"]');
+            var contactLabel = contact ? panel.querySelector('label[for="' + contact.id + '"]') : null;
+            var FIELD = {
+                phone: { label: '휴대폰 번호', type: 'tel', ph: '“-” 없이 입력' },
+                email: { label: '이메일 주소', type: 'email', ph: 'example@aiveon.kr' }
+            };
+            function applyMethod(key) {
+                var f = FIELD[key] || FIELD.phone;
+                if (contactLabel) { contactLabel.textContent = f.label; }
+                if (contact) {
+                    contact.type = f.type;
+                    contact.placeholder = f.ph;
+                    contact.value = '';
+                }
+                /* 대상이 바뀌었으므로 진행 중이던 인증은 초기화 */
+                window.clearInterval(timer);
+                if (codeBox) { codeBox.hidden = true; }
+                if (codeInput) { codeInput.value = ''; }
+                if (timerEl) { timerEl.textContent = '03:00'; }
+                if (send) { send.textContent = '인증번호 받기'; }
+                if (next) { next.disabled = true; }
+            }
+            Array.prototype.forEach.call(methods, function (m) {
+                m.addEventListener('change', function () { if (m.checked) { applyMethod(m.value); } });
+            });
+
+            function startTimer() {
+                var left = 180;
+                window.clearInterval(timer);
+                timer = window.setInterval(function () {
+                    left -= 1;
+                    if (left <= 0) { window.clearInterval(timer); left = 0; }
+                    var m = Math.floor(left / 60), s = left % 60;
+                    if (timerEl) { timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s; }
+                }, 1000);
+            }
+            if (send) {
+                send.addEventListener('click', function () {
+                    if (contact && !contact.value.trim()) { contact.focus(); return; }
+                    if (codeBox) { codeBox.hidden = false; }
+                    send.textContent = '재발송';
+                    startTimer();
+                    if (codeInput) { codeInput.focus(); }
+                });
+            }
+            if (codeInput && next) {
+                codeInput.addEventListener('input', function () {
+                    codeInput.value = codeInput.value.replace(/[^0-9]/g, '');
+                    next.disabled = codeInput.value.length < 6;
+                });
+            }
+
+            /* 단계 이동 */
+            var steps = panel.querySelectorAll('.js-find-step');
+            function goStep(n) {
+                window.clearInterval(timer);
+                Array.prototype.forEach.call(steps, function (st) {
+                    st.hidden = st.getAttribute('data-step') !== String(n);
+                });
+                window.scrollTo(0, 0);
+            }
+            if (next) { next.addEventListener('click', function () { if (!next.disabled) { goStep(2); } }); }
+
+            /* 비밀번호 재설정 : 새 비밀번호 입력 → 완료 */
+            var pw = panel.querySelector('.js-find-pw');
+            var pw2 = panel.querySelector('.js-find-pw2');
+            var err = panel.querySelector('.js-find-pw-error');
+            var reset = panel.querySelector('.js-find-reset');
+            if (pw && pw2 && reset) {
+                var checkPw = function () {
+                    var ok = pw.value.length >= 8 && pw.value === pw2.value;
+                    var mismatch = pw2.value.length > 0 && pw.value !== pw2.value;
+                    if (err) { err.hidden = !mismatch; }
+                    reset.disabled = !ok;
+                };
+                pw.addEventListener('input', checkPw);
+                pw2.addEventListener('input', checkPw);
+                reset.addEventListener('click', function () { if (!reset.disabled) { goStep(3); } });
+            }
+        });
+
+        /* 아이디 찾기 결과 → 비밀번호 재설정 탭으로 */
+        var toPw = page.querySelector('.js-find-topw');
+        if (toPw) { toPw.addEventListener('click', function () { showPanel('pw'); window.scrollTo(0, 0); }); }
+    }
+
+    /**
+     * 알림함 : 탭 필터 + 읽음 처리.
+     * 실서비스에서는 읽음 처리 API 호출 후 상태를 갱신한다.
+     */
+    function initNotifications() {
+        var list = document.querySelector('.js-noti-list');
+        if (!list) { return; }
+
+        /* 알림 유형 아이콘 */
+        var ICONS = {
+            upload: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.8" y="7" width="13" height="10" rx="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M15.8 11.2 21 8.6v6.8l-5.2-2.6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            comment: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-5 3.5V6.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            heart: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-9.4A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            notice: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10v4a1 1 0 0 0 1 1h3l8 4.5V5.5L8 10H5a1 1 0 0 0-1 1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+            check: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            point: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 16V8.4h2.6a2.4 2.4 0 0 1 0 4.8h-2.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        };
+        Array.prototype.forEach.call(list.querySelectorAll('.noti__icon[data-noti-icon]'), function (s) {
+            s.innerHTML = ICONS[s.getAttribute('data-noti-icon')] || ICONS.notice;
+        });
+
+        /* 탭 필터 */
+        var empty = document.querySelector('.js-noti-empty');
+        Array.prototype.forEach.call(document.querySelectorAll('.noti__tab'), function (tab) {
+            tab.addEventListener('click', function () {
+                var key = tab.getAttribute('data-noti-tab');
+                Array.prototype.forEach.call(document.querySelectorAll('.noti__tab'), function (t) {
+                    var on = t === tab;
+                    t.classList.toggle('is-active', on);
+                    t.setAttribute('aria-selected', String(on));
+                });
+                var shown = 0;
+                Array.prototype.forEach.call(list.querySelectorAll('.noti__item'), function (li) {
+                    var ok = key === 'all' || li.getAttribute('data-noti-group') === key;
+                    li.hidden = !ok;
+                    if (ok) { shown += 1; }
+                });
+                list.hidden = shown === 0;
+                if (empty) { empty.hidden = shown !== 0; }
+            });
+        });
+
+        /* 모두 읽음 */
+        var readAll = document.querySelector('.js-noti-read-all');
+        if (readAll) {
+            readAll.addEventListener('click', function () {
+                Array.prototype.forEach.call(list.querySelectorAll('.noti__item.is-unread'), function (li) {
+                    li.classList.remove('is-unread');
+                    var dot = li.querySelector('.noti__dot');
+                    if (dot) { dot.remove(); }
+                });
+                var badge = document.querySelector('.noti__unread');
+                if (badge) { badge.remove(); }
+                var bellDot = document.querySelector('.gnb__bell-dot');
+                if (bellDot) { bellDot.remove(); }
+            });
+        }
+    }
+
+    /* ---------- 프리미엄 구독 상태 ----------
+       해지해도 남은 이용 기간 동안 혜택이 유지되므로(약관 기준), 즉시 해지가 아니라
+       "해지 예약" 상태를 따로 둔다. 실서비스에서는 서버의 구독 상태(cancel_at_period_end)로 대체. */
+    var PREM_CANCEL_KEY = 'aiveon-demo-premium-cancel';
+    var PREM_END = '2026-08-02';                 /* 데모 : 남은 이용 기간 만료일 */
+    function isPremium() { return document.body.classList.contains('is-premium'); }
+    function premCancelScheduled() {
+        try { return localStorage.getItem(PREM_CANCEL_KEY) === '1'; } catch (e) { return false; }
+    }
+    function setPremCancel(on) {
+        try { localStorage.setItem(PREM_CANCEL_KEY, on ? '1' : '0'); } catch (e) { /* 프라이빗 모드 - 무시 */ }
+    }
+    function syncPlanLabels() {
+        var txt = !isPremium() ? 'Free' : (premCancelScheduled() ? 'Premium · 해지 예약' : 'Premium');
+        Array.prototype.forEach.call(document.querySelectorAll('.js-plan-label'), function (el) {
+            el.textContent = txt;
+        });
+    }
+
+    /**
+     * 프리미엄 구독 해지 (진입점 + 확인 팝업).
+     * 진입점은 페이지 마크업을 고치지 않고 JS 로 붙인다.
+     *   프리미엄 페이지 : 구독중 배너 안 "구독 해지"
+     *   마이페이지      : 회원정보 "구독 내용" 행 옆 "해지" / "해지 취소" / "구독하기"
+     */
+    var premCancelModal = null;
+    var PREM_LOSE = ['프리미엄 전용 콘텐츠', '광고 없이 시청', '1080P 고화질 · 여러 기기 동시 시청', '신작 먼저보기'];
+    var PREM_REASONS = ['가격이 부담돼요', '볼 만한 콘텐츠가 부족해요', '자주 이용하지 않아요', '다른 서비스를 이용해요', '잠시 쉬어가려고요', '기타'];
+    /* 텍스트는 항상 textContent 로 넣는 작은 생성 헬퍼 */
+    function pel(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) { n.className = cls; }
+        if (text !== undefined && text !== null) { n.textContent = String(text); }
+        return n;
+    }
+
+    function buildPremCancelModal() {
+        if (premCancelModal) { return premCancelModal; }
+        var m = document.createElement('div');
+        m.className = 'modal js-premc-modal';
+        m.id = 'modal-prem-cancel';
+        m.setAttribute('role', 'dialog');
+        m.setAttribute('aria-modal', 'true');
+        m.innerHTML =
+            '<div class="modal__box modal__box--notice">' +
+                '<div class="js-premc-form">' +
+                    '<div class="modal__head">' +
+                        '<h2 class="modal__title">프리미엄 구독을 해지할까요?</h2>' +
+                        '<button type="button" class="modal__close js-premc-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>' +
+                    '</div>' +
+                    '<p class="premc__keep">해지해도 <strong>' + PREM_END + '</strong> 까지는 프리미엄 혜택을 그대로 이용할 수 있어요. 그 이후 자동으로 일반 회원이 됩니다.</p>' +
+                    '<span class="report__label">해지하면 사라지는 혜택</span>' +
+                    '<ul class="premc__lose"></ul>' +
+                    '<span class="report__label">해지 사유<span class="req">*</span></span>' +
+                    '<div class="report__reasons js-premc-reasons" role="radiogroup" aria-label="해지 사유"></div>' +
+                    '<span class="report__label">더 하고 싶은 말</span>' +
+                    '<textarea class="report__detail js-premc-detail" maxlength="300" placeholder="서비스 개선에 참고할게요. (선택)"></textarea>' +
+                    '<div class="modal__actions modal__actions--split">' +
+                        '<button type="button" class="btn btn--primary js-premc-close">구독 유지</button>' +
+                        '<button type="button" class="btn btn--danger js-premc-submit" disabled>해지하기</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="report__done js-premc-done" hidden>' +
+                    '<span class="report__done-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+                    '<p class="report__done-title">해지가 예약되었습니다</p>' +
+                    '<p class="report__done-desc"><strong>' + PREM_END + '</strong> 까지 프리미엄 혜택이 유지되며,<br>그 전까지는 언제든 해지를 취소할 수 있어요.</p>' +
+                    '<div class="modal__actions"><button type="button" class="btn btn--primary js-premc-close">확인</button></div>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(m);
+        premCancelModal = m;
+
+        var loseList = m.querySelector('.premc__lose');
+        PREM_LOSE.forEach(function (t) { loseList.appendChild(pel('li', null, t)); });
+
+        var reasonBox = m.querySelector('.js-premc-reasons');
+        var submit = m.querySelector('.js-premc-submit');
+        PREM_REASONS.forEach(function (r) {
+            var lb = pel('label', 'report__reason');
+            var input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'premc-reason';
+            input.value = r;
+            input.addEventListener('change', function () { submit.disabled = false; });
+            var radio = pel('span', 'report__radio');
+            lb.appendChild(input);
+            lb.appendChild(radio);
+            lb.appendChild(pel('span', 'report__reason-text', r));
+            reasonBox.appendChild(lb);
+        });
+
+        function close() { m.classList.remove('is-open'); document.body.style.overflow = ''; }
+        Array.prototype.forEach.call(m.querySelectorAll('.js-premc-close'), function (b) { b.addEventListener('click', close); });
+        m.addEventListener('click', function (e) { if (e.target === m) { close(); } });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && m.classList.contains('is-open')) { close(); }
+        });
+        submit.addEventListener('click', function () {
+            /* 실서비스 연동 지점 : 구독 해지 예약 API 호출 */
+            setPremCancel(true);
+            syncPlanLabels();
+            syncPremiumEntries();
+            m.querySelector('.js-premc-form').hidden = true;
+            m.querySelector('.js-premc-done').hidden = false;
+        });
+        return m;
+    }
+    function openPremCancel() {
+        var m = buildPremCancelModal();
+        var form = m.querySelector('.js-premc-form');
+        var submit = m.querySelector('.js-premc-submit');
+        Array.prototype.forEach.call(m.querySelectorAll('.js-premc-reasons input'), function (i) { i.checked = false; });
+        m.querySelector('.js-premc-detail').value = '';
+        submit.disabled = true;
+        form.hidden = false;
+        m.querySelector('.js-premc-done').hidden = true;
+        m.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /* 진입점 버튼 주입 · 상태에 맞춰 문구 갱신 */
+    function syncPremiumEntries() {
+        /* (1) 프리미엄 페이지 : 구독중 배너 */
+        var banner = document.querySelector('.js-prem-current');
+        if (banner) {
+            var scheduled = premCancelScheduled();
+            banner.hidden = !isPremium();
+            var msg = banner.querySelector('.js-premc-msg');
+            if (!msg) {
+                banner.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                msg = pel('span', 'js-premc-msg');
+                banner.appendChild(msg);
+                var act = pel('button', 'premc-btn js-premc-open');
+                act.type = 'button';
+                banner.appendChild(act);
+                act.addEventListener('click', function () { premEntryAction(); });
+            }
+            msg.innerHTML = '';
+            if (scheduled) {
+                msg.appendChild(document.createTextNode('해지가 예약되어 있습니다. '));
+                var s1 = document.createElement('strong');
+                s1.textContent = PREM_END;
+                msg.appendChild(s1);
+                msg.appendChild(document.createTextNode(' 까지 이용할 수 있어요.'));
+            } else {
+                msg.appendChild(document.createTextNode('이미 프리미엄 구독 중입니다. 다음 결제일은 '));
+                var s2 = document.createElement('strong');
+                s2.textContent = PREM_END;
+                msg.appendChild(s2);
+                msg.appendChild(document.createTextNode(' 입니다.'));
+            }
+            var btn = banner.querySelector('.js-premc-open');
+            if (btn) {
+                btn.textContent = scheduled ? '해지 취소' : '구독 해지';
+                btn.classList.toggle('premc-btn--keep', scheduled);
+            }
+        }
+
+        /* (2) 마이페이지 회원정보 : "구독 내용" 행을 구독 카드로 구성한다.
+           .js-plan-label 은 다른 코드도 참조하므로 지우지 않고 카드 안으로 옮긴다. */
+        var plan = document.querySelector('.mypage__field--plain .mypage__field-plan');
+        if (plan) {
+            var row = plan.closest('.mypage__field--plain');
+            var card = row.querySelector('.subcard');
+            if (!card) {
+                card = pel('div', 'subcard');
+                var main = pel('div', 'subcard__main');
+                var badge = pel('span', 'subcard__badge');
+                main.appendChild(badge);
+                row.insertBefore(card, plan);
+                main.appendChild(plan);          /* 기존 라벨 노드를 그대로 재사용 */
+                card.appendChild(main);
+                card.appendChild(pel('p', 'subcard__meta'));
+                var act = pel('button', 'subcard__action js-premc-open');
+                act.type = 'button';
+                act.addEventListener('click', function () { premEntryAction(); });
+                card.appendChild(act);
+            }
+            var scheduled2 = premCancelScheduled();
+            var badgeEl = card.querySelector('.subcard__badge');
+            var metaEl = card.querySelector('.subcard__meta');
+            var actEl = card.querySelector('.subcard__action');
+
+            card.classList.toggle('is-premium', isPremium());
+            card.classList.toggle('is-ending', isPremium() && scheduled2);
+            badgeEl.textContent = isPremium() ? 'PREMIUM' : 'FREE';
+
+            if (!isPremium()) {
+                metaEl.textContent = '무료로 이용 중이에요. 프리미엄으로 전용 콘텐츠를 열어보세요.';
+                actEl.textContent = '구독하기';
+            } else if (scheduled2) {
+                metaEl.textContent = PREM_END + ' 이후 자동으로 일반 회원이 됩니다.';
+                actEl.textContent = '해지 취소';
+            } else {
+                metaEl.textContent = '다음 결제일 ' + PREM_END + ' · 월 14,900원';
+                actEl.textContent = '구독 해지';
+            }
+            actEl.className = 'subcard__action js-premc-open' +
+                (!isPremium() ? ' subcard__action--go' : (scheduled2 ? ' subcard__action--keep' : ' subcard__action--cancel'));
+        }
+    }
+    /* 진입점 공통 동작 : 미구독=구독 페이지로, 구독중=해지 팝업, 해지 예약=즉시 철회 */
+    function premEntryAction() {
+        if (!isPremium()) {
+            /* 프리뷰(preview-premium.html)와 블레이드(/premium) 경로가 달라 페이지의 기존 링크를 재사용한다 */
+            var link = document.querySelector('.mypage__subscribe, .mydash-card[href*="premium"]');
+            location.href = link ? link.getAttribute('href') : 'preview-premium.html';
+            return;
+        }
+        if (premCancelScheduled()) {
+            setPremCancel(false);
+            syncPlanLabels();
+            syncPremiumEntries();
+            return;
+        }
+        openPremCancel();
+    }
+    function initPremiumCancel() {
+        syncPlanLabels();
+        syncPremiumEntries();
+    }
+
+    /**
+     * 업로드 화면 : 승인중(데뷔) 단계면 몇 편을 더 올려야 하는지 알려준다.
+     * 편수는 스튜디오의 데뷔 진행 카드와 같은 기준(3편)을 쓴다.
+     */
+    var DEBUT_TOTAL = 3;
+    var DEBUT_DONE = 1;      /* 시안 값 · 실서비스에서는 서버가 내려준다 */
+    function initUploadDebut() {
+        var page = document.querySelector('.upload');
+        if (!page || page.querySelector('.upload__debut')) { return; }
+        var title = page.querySelector('.upload__title');
+        if (!title) { return; }
+
+        var left = Math.max(DEBUT_TOTAL - DEBUT_DONE, 0);
+        var box = pel('div', 'upload__debut');
+        box.appendChild(pel('span', 'upload__debut-badge', '승인중'));
+
+        var text = pel('p', 'upload__debut-text');
+        text.appendChild(document.createTextNode('데뷔 영상을 '));
+        var s = document.createElement('strong');
+        s.textContent = left + '편';
+        text.appendChild(s);
+        text.appendChild(document.createTextNode(' 더 올리면 최종 검토가 시작돼요. 총 ' + DEBUT_TOTAL + '편이 필요합니다.'));
+        box.appendChild(text);
+
+        var track = pel('span', 'upload__debut-track');
+        var fill = pel('span', 'upload__debut-fill');
+        fill.style.width = Math.round(DEBUT_DONE / DEBUT_TOTAL * 100) + '%';
+        track.appendChild(fill);
+        box.appendChild(track);
+        box.appendChild(pel('span', 'upload__debut-count', DEBUT_DONE + '/' + DEBUT_TOTAL));
+
+        title.insertAdjacentElement('afterend', box);
+    }
+
+    /**
+     * 크리에이터 스튜디오 : 승인 단계에 맞춰 화면을 맞춘다.
+     * 정식 승인 전에는 구독자·조회수·수익 같은 아직 존재할 수 없는 수치를 감추고(CSS),
+     * 배지와 채널 메타를 단계에 맞는 문구로 바꾼다.
+     *   승인 대기(is-applied) : 심사 안내만 · 배지 "승인 대기"
+     *   승인중(is-debut)      : 데뷔 영상 안내 · 배지 "승인중"
+     *   크리에이터(is-creator): 지표 · 성과 패널 전체 노출
+     */
+    function initStudioStage() {
+        var body = document.body;
+        if (!body.classList.contains('is-applied') && !body.classList.contains('is-debut') && !body.classList.contains('is-creator')) { return; }
+        var stage = body.classList.contains('is-creator') ? 'creator'
+            : (body.classList.contains('is-debut') ? 'debut' : 'applied');
+
+        /* 스튜디오 하위 메뉴 게이트 — 사이드바는 마이페이지 전 화면이 공유하므로 먼저 처리한다.
+           승인 대기 = 내 채널 관리만 / 승인중 = + 콘텐츠 관리 / 크리에이터 = 전부 */
+        var ALLOW = {
+            applied: ['내 채널 관리'],
+            debut: ['내 채널 관리', '콘텐츠 관리'],
+            creator: null            /* null = 전부 노출 */
+        };
+        var allow = ALLOW[stage];
+        Array.prototype.forEach.call(document.querySelectorAll('.mypage__side-sub a'), function (a) {
+            a.hidden = !!allow && allow.indexOf(a.textContent.trim()) < 0;
+        });
+
+        /* 메뉴에서 감춘 화면은 주소로 직접 들어와도 막는다(성인·프리미엄 게이트와 같은 방식) */
+        var PAGE_MENU = [
+            { re: /studio-revenue|\/studio\/revenue/, menu: '수익 관리' },
+            { re: /studio-comments|\/studio\/comments/, menu: '댓글 관리' },
+            { re: /studio-content|\/studio\/content/, menu: '콘텐츠 관리' }
+        ];
+        if (allow) {
+            for (var i = 0; i < PAGE_MENU.length; i++) {
+                if (PAGE_MENU[i].re.test(location.pathname) && allow.indexOf(PAGE_MENU[i].menu) < 0) {
+                    location.replace(/\.html$/.test(location.pathname) ? 'preview-studio.html' : '/studio');
+                    return;
+                }
+            }
+        }
+
+        var host = document.querySelector('.mypage__content--studio');
+        if (!host) { return; }
+
+        /* 채널 프로필 배지 */
+        var badge = host.querySelector('.studio__creator-badge');
+        if (badge) {
+            var BADGE = { creator: '크리에이터', debut: '승인중', applied: '승인 대기' };
+            badge.textContent = BADGE[stage];
+            badge.className = 'studio__creator-badge' +
+                (stage === 'debut' ? ' studio__creator-badge--review' : (stage === 'applied' ? ' studio__creator-badge--wait' : ''));
+        }
+
+        /* 채널 메타 · 액션 : 채널이 공개되기 전에는 구독자/영상 수와 "채널 보기"가 성립하지 않는다 */
+        var meta = host.querySelector('.studio__channel-meta');
+        if (meta) {
+            if (!meta.getAttribute('data-full')) { meta.setAttribute('data-full', meta.textContent); }
+            var handle = (meta.getAttribute('data-full') || '').split('·')[0].trim();
+            meta.textContent = stage === 'creator' ? meta.getAttribute('data-full')
+                : handle + ' · ' + (stage === 'debut' ? '공개 준비 중' : '심사 대기 중');
+        }
+        Array.prototype.forEach.call(host.querySelectorAll('.studio__channel-actions .btn'), function (b) {
+            if (/채널 보기/.test(b.textContent)) { b.hidden = stage !== 'creator'; }
+        });
+
+        /* 승인 대기 안내 블록 (없으면 만들어 채널 프로필 앞에 둔다) */
+        if (!host.querySelector('.studio__stage')) {
+            var box = pel('section', 'studio__stage');
+            box.setAttribute('aria-label', '심사 진행 안내');
+            var info = pel('div', 'studio__stage-info');
+            info.appendChild(pel('span', 'studio__stage-badge', '승인 대기'));
+            info.appendChild(pel('h3', 'studio__stage-title', '서류 · 계정 심사가 진행 중이에요'));
+            info.appendChild(pel('p', 'studio__stage-desc', '심사가 끝나면 데뷔 영상을 올릴 수 있어요. 결과는 3영업일 이내에 이메일과 알림으로 안내드립니다.'));
+            box.appendChild(info);
+            var go = pel('a', 'btn btn--primary studio__stage-btn', '진행 상황 보기');
+            go.href = /\.html$/.test(location.pathname) ? 'preview-creator-applied.html' : '/creator/applied';
+            box.appendChild(go);
+            var anchor = host.querySelector('.studio__channel');
+            if (anchor) { host.insertBefore(box, anchor); } else { host.appendChild(box); }
+        }
+    }
+
+    /**
+     * 신고 (회원 · 콘텐츠 · 댓글 공용 모달).
+     * 신고 버튼/메뉴에 data-report-type(member|content|comment), data-report-target 를 달면 열린다.
+     * 모달 마크업은 JS 로 주입하므로 페이지별 마크업 수정이 필요 없다.
+     */
+    function initReport() {
+        if (document.querySelector('.js-report-modal')) { return; }
+
+        var REASONS = {
+            member: ['욕설·비방·혐오 표현', '스팸·광고 도배', '사칭·명의 도용', '개인정보 노출', '기타'],
+            creator: ['타인 사칭·명의 도용', '저작권·초상권 침해', '유해·불법 콘텐츠 반복 게시', '조회수·구독 조작 등 어뷰징', '욕설·비방·혐오 표현', '기타'],
+            content: ['저작권 침해', '선정적·불쾌한 콘텐츠', '폭력적·위험한 콘텐츠', '허위 정보', '스팸·광고', '기타'],
+            comment: ['욕설·비방', '스팸·광고', '스포일러', '개인정보 노출', '기타']
+        };
+        var TITLES = { member: '회원 신고', creator: '크리에이터 신고', content: '콘텐츠 신고', comment: '댓글 신고' };
+
+        var modal = document.createElement('div');
+        modal.className = 'modal js-report-modal';
+        modal.id = 'modal-report';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.innerHTML =
+            '<div class="modal__box">' +
+                '<div class="js-report-form">' +
+                    '<div class="modal__head">' +
+                        '<h2 class="modal__title js-report-title">신고</h2>' +
+                        '<button type="button" class="modal__close js-report-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>' +
+                    '</div>' +
+                    '<p class="report__target js-report-target"></p>' +
+                    '<span class="report__label">신고 사유<span class="req">*</span></span>' +
+                    '<div class="report__reasons js-report-reasons" role="radiogroup" aria-label="신고 사유"></div>' +
+                    '<span class="report__label">상세 내용</span>' +
+                    '<textarea class="report__detail js-report-detail" maxlength="500" placeholder="구체적인 상황을 적어주시면 처리에 도움이 됩니다. (선택)"></textarea>' +
+                    '<p class="report__notice">허위 신고가 반복되면 서비스 이용이 제한될 수 있습니다. 접수된 신고는 운영정책에 따라 검토 후 처리됩니다.</p>' +
+                    '<div class="modal__actions modal__actions--split">' +
+                        '<button type="button" class="btn btn--ghost js-report-close">취소</button>' +
+                        '<button type="button" class="btn btn--primary js-report-submit" disabled>신고하기</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="report__done js-report-done" hidden>' +
+                    '<span class="report__done-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+                    '<p class="report__done-title">신고가 접수되었습니다</p>' +
+                    '<p class="report__done-desc">검토 후 운영정책에 따라 처리하며,<br>결과는 알림으로 안내드립니다.</p>' +
+                    '<div class="modal__actions"><button type="button" class="btn btn--primary js-report-close">확인</button></div>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(modal);
+
+        var titleEl = modal.querySelector('.js-report-title');
+        var targetEl = modal.querySelector('.js-report-target');
+        var reasonBox = modal.querySelector('.js-report-reasons');
+        var detail = modal.querySelector('.js-report-detail');
+        var submit = modal.querySelector('.js-report-submit');
+        var form = modal.querySelector('.js-report-form');
+        var done = modal.querySelector('.js-report-done');
+
+        function open(type, target) {
+            var kind = REASONS[type] ? type : 'content';
+            titleEl.textContent = TITLES[kind];
+            targetEl.innerHTML = '';
+            targetEl.appendChild(document.createTextNode('신고 대상'));
+            var strong = document.createElement('strong');
+            strong.textContent = target || '(대상 정보 없음)';
+            targetEl.appendChild(strong);
+
+            reasonBox.innerHTML = '';
+            REASONS[kind].forEach(function (r, i) {
+                var lb = document.createElement('label');
+                lb.className = 'report__reason';
+                var input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'report-reason';
+                input.value = r;
+                input.addEventListener('change', function () { submit.disabled = false; });
+                var radio = document.createElement('span');
+                radio.className = 'report__radio';
+                var text = document.createElement('span');
+                text.className = 'report__reason-text';
+                text.textContent = r;
+                lb.appendChild(input);
+                lb.appendChild(radio);
+                lb.appendChild(text);
+                reasonBox.appendChild(lb);
+            });
+
+            detail.value = '';
+            submit.disabled = true;
+            form.hidden = false;
+            done.hidden = true;
+            modal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() { modal.classList.remove('is-open'); document.body.style.overflow = ''; }
+
+        Array.prototype.forEach.call(modal.querySelectorAll('.js-report-close'), function (b) { b.addEventListener('click', close); });
+        modal.addEventListener('click', function (e) { if (e.target === modal) { close(); } });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) { close(); }
+        });
+        submit.addEventListener('click', function () {
+            // TODO: 신고 접수 API 호출
+            form.hidden = true;
+            done.hidden = false;
+        });
+
+        /* 신고 버튼 · 댓글 메뉴의 "신고하기" 를 이벤트 위임으로 처리 */
+        document.addEventListener('click', function (e) {
+            var t = e.target.closest ? e.target.closest('[data-report-type]') : null;
+            if (t) {
+                e.preventDefault();
+                open(t.getAttribute('data-report-type'), t.getAttribute('data-report-target'));
+                return;
+            }
+            /* 기존 댓글 메뉴 : 텍스트가 "신고하기" 인 버튼 */
+            var btn = e.target.closest ? e.target.closest('.comment__menu button, .comment__menu a') : null;
+            if (btn && btn.textContent.trim() === '신고하기') {
+                e.preventDefault();
+                var c = btn.closest('.comment');
+                var who = c ? (c.querySelector('.comment__name') || {}).textContent : '';
+                open('comment', (who || '').trim() + '님의 댓글');
+            }
+        });
+    }
+
+    /**
+     * 채널 탭 (홈 · 동영상 · 재생목록 · 정보).
+     * 서버 라우팅 없이 한 페이지 안에서 섹션 표시/숨김만 전환한다.
+     * 탭은 data-ch-tab 으로 구분하고, 없으면 순서(홈·동영상·재생목록·정보)로 대체한다.
+     */
+    function initChannelTabs() {
+        var tabsBox = document.querySelector('.channel__tabs');
+        if (!tabsBox) { return; }
+        var tabs = tabsBox.querySelectorAll('.cs-tab');
+        if (!tabs.length) { return; }
+        var root = tabsBox.closest('.channel') || document;
+        var ORDER = ['home', 'videos', 'playlists', 'info'];
+
+        /* 섹션마다 "어느 탭에서 보일지" 를 매긴다 */
+        var panels = [];
+        function add(node, keys) { if (node) { panels.push({ node: node, keys: keys }); } }
+        add(root.querySelector('.channel__featured'), ['home']);
+        Array.prototype.forEach.call(root.querySelectorAll('.section--poster'), function (s) {
+            add(s, ['home', 'videos']);
+        });
+        var playlists = root.querySelector('.channel__playlists');
+        add(playlists ? playlists.closest('.section') : null, ['home', 'playlists']);
+        add(root.querySelector('#channel-info'), ['home', 'info']);
+        if (!panels.length) { return; }
+
+        function keyOf(tab, i) { return tab.getAttribute('data-ch-tab') || ORDER[i] || 'home'; }
+        function show(key) {
+            Array.prototype.forEach.call(tabs, function (t, i) {
+                var on = keyOf(t, i) === key;
+                t.classList.toggle('is-active', on);
+                t.setAttribute('aria-selected', String(on));
+            });
+            panels.forEach(function (p) { p.node.hidden = p.keys.indexOf(key) < 0; });
+        }
+        Array.prototype.forEach.call(tabs, function (t, i) {
+            t.addEventListener('click', function () { show(keyOf(t, i)); });
+        });
+
+        /* 태그라인의 "더보기" 는 채널 정보로 보낸다 */
+        var more = root.querySelector('.channel__more');
+        if (more) { more.addEventListener('click', function () { show('info'); }); }
+
+        var active = tabsBox.querySelector('.cs-tab.is-active');
+        show(active ? keyOf(active, Array.prototype.indexOf.call(tabs, active)) : 'home');
+    }
+
+    /**
+     * 신고 진입점 주입 (콘텐츠 · 크리에이터).
+     * 페이지마다 마크업을 고치지 않고 액션 줄 · 채널 줄 · 숏폼 레일에 진입점을 만든다.
+     * 팝업 자체는 initReport() 가 만든 공용 모달이 data-report-type 위임으로 연다.
+     *
+     *   콘텐츠 상세 · 시청 · 라이브 : 액션 줄 끝 "신고하기" 버튼
+     *   시청 · 라이브             : 채널 줄 더보기(⋯) → 크리에이터 신고
+     *   채널                      : 구독 줄 더보기(⋯) → 크리에이터 신고
+     *   숏폼 플레이어             : 레일에 이미 있는 더보기 버튼 → 콘텐츠·크리에이터 신고
+     */
+    function initReportEntries() {
+        var FLAG = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.6 21V4h8.9l-.8 2.8h5.7l-1.1 4.2h-5.4l.7 3.1H5.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var DOTS = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5.2" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="18.8" r="1.7" fill="currentColor"/></svg>';
+
+        function txt(node) { return node ? (node.textContent || '').trim() : ''; }
+        /* 신고 대상 문구 : 콘텐츠는 제목, 크리에이터는 채널명 */
+        function contentTarget(scope) {
+            return txt((scope || document).querySelector('.hero--detail .hero__title, .watch__title, .player__title')) || '이 콘텐츠';
+        }
+        function creatorTarget(scope) {
+            return txt((scope || document).querySelector('.player__channel-name, .channel__name')) || '이 크리에이터';
+        }
+
+        /* 열려 있는 메뉴는 하나만 유지한다 */
+        var menus = [];
+        function closeMenus(except) {
+            menus.forEach(function (m) {
+                if (m === except) { return; }
+                m.wrap.classList.remove('is-open');
+                m.btn.setAttribute('aria-expanded', 'false');
+            });
+        }
+        document.addEventListener('click', function () { closeMenus(null); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeMenus(null); } });
+
+        function buildList(items) {
+            var list = document.createElement('div');
+            list.className = 'more-menu__list';
+            list.setAttribute('role', 'menu');
+            items.forEach(function (it) {
+                var node;
+                if (it.href) {
+                    node = document.createElement('a');
+                    node.href = it.href;
+                } else {
+                    node = document.createElement('button');
+                    node.type = 'button';
+                    node.setAttribute('data-report-type', it.type);
+                    node.setAttribute('data-report-target', it.target);
+                }
+                node.className = 'more-menu__item' + (it.danger ? ' more-menu__item--danger' : '');
+                node.setAttribute('role', 'menuitem');
+                node.textContent = it.label;
+                list.appendChild(node);
+            });
+            return list;
+        }
+        function bindMenu(wrap, btn) {
+            var entry = { wrap: wrap, btn: btn };
+            menus.push(entry);
+            btn.setAttribute('aria-haspopup', 'true');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var on = !wrap.classList.contains('is-open');
+                closeMenus(entry);
+                wrap.classList.toggle('is-open', on);
+                btn.setAttribute('aria-expanded', String(on));
+            });
+        }
+        /* 새 더보기 버튼을 만들어 붙인다 */
+        function newMenu(items, aria) {
+            var wrap = document.createElement('div');
+            wrap.className = 'more-menu more-menu--inline';
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'more-menu__btn';
+            btn.setAttribute('aria-label', aria);
+            btn.innerHTML = DOTS;
+            wrap.appendChild(btn);
+            wrap.appendChild(buildList(items));
+            bindMenu(wrap, btn);
+            return wrap;
+        }
+        /* 이미 마크업에 있는 버튼을 트리거로 삼는다 (숏폼 레일 더보기) */
+        function adoptMenu(host, trigger, items) {
+            host.classList.add('more-menu', 'more-menu--adopt');
+            host.appendChild(buildList(items));
+            bindMenu(host, trigger);
+        }
+
+        /* (1) 콘텐츠 상세 · 시청 · 라이브 : 액션 줄 끝 신고 버튼 */
+        Array.prototype.forEach.call(document.querySelectorAll('.hero--detail .hero__actions, .watch__actions'), function (row) {
+            if (row.querySelector('[data-report-type]')) { return; }
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'btn btn--ghost btn--icon report-entry';
+            b.setAttribute('data-report-type', 'content');
+            b.setAttribute('data-report-target', contentTarget());
+            b.appendChild(document.createTextNode('신고'));
+            b.insertAdjacentHTML('beforeend', FLAG);
+            row.appendChild(b);
+        });
+
+        /* (2) 채널 페이지 : 구독 줄 더보기 → 크리에이터 신고
+           크리에이터 신고는 채널 페이지 한 곳으로 모은다(시청·숏폼 화면에는 두지 않는다). */
+        var chActions = document.querySelector('.channel__actions');
+        if (chActions && !chActions.querySelector('.more-menu')) {
+            chActions.appendChild(newMenu([
+                { label: '채널 공유', href: '#' },
+                { label: '크리에이터 신고', type: 'creator', target: creatorTarget(), danger: true }
+            ], '채널 옵션'));
+        }
+
+        /* (3) 숏폼 플레이어 : 슬라이드마다 레일 더보기에 메뉴 연결 */
+        Array.prototype.forEach.call(document.querySelectorAll('.player__slide'), function (slide) {
+            var trigger = slide.querySelector('.player__rail-btn--more');
+            if (!trigger) { return; }
+            var host = trigger.parentNode;
+            if (!host || host.classList.contains('more-menu')) { return; }
+            var link = slide.querySelector('.player__channel-name');
+            adoptMenu(host, trigger, [
+                { label: '콘텐츠 신고', type: 'content', target: contentTarget(slide), danger: true },
+                { label: '채널 방문', href: (link && link.getAttribute('href')) || 'preview-channel.html' }
+            ]);
+        });
+    }
+
     function init() {
         var lists = document.querySelectorAll('[data-scroll-x]');
 
@@ -2927,12 +3974,21 @@
         initMypageSideDrawer();
         initLoadMore();
         initPremium();
+        initPremiumCancel();
+        initStudioStage();
+        initUploadDebut();
         initWithdraw();
+        initAccountFind();
+        initNotifications();
+        initChannelTabs();
+        initReport();
+        initReportEntries();
         initAvatarModal();
         initMypageStudioNav();
         initMypageBack();
         initAiToolLogos();
         initChannelSubscribe();
+        initFollow();
         initStudioComments();
         initContentGates();
         initCreatorAvatarLinks();

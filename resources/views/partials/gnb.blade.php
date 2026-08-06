@@ -38,6 +38,12 @@
         <a href="{{ route('search') }}" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색">
             <img src="{{ asset('images/common/ic_search.svg') }}" alt="">
         </a>
+
+        {{-- 알림함 : 로그인 상태에서만 노출 (CSS body.is-authed) --}}
+        <a href="{{ route('notifications') }}" class="gnb__icon-btn gnb__bell" aria-label="알림">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span class="gnb__bell-dot" aria-hidden="true"></span>
+        </a>
         {{--
             크리에이터 진입점 : 승인 전에는 신청 페이지로, 승인 후에는 업로드로 보낸다.
             실서비스에서는 로그인 사용자의 크리에이터 승인 상태를 $isCreator 로 내려주면 된다.

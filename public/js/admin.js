@@ -17,7 +17,9 @@
     search: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     bell: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     burger: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-    warn: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 21.5 20h-19L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/></svg>'
+    warn: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 21.5 20h-19L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/></svg>',
+    starOff: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3.8 2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.73-5.2 2.73 1-5.8-4.2-4.1 5.8-.85L12 3.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    starOn: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3.8 2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.73-5.2 2.73 1-5.8-4.2-4.1 5.8-.85L12 3.8Z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
   };
 
   /* 1단계 메뉴 아이콘 (라인 스타일 · 업무 성격별로 실루엣을 다르게) */
@@ -80,8 +82,166 @@
     return sec.screens[0] || null;
   }
 
-  /* ---------- 사이드바 ---------- */
-  function renderSidebar(route) {
+  /* ---------- 활성 메뉴 판정 ----------
+     목록에서만 진입하는 화면(회원 상세 등)은 메뉴에 없으므로 그 섹션의 첫 메뉴를 활성으로 본다. */
+  function activeIdOf(sec, route) {
+    if (route.sec !== sec.key) { return null; }
+    var hiddenNow = sec.screens.some(function (s) { return s.id === route.id && s.hideInNav; });
+    if (!hiddenNow) { return route.id; }
+    return (sec.screens.filter(function (s) { return !s.hideInNav; })[0] || {}).id;
+  }
+
+  /* ---------- 상단 1차 메뉴 + 드롭다운 2차 ---------- */
+  var gnbItems = [];
+  function closeGnb(except) {
+    gnbItems.forEach(function (it) {
+      if (it.wrap === except) { return; }
+      it.wrap.classList.remove('is-open');
+      it.btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function renderTopNav(route) {
+    var nav = document.querySelector('.adm-gnb');
+    if (!nav) { return; }
+    nav.innerHTML = '';
+    gnbItems = [];
+
+    DATA.sections.forEach(function (sec) {
+      var activeId = activeIdOf(sec, route);
+      var wrap = el('div', 'adm-gnb__item' + (activeId ? ' is-current' : ''));
+
+      /* 상단 메뉴는 11개가 한 줄에 들어가야 해서 아이콘 없이 라벨만 둔다(아이콘은 좌측 전체 메뉴에 있음).
+         내용이 링크 목록뿐이라 role="menu"(화살표 키 모델) 대신 디스클로저 패턴으로 둔다 — Tab 이동이 그대로 유효하다. */
+      var btn = el('button', 'adm-gnb__btn');
+      btn.type = 'button';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-controls', 'adm-gnb-menu-' + sec.key);
+      btn.appendChild(el('span', 'adm-gnb__label', sec.title));
+      var chev = svgNode(ICONS.chevron);
+      chev.setAttribute('class', 'adm-gnb__chevron');
+      btn.appendChild(chev);
+      wrap.appendChild(btn);
+
+      var menu = el('div', 'adm-gnb__menu');
+      menu.id = 'adm-gnb-menu-' + sec.key;
+      var visible = sec.screens.filter(function (s) { return !s.hideInNav; });
+      /* 항목이 많은 섹션은 2열로 펼쳐 세로로 길어지지 않게 한다 */
+      if (visible.length > 9) { menu.classList.add('adm-gnb__menu--wide'); }
+      visible.forEach(function (s) {
+        var a = el('a', 'adm-gnb__link');
+        a.href = '#/' + sec.key + '/' + s.id;
+        /* 3단계 표시는 메뉴에선 생략한다(대부분의 항목에 붙어 변별력이 없다). 화면 제목에만 남긴다. */
+        a.appendChild(document.createTextNode(s.title));
+        if (s.id === activeId) {
+          a.classList.add('is-active');
+          a.setAttribute('aria-current', 'page');
+        }
+        a.addEventListener('click', function () { closeGnb(null); });
+        menu.appendChild(a);
+      });
+      wrap.appendChild(menu);
+
+      var entry = { wrap: wrap, btn: btn, open: function (on) { setOpen(on); } };
+      gnbItems.push(entry);
+
+      function setOpen(on) {
+        wrap.classList.toggle('is-open', on);
+        btn.setAttribute('aria-expanded', String(on));
+      }
+      /* hover 로 이미 열린 걸 클릭이 곧바로 닫아버리지 않도록 열린 경로를 구분한다 */
+      var hoverOpened = false;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var on = hoverOpened || !wrap.classList.contains('is-open');
+        hoverOpened = false;
+        closeGnb(null);
+        setOpen(on);
+      });
+      /* 마우스에서만 hover 로 열린다. 터치의 합성 마우스 이벤트를 배제하려고 pointer:fine 까지 본다 */
+      function hoverable() { return window.matchMedia('(hover: hover) and (pointer: fine)').matches; }
+      wrap.addEventListener('mouseenter', function () {
+        if (!hoverable()) { return; }
+        closeGnb(wrap);
+        hoverOpened = !wrap.classList.contains('is-open');
+        setOpen(true);
+      });
+      wrap.addEventListener('mouseleave', function () {
+        if (!hoverable()) { return; }
+        /* 키보드로 메뉴 안에 들어가 있으면 마우스가 지나가도 닫지 않는다(포커스 유실 방지) */
+        if (wrap.contains(document.activeElement)) { return; }
+        hoverOpened = false;
+        setOpen(false);
+      });
+
+      nav.appendChild(wrap);
+    });
+    fitTopNav();
+  }
+
+  /* 상단 메뉴가 한 줄에 다 들어가는지 실측한다.
+     라벨 길이·글꼴·확대 배율에 좌우되지 않도록 미디어쿼리 대신 측정으로 판단하고,
+     바로 접지 말고 먼저 여백을 줄여(gnb-tight) 본 뒤에도 넘칠 때만 좌측 전체 메뉴로 넘긴다. */
+  function fitTopNav() {
+    var nav = document.querySelector('.adm-gnb');
+    var adm = document.querySelector('.adm');
+    if (!nav || !adm) { return; }
+    function fits() {
+      var needed = 0;
+      Array.prototype.forEach.call(nav.children, function (c) { needed += c.offsetWidth; });
+      return needed <= nav.getBoundingClientRect().width + 1;
+    }
+    adm.classList.remove('gnb-collapsed', 'gnb-tight');
+    if (fits()) { return; }
+    adm.classList.add('gnb-tight');       /* 관리자 정보 숨김 + 메뉴 여백 축소 */
+    if (fits()) { return; }
+    adm.classList.add('gnb-collapsed');
+  }
+
+  /* ---------- 즐겨찾기 ----------
+     localStorage 에 {sec, id} 목록을 저장한다. 실서비스에서는 관리자 계정별 설정 API 로 교체. */
+  var FAV_KEY = 'aiveon-adm-favs';
+  /* 저장값은 사용자가 직접 건드릴 수 있으므로 읽을 때마다 형태를 검증한다.
+     항목이 깨져 있어도 화면 전체가 죽지 않아야 한다. */
+  function readFavs() {
+    var arr;
+    try {
+      var raw = localStorage.getItem(FAV_KEY);
+      arr = raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+    if (Object.prototype.toString.call(arr) !== '[object Array]') { return []; }
+    var seen = {};
+    var out = [];
+    arr.forEach(function (f) {
+      if (!f || typeof f !== 'object') { return; }
+      if (typeof f.sec !== 'string' || typeof f.id !== 'string') { return; }
+      var k = f.sec + '/' + f.id;
+      if (seen[k]) { return; }        /* 중복 항목 제거 */
+      seen[k] = true;
+      out.push({ sec: f.sec, id: f.id });
+    });
+    return out;
+  }
+  function writeFavs(list) {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) { /* 프라이빗 모드 - 무시 */ }
+  }
+  function favIndex(list, secKey, id) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].sec === secKey && list[i].id === id) { return i; }
+    }
+    return -1;
+  }
+  function isFav(secKey, id) { return favIndex(readFavs(), secKey, id) >= 0; }
+  function toggleFav(secKey, id) {
+    var list = readFavs();
+    var i = favIndex(list, secKey, id);
+    if (i >= 0) { list.splice(i, 1); } else { list.push({ sec: secKey, id: id }); }
+    writeFavs(list);
+    renderSidePanel(parseHash());
+    return i < 0;
+  }
+
+  /* ---------- 좌측 패널 : 대시보드 · 즐겨찾기 · 전체 메뉴(모바일) ---------- */
+  function renderSidePanel(route) {
     var nav = document.querySelector('.adm-side__nav');
     if (!nav) { return; }
     nav.innerHTML = '';
@@ -93,12 +253,67 @@
     if (route.sec === 'dashboard') { home.setAttribute('aria-current', 'page'); }
     nav.appendChild(home);
 
+    /* 즐겨찾기 */
+    var favBox = el('section', 'adm-fav');
+    var favHead = el('p', 'adm-fav__head');
+    favHead.appendChild(svgNode(ICONS.starOn));
+    favHead.appendChild(el('span', null, '즐겨찾는 메뉴'));
+    var favs = readFavs();
+    var resolved = favs.map(function (f) {
+      var sec = findSection(f.sec);
+      if (!sec) { return null; }
+      var s = null;
+      for (var i = 0; i < sec.screens.length; i++) { if (sec.screens[i].id === f.id) { s = sec.screens[i]; } }
+      return s ? { sec: sec, s: s } : null;
+    }).filter(Boolean);
+    favHead.appendChild(el('span', 'adm-fav__count', String(resolved.length)));
+    favBox.appendChild(favHead);
+
+    if (!resolved.length) {
+      favBox.appendChild(el('p', 'adm-fav__empty', '각 화면 우측 상단의 ☆ 버튼을 누르면 여기에 추가됩니다.'));
+    } else {
+      var list = el('div', 'adm-fav__list');
+      resolved.forEach(function (h, idx) {
+        var row = el('div', 'adm-fav__row');
+        var a = el('a', 'adm-fav__link');
+        a.href = '#/' + h.sec.key + '/' + h.s.id;
+        /* 상위 메뉴명은 목록에 노출하지 않는다(툴팁으로만 확인) */
+        a.title = h.sec.title + ' › ' + h.s.title;
+        a.appendChild(el('span', 'adm-fav__name', h.s.title));
+        if (route.sec === h.sec.key && activeIdOf(h.sec, route) === h.s.id) {
+          a.classList.add('is-active');
+          a.setAttribute('aria-current', 'page');
+        }
+        var del = el('button', 'adm-fav__del');
+        del.type = 'button';
+        del.setAttribute('aria-label', h.s.title + ' 즐겨찾기 해제');
+        del.innerHTML = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+        del.addEventListener('click', function () {
+          toggleFav(h.sec.key, h.s.id);   /* 목록이 다시 그려지므로 이 버튼은 사라진다 */
+          syncFavBtn();
+          showToast('즐겨찾기에서 제외했습니다 · ' + h.s.title);
+          /* 사라진 버튼 대신 같은 자리(없으면 마지막 · 그것도 없으면 안내문)로 포커스를 옮긴다 */
+          var next = document.querySelectorAll('.adm-fav__del');
+          var to = next[idx] || next[next.length - 1] || document.querySelector('.adm-fav__empty');
+          if (to) { if (to.tabIndex < 0 && to.className === 'adm-fav__empty') { to.tabIndex = -1; } to.focus(); }
+        });
+        row.appendChild(a);
+        row.appendChild(del);
+        list.appendChild(row);
+      });
+      favBox.appendChild(list);
+    }
+    nav.appendChild(favBox);
+
+    /* 전체 메뉴 아코디언 : 상단 메뉴가 접히는 좁은 화면에서만 노출 */
+    var all = el('section', 'adm-side__all');
+    all.appendChild(el('p', 'adm-side__all-head', '전체 메뉴'));
     DATA.sections.forEach(function (sec) {
-      var isActive = route.sec === sec.key;
-      var g = el('div', 'adm-side__group' + (isActive ? ' is-open has-active' : ''));
+      var activeId = activeIdOf(sec, route);
+      var g = el('div', 'adm-side__group' + (activeId ? ' is-open has-active' : ''));
       var head = el('button', 'adm-side__group-head');
       head.type = 'button';
-      head.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      head.setAttribute('aria-expanded', activeId ? 'true' : 'false');
       var secIco = el('span', 'adm-side__group-icon');
       secIco.setAttribute('aria-hidden', 'true');
       if (SEC_ICONS[sec.key]) { secIco.appendChild(svgNode(SEC_ICONS[sec.key])); }
@@ -115,19 +330,20 @@
 
       var sub = el('div', 'adm-side__sub');
       sec.screens.forEach(function (s) {
+        if (s.hideInNav) { return; }
         var a = el('a');
         a.href = '#/' + sec.key + '/' + s.id;
         a.appendChild(document.createTextNode(s.title));
-        if (s.depth3) { a.appendChild(el('span', 'adm-depth3', '3단계')); }
-        if (isActive && route.id === s.id) {
+        if (s.id === activeId) {
           a.className = 'is-active';
           a.setAttribute('aria-current', 'page');
         }
         sub.appendChild(a);
       });
       g.appendChild(sub);
-      nav.appendChild(g);
+      all.appendChild(g);
     });
+    nav.appendChild(all);
   }
 
   /* ---------- 배지 ---------- */
@@ -159,8 +375,52 @@
     svg.appendChild(sp);
     return svg;
   }
+  /* 차트 좌표계 (viewBox 기준). SVG 는 width:100% 로 늘어나므로
+     축 라벨을 <text> 로 그리면 글자도 같이 확대된다(약 2배).
+     → 라벨은 SVG 밖 HTML 로 뽑아 CSS px 크기를 고정하고, x 위치만 % 로 맞춘다. */
+  var CH_W = 720, CH_H = 200, CH_PAD = { l: 8, r: 8, t: 14, b: 10 };
+
+  /* 표시할 라벨 인덱스 선별 : 첫·마지막은 항상 포함, 중간은 균등 간격으로 솎아낸다. */
+  function chartTicks(n, maxTicks) {
+    var out = [], i;
+    if (n <= 1) { return n ? [0] : out; }
+    var every = Math.ceil((n - 1) / ((maxTicks || 14) - 1));
+    for (i = 0; i < n - 1; i += every) { out.push(i); }
+    /* 마지막 라벨(오늘·현재 등)은 의미가 있으므로 반드시 노출 — 너무 붙으면 직전 것을 뺀다. */
+    if (out.length && (n - 1) - out[out.length - 1] < every * 0.6) { out.pop(); }
+    out.push(n - 1);
+    return out;
+  }
+
+  function chartAxis(chart, xAt) {
+    var axis = el('div', 'adm-chart-axis');
+    var n = chart.labels.length;
+    var ticks = chartTicks(n, chart.maxTicks);
+    ticks.forEach(function (i) {
+      var t = el('span', 'adm-chart-axis__tick', chart.labels[i]);
+      t.style.left = (xAt(i, n) / CH_W * 100).toFixed(3) + '%';
+      axis.appendChild(t);
+    });
+    return axis;
+  }
+
+  /* 차트 본체 + 축 라벨을 묶은 렌더 단위 */
+  function chartFigure(chart) {
+    var fig = el('div', 'adm-chart');
+    var isBar = chart.kind === 'bar';
+    fig.appendChild(isBar ? barChart(chart) : areaChart(chart));
+    if (chart.labels && chart.labels.length) {
+      var iw = CH_W - CH_PAD.l - CH_PAD.r;
+      fig.appendChild(chartAxis(chart, isBar
+        ? function (i, n) { return CH_PAD.l + (iw / n) * (i + 0.5); }
+        : function (i, n) { return n > 1 ? CH_PAD.l + (iw / (n - 1)) * i : CH_PAD.l + iw / 2; }
+      ));
+    }
+    return fig;
+  }
+
   function areaChart(chart) {
-    var w = 720, h = 200, padL = 8, padR = 8, padT = 14, padB = chart.labels ? 26 : 10;
+    var w = CH_W, h = CH_H, padL = CH_PAD.l, padR = CH_PAD.r, padT = CH_PAD.t, padB = CH_PAD.b;
     var pts = chart.points;
     var max = Math.max.apply(null, pts), min = Math.min.apply(null, pts);
     var span = (max - min) || 1;
@@ -186,18 +446,10 @@
     svg.appendChild(svgEl('path', { d: line, fill: 'none', stroke: '#a78bfa', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
     var last = xy[xy.length - 1];
     svg.appendChild(svgEl('circle', { cx: last[0], cy: last[1], r: 3.4, fill: '#a78bfa' }));
-    if (chart.labels) {
-      chart.labels.forEach(function (lb, i) {
-        if (pts.length > 8 && i % 2) { return; } /* 라벨 과밀 방지 */
-        var t = svgEl('text', { x: padL + i * step, y: h - 8, 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.35)', 'font-size': 10 });
-        t.textContent = lb;
-        svg.appendChild(t);
-      });
-    }
     return svg;
   }
   function barChart(chart) {
-    var w = 720, h = 200, padL = 8, padR = 8, padT = 14, padB = chart.labels ? 26 : 10;
+    var w = CH_W, h = CH_H, padL = CH_PAD.l, padR = CH_PAD.r, padT = CH_PAD.t, padB = CH_PAD.b;
     var pts = chart.points;
     var max = Math.max.apply(null, pts) || 1;
     var iw = w - padL - padR, ih = h - padT - padB;
@@ -213,16 +465,185 @@
       var x = padL + i * slot + (slot - bw) / 2;
       svg.appendChild(svgEl('rect', { x: x.toFixed(1), y: (padT + ih - bh).toFixed(1), width: bw.toFixed(1), height: bh.toFixed(1), rx: 4, fill: i === pts.length - 1 ? '#a78bfa' : 'rgba(167,139,250,0.42)' }));
     });
-    if (chart.labels) {
-      chart.labels.forEach(function (lb, i) {
-        if (pts.length > 8 && i % 2) { return; }
-        var t = svgEl('text', { x: padL + i * slot + slot / 2, y: h - 8, 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.35)', 'font-size': 10 });
-        t.textContent = lb;
-        svg.appendChild(t);
-      });
-    }
     return svg;
   }
+
+  /* ---------- 토스트 ---------- */
+  var TOAST_OK = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8 12.3 2.6 2.6L16 9.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function showToast(msg) {
+    var wrap = document.querySelector('.adm-toast-wrap');
+    if (!wrap) {
+      wrap = el('div', 'adm-toast-wrap');
+      wrap.setAttribute('role', 'status');
+      wrap.setAttribute('aria-live', 'polite');
+      document.body.appendChild(wrap);
+    }
+    var t = el('div', 'adm-toast');
+    t.appendChild(svgNode(TOAST_OK));
+    t.appendChild(el('span', null, msg));
+    wrap.appendChild(t);
+    window.setTimeout(function () { t.classList.add('is-out'); }, 4200);
+    window.setTimeout(function () { if (t.parentNode) { t.parentNode.removeChild(t); } }, 4600);
+  }
+
+  /* ---------- 확인 모달 ----------
+     되돌릴 수 없는 조치(강제 탈퇴 등) 전용. 사유 선택 · 고지 동의 · 대상 식별자 재입력을
+     모두 통과해야 실행 버튼이 열린다. 실제 처리 API 는 onSubmit 지점에서 연동한다. */
+  function confirmRow(labelText, req, node, hint) {
+    var row = el('div', 'adm-modal__row');
+    var lb = el('label', 'adm-modal__label', labelText);
+    if (req) { lb.appendChild(el('span', 'req', '*')); }
+    row.appendChild(lb);
+    var field = el('div', 'adm-modal__field');
+    field.appendChild(node);
+    if (hint) { field.appendChild(el('p', 'adm-form__hint', hint)); }
+    row.appendChild(field);
+    return row;
+  }
+  function openConfirm(cfg, sec, trigger) {
+    var prev = document.activeElement;
+    var back = el('div', 'adm-modal');
+    var dim = el('div', 'adm-modal__dim');
+    var panel = el('div', 'adm-modal__panel');
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+
+    /* 헤더 */
+    var head = el('div', 'adm-modal__head');
+    var ic = el('span', 'adm-modal__icon');
+    ic.appendChild(svgNode(ICONS.warn));
+    head.appendChild(ic);
+    var htext = el('div');
+    var h = el('h3', 'adm-modal__title', cfg.title || '확인');
+    h.id = 'adm-modal-title';
+    panel.setAttribute('aria-labelledby', h.id);
+    htext.appendChild(h);
+    if (cfg.desc) { htext.appendChild(el('p', 'adm-modal__desc', cfg.desc)); }
+    head.appendChild(htext);
+    panel.appendChild(head);
+
+    var body = el('div', 'adm-modal__body');
+    if (cfg.target) {
+      var tg = el('div', 'adm-modal__target');
+      tg.appendChild(el('span', 'adm-modal__target-label', '대상'));
+      tg.appendChild(el('strong', null, cfg.target));
+      body.appendChild(tg);
+    }
+    if (cfg.note) { body.appendChild(el('p', 'adm-modal__note', cfg.note)); }
+
+    /* 사유 */
+    var reason = null;
+    if (cfg.reasons && cfg.reasons.length) {
+      reason = document.createElement('select');
+      var ph = document.createElement('option');
+      ph.value = ''; ph.textContent = '사유를 선택하세요';
+      reason.appendChild(ph);
+      cfg.reasons.forEach(function (r) {
+        var op = document.createElement('option');
+        op.value = r; op.textContent = r;
+        reason.appendChild(op);
+      });
+      body.appendChild(confirmRow(cfg.reasonLabel || '처리 사유', true, reason));
+    }
+
+    /* 상세 사유 */
+    var detail = document.createElement('textarea');
+    detail.rows = 3;
+    detail.placeholder = '처리 배경과 근거를 남겨주세요';
+    body.appendChild(confirmRow(cfg.detailLabel || '상세 사유', false, detail, cfg.detailHint));
+
+    /* 고지 동의 */
+    var agreeBox = null;
+    if (cfg.agree) {
+      var al = el('label', 'adm-modal__agree');
+      agreeBox = document.createElement('input');
+      agreeBox.type = 'checkbox';
+      al.appendChild(agreeBox);
+      al.appendChild(el('span', null, cfg.agree));
+      body.appendChild(al);
+    }
+
+    /* 대상 식별자 재입력 */
+    var word = null;
+    if (cfg.word) {
+      word = document.createElement('input');
+      word.type = 'text';
+      word.autocomplete = 'off';
+      word.placeholder = cfg.word;
+      body.appendChild(confirmRow(cfg.wordLabel || '확인 입력', true, word, cfg.wordHint));
+    }
+
+    panel.appendChild(body);
+
+    /* 푸터 */
+    var foot = el('div', 'adm-modal__foot');
+    var cancel = el('button', 'adm-btn adm-btn--ghost', '취소');
+    cancel.type = 'button';
+    var ok = el('button', 'adm-btn adm-btn--danger', cfg.submit || '실행');
+    ok.type = 'button';
+    ok.disabled = true;
+    foot.appendChild(cancel);
+    foot.appendChild(ok);
+    panel.appendChild(foot);
+
+    function sync() {
+      var pass = true;
+      if (reason && !reason.value) { pass = false; }
+      if (agreeBox && !agreeBox.checked) { pass = false; }
+      if (word && word.value.trim() !== cfg.word) { pass = false; }
+      ok.disabled = !pass;
+    }
+    if (reason) { reason.addEventListener('change', sync); }
+    if (agreeBox) { agreeBox.addEventListener('change', sync); }
+    if (word) { word.addEventListener('input', sync); }
+
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      if (back.parentNode) { back.parentNode.removeChild(back); }
+      document.body.classList.remove('adm-modal-open');
+      var focusBack = trigger || prev;
+      if (focusBack && focusBack.focus) { focusBack.focus(); }
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key !== 'Tab') { return; }
+      /* 포커스를 모달 안에 가둔다. 비활성(disabled) 실행 버튼이 마지막으로 잡히면 트랩이 새므로 제외한다. */
+      var f = panel.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]');
+      if (!f.length) { return; }
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    cancel.addEventListener('click', close);
+    dim.addEventListener('click', close);
+    document.addEventListener('keydown', onKey);
+    ok.addEventListener('click', function () {
+      if (ok.disabled) { return; }
+      /* 실서비스 연동 지점 : 여기서 처리 API 를 호출하고 응답 후 화면을 갱신한다. */
+      close();
+      showToast(cfg.done || '처리되었습니다.');
+      if (cfg.goto && sec) { location.hash = '#/' + sec.key + '/' + cfg.goto; }
+    });
+
+    back.appendChild(dim);
+    back.appendChild(panel);
+    document.body.appendChild(back);
+    document.body.classList.add('adm-modal-open');
+    sync();
+    (reason || detail).focus();
+  }
+
+  /* ---------- 표 선택 상태 ----------
+     표(buildTable)와 페이지 헤더 버튼(buildPageHead)이 서로 다른 시점에 만들어지므로
+     선택 결과를 여기에 모아두고 구독자에게 알린다. 화면을 새로 그릴 때마다 초기화한다. */
+  var selIds = [];
+  var selSubs = [];
+  function resetSelection() { selIds = []; selSubs = []; }
+  function setSelection(ids) {
+    selIds = ids;
+    selSubs.forEach(function (fn) { fn(ids); });
+  }
+  function onSelection(fn) { selSubs.push(fn); fn(selIds); }
 
   /* ---------- 화면 구성 요소 ---------- */
   function buildPageHead(sec, s) {
@@ -233,16 +654,83 @@
     text.appendChild(title);
     text.appendChild(el('p', 'adm-page-head__desc', s.desc));
     head.appendChild(text);
+
+    var acts = el('div', 'adm-page-head__actions');
+    /* 즐겨찾기 : 좌측 패널의 "즐겨찾는 메뉴" 와 연결된다. 메뉴에 없는 화면(상세 등)은 제외 */
+    if (sec && s.id && !s.hideInNav) {
+      var fav = el('button', 'adm-fav-btn');
+      fav.type = 'button';
+      fav.setAttribute('data-fav-sec', sec.key);
+      fav.setAttribute('data-fav-id', s.id);
+      acts.appendChild(fav);
+      paintFavBtn(fav);
+      fav.addEventListener('click', function () {
+        var added = toggleFav(sec.key, s.id);
+        paintFavBtn(fav);
+        showToast(added ? '즐겨찾기에 추가했습니다 · ' + s.title : '즐겨찾기에서 제외했습니다 · ' + s.title);
+      });
+    }
+
     if (s.headActions && s.headActions.length) {
-      var acts = el('div', 'adm-page-head__actions');
       s.headActions.forEach(function (a, i) {
-        var b = el('button', 'adm-btn ' + (i === 0 ? 'adm-btn--primary' : 'adm-btn--ghost'), a);
+        /* 문자열이면 기존대로(첫 번째 primary), 객체면 kind/goto 를 지정할 수 있다.
+           kind : primary | ghost | danger,  goto : 같은 섹션 안 이동할 화면 id */
+        var label = (typeof a === 'string') ? a : a.label;
+        var kind = (typeof a === 'string') ? (i === 0 ? 'primary' : 'ghost') : (a.kind || 'ghost');
+        var b = el('button', 'adm-btn adm-btn--' + kind, label);
         b.type = 'button';
+
+        /* 선택한 행에만 적용되는 일괄 처리 : 선택 전에는 눌리지 않고, 선택 수를 라벨에 붙인다 */
+        if (a && a.needsSelection) {
+          onSelection(function (ids) {
+            b.disabled = !ids.length;
+            b.textContent = ids.length ? label + ' (' + ids.length + ')' : label;
+          });
+        }
+
+        if (a && a.confirm) {
+          b.addEventListener('click', function () {
+            if (b.disabled) { return; }
+            var cfg = a.confirm;
+            if (a.needsSelection) {
+              /* 대상 문구를 선택 결과로 채운다 */
+              var head = selIds.slice(0, 3).join(', ');
+              cfg = {};
+              Object.keys(a.confirm).forEach(function (k) { cfg[k] = a.confirm[k]; });
+              cfg.target = selIds.length + '명 · ' + head + (selIds.length > 3 ? ' 외 ' + (selIds.length - 3) + '명' : '');
+              cfg.done = (a.confirm.done || '처리되었습니다.').replace('{n}', String(selIds.length));
+            }
+            openConfirm(cfg, sec, b);
+          });
+        } else if (a && a.goto && sec) {
+          b.addEventListener('click', function () { location.hash = '#/' + sec.key + '/' + a.goto; });
+        } else if (a && a.toast) {
+          /* 확인이 필요 없는 동작(내보내기·재계산 등) : 실행 후 결과만 알린다 */
+          b.addEventListener('click', function () {
+            if (b.disabled) { return; }
+            var msg = a.toast;
+            if (a.needsSelection) { msg = msg.replace('{n}', String(selIds.length)); }
+            showToast(msg);
+          });
+        }
         acts.appendChild(b);
       });
-      head.appendChild(acts);
     }
+    if (acts.childNodes.length) { head.appendChild(acts); }
     return head;
+  }
+  /* 즐겨찾기 버튼 표시 갱신 (아이콘 · 라벨 · 상태) */
+  function paintFavBtn(btn) {
+    var on = isFav(btn.getAttribute('data-fav-sec'), btn.getAttribute('data-fav-id'));
+    btn.innerHTML = on ? ICONS.starOn : ICONS.starOff;
+    btn.appendChild(el('span', null, on ? '즐겨찾기 해제' : '즐겨찾기'));
+    btn.classList.toggle('is-on', on);
+    btn.setAttribute('aria-pressed', String(on));
+  }
+  /* 좌측 패널에서 해제했을 때 본문 버튼도 같이 되돌린다 */
+  function syncFavBtn() {
+    var btn = document.querySelector('.adm-fav-btn');
+    if (btn) { paintFavBtn(btn); }
   }
   function buildNote(textStr) {
     var n = el('div', 'adm-note');
@@ -282,12 +770,33 @@
     bar.appendChild(submit);
     return bar;
   }
-  function buildTable(s) {
+  function buildTable(s, sec) {
+    /* 행 클릭 → 상세 이동.
+       s.detail 로 대상 화면을 직접 지정할 수 있고, 없으면 목록(list) → 상세(detail) 관례를 따른다. */
+    var detailHash = null;
+    if (sec && s.type === 'table') {
+      var detId = s.detail || (s.id === 'list' ? 'detail' : null);
+      if (detId && sec.screens.filter(function (x) { return x.id === detId; })[0]) {
+        detailHash = '#/' + sec.key + '/' + detId;
+      }
+    }
+
     var card = el('div', 'adm-card');
     var wrap = el('div', 'adm-table-wrap');
-    var table = el('table', 'adm-table');
+    var table = el('table', 'adm-table' + (s.select ? ' adm-table--select' : ''));
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
+    var allBox = null;
+    if (s.select) {
+      var thSel = document.createElement('th');
+      thSel.scope = 'col';
+      thSel.className = 'adm-table__sel';
+      allBox = document.createElement('input');
+      allBox.type = 'checkbox';
+      allBox.setAttribute('aria-label', '전체 선택');
+      thSel.appendChild(allBox);
+      trh.appendChild(thSel);
+    }
     (s.columns || []).forEach(function (c) {
       var th = document.createElement('th');
       th.scope = 'col';
@@ -298,8 +807,23 @@
     table.appendChild(thead);
     var tbody = document.createElement('tbody');
     var lastCol = (s.columns || []).length - 1;
+    var boxes = [];
     (s.rows || []).forEach(function (row) {
       var tr = document.createElement('tr');
+      if (s.select) {
+        var tdSel = document.createElement('td');
+        tdSel.className = 'adm-table__sel';
+        var box = document.createElement('input');
+        box.type = 'checkbox';
+        box.value = String(row[0]);
+        box.setAttribute('aria-label', String(row[0]) + ' 선택');
+        /* 체크박스 칸은 행 클릭(상세 이동)에 반응하지 않아야 한다 */
+        tdSel.addEventListener('click', function (e) { e.stopPropagation(); });
+        box.addEventListener('change', function () { syncSel(); });
+        boxes.push(box);
+        tdSel.appendChild(box);
+        tr.appendChild(tdSel);
+      }
       row.forEach(function (cell, ci) {
         var td = document.createElement('td');
         if (cell && typeof cell === 'object') {
@@ -312,11 +836,62 @@
         }
         tr.appendChild(td);
       });
+      if (detailHash) {
+        tr.className = 'is-clickable';
+        tr.tabIndex = 0;
+        tr.setAttribute('role', 'link');
+        tr.setAttribute('aria-label', String(row[0]) + ' 상세 보기');
+        var go = function () { location.hash = detailHash; };
+        tr.addEventListener('click', go);
+        tr.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+        });
+      }
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
     wrap.appendChild(table);
+
+    /* 선택 상태 : 헤더 전체선택 · 선택 요약 바 · 페이지 헤더 버튼과 연동 */
+    var selBar = null;
+    function syncSel() {
+      var picked = boxes.filter(function (b) { return b.checked; });
+      var ids = picked.map(function (b) { return b.value; });
+      picked.forEach(function () {});
+      boxes.forEach(function (b) { b.closest('tr').classList.toggle('is-picked', b.checked); });
+      if (allBox) {
+        allBox.checked = boxes.length > 0 && ids.length === boxes.length;
+        allBox.indeterminate = ids.length > 0 && ids.length < boxes.length;
+      }
+      if (selBar) {
+        selBar.hidden = !ids.length;
+        var cnt = selBar.querySelector('.adm-selbar__count');
+        if (cnt) { cnt.textContent = ids.length + '건 선택됨'; }
+      }
+      setSelection(ids);
+    }
+    if (s.select) {
+      if (allBox) {
+        allBox.addEventListener('change', function () {
+          boxes.forEach(function (b) { b.checked = allBox.checked; });
+          syncSel();
+        });
+      }
+      selBar = el('div', 'adm-selbar');
+      selBar.hidden = true;
+      selBar.appendChild(el('strong', 'adm-selbar__count', '0건 선택됨'));
+      var clr = el('button', 'adm-selbar__clear', '선택 해제');
+      clr.type = 'button';
+      clr.addEventListener('click', function () {
+        boxes.forEach(function (b) { b.checked = false; });
+        syncSel();
+      });
+      selBar.appendChild(clr);
+      card.appendChild(selBar);
+    }
+
     card.appendChild(wrap);
+    if (s.select) { syncSel(); }
 
     /* 페이지네이션 (시안 데모) */
     var paging = el('div', 'adm-paging');
@@ -433,7 +1008,67 @@
     card.appendChild(body);
     return card;
   }
-  function buildStats(s) {
+  /* ---------- 차트 카드 (제목 + 단위 + 기간 세그먼트 + 본체) ----------
+     chart.ranges 가 있으면 시간·일·월 세그먼트를 렌더하고, 선택 시 본체만 다시 그린다. */
+  function rangeView(chart, r) {
+    return {
+      kind: r.kind || chart.kind,
+      label: r.label || chart.label,
+      unit: r.unit || chart.unit,
+      points: r.points,
+      labels: r.labels,
+      maxTicks: r.maxTicks || chart.maxTicks
+    };
+  }
+  function buildChartCard(chart, cls) {
+    var card = el('div', 'adm-card' + (cls ? ' ' + cls : ''));
+    var head = el('div', 'adm-card__head');
+    var title = el('h3', 'adm-card__title', chart.label);
+    var unit = el('span', 'adm-card__more', chart.unit ? '단위: ' + chart.unit : '');
+    var body = el('div', 'adm-card__body');
+    head.appendChild(title);
+    head.appendChild(unit);
+
+    function draw(view) {
+      title.textContent = view.label;
+      unit.textContent = view.unit ? '단위: ' + view.unit : '';
+      while (body.firstChild) { body.removeChild(body.firstChild); }
+      body.appendChild(chartFigure(view));
+    }
+
+    if (chart.ranges && chart.ranges.length) {
+      var seg = el('div', 'adm-seg');
+      seg.setAttribute('role', 'group');
+      seg.setAttribute('aria-label', '기간 단위 선택');
+      var btns = chart.ranges.map(function (r) {
+        var b = el('button', 'adm-seg__btn', r.tab);
+        b.type = 'button';
+        seg.appendChild(b);
+        return b;
+      });
+      head.appendChild(seg);
+      var pick = function (idx) {
+        btns.forEach(function (b, i) {
+          b.className = 'adm-seg__btn' + (i === idx ? ' is-on' : '');
+          b.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        draw(rangeView(chart, chart.ranges[idx]));
+      };
+      btns.forEach(function (b, i) {
+        b.addEventListener('click', function () { pick(i); });
+      });
+      var start = 0;
+      chart.ranges.forEach(function (r, i) { if (r.key === chart.range) { start = i; } });
+      pick(start);
+    } else {
+      draw(chart);
+    }
+    card.appendChild(head);
+    card.appendChild(body);
+    return card;
+  }
+
+  function buildStats(s, sec) {
     var box = document.createDocumentFragment();
     if (s.kpis && s.kpis.length) {
       var kpis = el('div', 'adm-kpis');
@@ -447,18 +1082,10 @@
       box.appendChild(kpis);
     }
     if (s.chart) {
-      var ccard = el('div', 'adm-card adm-chart-card');
-      var chead = el('div', 'adm-card__head');
-      chead.appendChild(el('h3', 'adm-card__title', s.chart.label));
-      if (s.chart.unit) { chead.appendChild(el('span', 'adm-card__more', '단위: ' + s.chart.unit)); }
-      ccard.appendChild(chead);
-      var cbody = el('div', 'adm-card__body');
-      cbody.appendChild(s.chart.kind === 'bar' ? barChart(s.chart) : areaChart(s.chart));
-      ccard.appendChild(cbody);
-      box.appendChild(ccard);
+      box.appendChild(buildChartCard(s.chart, 'adm-chart-card'));
     }
     if (s.columns && s.rows) {
-      box.appendChild(buildTable(s));
+      box.appendChild(buildTable(s, sec));
     }
     return box;
   }
@@ -473,10 +1100,29 @@
       { label: '이번 달 매출', value: '₩412,080,000', diff: '▲ 6.4% (지난달 대비)', dir: 'up', spark: [31, 33, 32, 35, 34, 36, 37, 36, 38, 39, 40, 41] },
       { label: '정산 대기 금액', value: '₩38,120,000', diff: '지급 예정 7월 31일', dir: 'flat', spark: [42, 40, 41, 39, 40, 38, 39, 38, 39, 38, 38, 38] }
     ],
+    /* 시청 시간 추이 — 기간 단위(시간·일·월)를 세그먼트로 전환한다.
+       월 단위는 값이 너무 커져 가독성이 떨어지므로 '천 시간' 으로 환산해 표기한다. */
     chart: {
-      label: '최근 14일 시청 시간 추이', unit: '시간',
-      points: [61200, 64800, 63100, 68400, 72900, 81300, 84100, 76200, 74800, 77500, 80100, 85400, 83900, 81204],
-      labels: ['7/15', '7/16', '7/17', '7/18', '7/19', '7/20', '7/21', '7/22', '7/23', '7/24', '7/25', '7/26', '7/27', '오늘']
+      label: '시청 시간 추이', unit: '시간', range: 'day',
+      ranges: [
+        {
+          key: 'hour', tab: '시간', unit: '시간', label: '최근 24시간 시청 시간 추이',
+          points: [2980, 2140, 1520, 1080, 860, 940, 1380, 1960, 2410, 2620, 2780, 2950,
+            3410, 3280, 3140, 3260, 3520, 3980, 4620, 5340, 6180, 6740, 6120, 4900],
+          labels: ['0시', '1시', '2시', '3시', '4시', '5시', '6시', '7시', '8시', '9시', '10시', '11시',
+            '12시', '13시', '14시', '15시', '16시', '17시', '18시', '19시', '20시', '21시', '22시', '현재']
+        },
+        {
+          key: 'day', tab: '일', unit: '시간', label: '최근 14일 시청 시간 추이',
+          points: [61200, 64800, 63100, 68400, 72900, 81300, 84100, 76200, 74800, 77500, 80100, 85400, 83900, 81204],
+          labels: ['7/15', '7/16', '7/17', '7/18', '7/19', '7/20', '7/21', '7/22', '7/23', '7/24', '7/25', '7/26', '7/27', '오늘']
+        },
+        {
+          key: 'month', tab: '월', unit: '천 시간', label: '최근 12개월 시청 시간 추이',
+          points: [1682, 1745, 1698, 1810, 1924, 2087, 2015, 2143, 2098, 2264, 2352, 2287],
+          labels: ['8월', '9월', '10월', '11월', '12월', '1월', '2월', '3월', '4월', '5월', '6월', '이번 달']
+        }
+      ]
     },
     queue: [
       { count: 12, label: '콘텐츠 심사 대기', href: '#/content/review' },
@@ -538,16 +1184,8 @@
 
     var grid = el('div', 'adm-dash-grid');
 
-    /* 시청 추이 차트 */
-    var ccard = el('div', 'adm-card full');
-    var chead = el('div', 'adm-card__head');
-    chead.appendChild(el('h3', 'adm-card__title', DASH.chart.label));
-    chead.appendChild(el('span', 'adm-card__more', '단위: ' + DASH.chart.unit));
-    ccard.appendChild(chead);
-    var cbody = el('div', 'adm-card__body');
-    cbody.appendChild(areaChart(DASH.chart));
-    ccard.appendChild(cbody);
-    grid.appendChild(ccard);
+    /* 시청 추이 차트 (시간·일·월 전환) */
+    grid.appendChild(buildChartCard(DASH.chart, 'full'));
 
     /* 승인·처리 대기 큐 */
     var qcard = el('div', 'adm-card full');
@@ -655,6 +1293,7 @@
     var content = document.querySelector('.adm-content');
     if (!content) { return; }
     content.innerHTML = '';
+    resetSelection();
     var sec = null, s = null;
 
     if (route.sec === 'dashboard' || !DATA.sections.length) {
@@ -668,25 +1307,27 @@
       if (s.note) { content.appendChild(buildNote(s.note)); }
       if (s.type === 'table') {
         if (s.filters && s.filters.length) { content.appendChild(buildFilters(s.filters)); }
-        content.appendChild(buildTable(s));
+        content.appendChild(buildTable(s, sec));
       } else if (s.type === 'detail') {
         content.appendChild(buildPanels(s));
       } else if (s.type === 'form') {
         content.appendChild(buildForm(s));
       } else if (s.type === 'stats') {
         if (s.filters && s.filters.length) { content.appendChild(buildFilters(s.filters)); }
-        content.appendChild(buildStats(s));
+        content.appendChild(buildStats(s, sec));
       }
     }
-    renderSidebar(route);
+    renderTopNav(route);
+    renderSidePanel(route);
     updateCrumb(route, sec, s);
+    closeGnb(null);
     document.querySelector('.adm').classList.remove('side-open');
     window.scrollTo(0, 0);
   }
 
-  /* ---------- 메뉴 검색 ---------- */
+  /* ---------- 메뉴 검색 (좌측 패널 상단) ---------- */
   function initSearch() {
-    var box = document.querySelector('.adm-top__search');
+    var box = document.querySelector('.adm-side__search');
     if (!box) { return; }
     var input = box.querySelector('input');
     var result = el('div', 'adm-top__search-result');
@@ -699,6 +1340,7 @@
       var hits = [];
       DATA.sections.forEach(function (sec) {
         sec.screens.forEach(function (s) {
+          if (s.hideInNav) { return; }
           if ((sec.title + ' ' + s.title).toLowerCase().indexOf(q) >= 0) {
             hits.push({ sec: sec, s: s });
           }
@@ -724,10 +1366,10 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
   }
 
-  /* ---------- 다크 / 라이트 테마 ---------- */
+  /* ---------- 다크 / 라이트 테마 (좌측 패널 하단) ---------- */
   function initTheme() {
     var KEY = 'aiveon-adm-theme';
-    var right = document.querySelector('.adm-top__right');
+    var right = document.querySelector('.adm-side__foot');
     if (!right || right.querySelector('.adm-theme')) { return; }
 
     var saved = null;
@@ -772,9 +1414,37 @@
     var burger = document.querySelector('.adm-top__menu-btn');
     var adm = document.querySelector('.adm');
     if (burger && adm) {
-      burger.addEventListener('click', function () { adm.classList.toggle('side-open'); });
+      burger.addEventListener('click', function () {
+        var open = adm.classList.toggle('side-open');
+        burger.setAttribute('aria-expanded', String(open));
+      });
       var dim = document.querySelector('.adm-dim');
-      if (dim) { dim.addEventListener('click', function () { adm.classList.remove('side-open'); }); }
+      if (dim) {
+        dim.addEventListener('click', function () {
+          adm.classList.remove('side-open');
+          burger.setAttribute('aria-expanded', 'false');
+        });
+      }
+    }
+    /* 드롭다운은 바깥 클릭·Esc 로 닫는다. Esc 로 닫을 때는 포커스를 연 버튼으로 되돌린다. */
+    document.addEventListener('click', function () { closeGnb(null); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') { return; }
+      var opened = null;
+      gnbItems.forEach(function (it) { if (it.wrap.classList.contains('is-open')) { opened = it; } });
+      if (!opened) { return; }            /* 열린 메뉴가 없으면 모달 등 다른 소비자에게 넘긴다 */
+      closeGnb(null);
+      opened.btn.focus();
+      e.stopPropagation();
+    });
+    var fitTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(fitTimer);
+      fitTimer = window.setTimeout(fitTopNav, 120);
+    });
+    /* CDN 웹폰트가 늦게 붙으면 라벨 폭이 달라지므로 로드 후 한 번 더 잰다 */
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+      document.fonts.ready.then(fitTopNav);
     }
     initSearch();
     initTheme();

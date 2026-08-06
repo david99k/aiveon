@@ -32,8 +32,8 @@
 
             <div class="hero__actions">
                 <a href="{{ $title['play_url'] ?? '#' }}" class="btn btn--primary">바로재생</a>
-                <a href="#" class="btn btn--ghost btn--icon">공유하기 <img src="{{ asset('images/common/ic_share.svg') }}" alt=""></a>
-                <a href="#" class="btn btn--ghost btn--icon">저장하기 <img src="{{ asset('images/common/ic_bookmark.svg') }}" alt=""></a>
+                <a href="#" class="btn btn--ghost btn--icon">공유<img src="{{ asset('images/common/ic_share.svg') }}" alt=""></a>
+                <a href="#" class="btn btn--ghost btn--icon">저장<img src="{{ asset('images/common/ic_bookmark.svg') }}" alt=""></a>
             </div>
         </div>
     </section>

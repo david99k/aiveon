@@ -92,6 +92,15 @@ Route::get('/mypage/event/{id}', [MypageController::class, 'eventShow'])->name('
  */
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
 
+/* 알림함 (GNB 종 아이콘 진입) - 전체 / 활동 / 서비스 탭 */
+Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
+
+/* 아이디 찾기 · 비밀번호 재설정 (로그인 화면 하단 진입) */
+Route::get('/account/find', [App\Http\Controllers\AccountFindController::class, 'show'])->name('account.find');
+
+/* 정책·회사 문서 (푸터 링크 진입) - 약관/개인정보/정산정책/회사소개/채용/뉴스룸/크리에이터 지원센터 */
+Route::get('/docs/{slug?}', [App\Http\Controllers\DocController::class, 'show'])->name('doc');
+
 /*
  * 로그인 / 회원가입 (단일 페이지 3단계 온보딩).
  * 단계 전환은 클라이언트에서 처리하고, 최종 제출만 서버에서 검증한다.

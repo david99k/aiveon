@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>알림 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/notifications/index.blade.php 정적 재현. 탭 필터 + 모두 읽음(initNotifications).
+        마이페이지 좌측 사이드바 "1:1 문의" 클릭 시 진입. (Figma 732:9718)
+    -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="is-mypage">
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-notifications.html" class="gnb__icon-btn gnb__bell" aria-label="알림">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    <span class="gnb__bell-dot" aria-hidden="true"></span>
+                </a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+            <section class="mypage">
+                <!-- 좌측 계정 사이드바 -->
+                <aside class="mypage__side" aria-label="계정 메뉴">
+                    <div class="mypage__profile">
+                        <img class="mypage__profile-avatar" src="images/common/avatar_user.jpg" alt="">
+                        <div>
+                            <p class="mypage__profile-name">synergy_on</p>
+                            <p class="mypage__profile-plan">free</p>
+                        </div>
+                    </div>
+
+                    <a href="preview-favorites.html#account" class="mypage__side-edit">회원정보 변경 &gt;</a>
+                    <a href="preview-premium.html" class="mypage__subscribe">Premium 구독</a>
+
+                    <hr class="mypage__side-divider">
+
+                    <nav class="mypage__side-nav" aria-label="마이페이지 메뉴">
+                        <a href="preview-favorites.html"><span class="mypage__side-nav-icon icon-mypage" aria-hidden="true"></span>마이페이지</a>
+                        <a href="preview-subscriptions.html"><span class="mypage__side-nav-icon icon-subscribe" aria-hidden="true"></span>구독</a>
+                        <div class="mypage__side-group">
+                            <button type="button" class="mypage__side-parent js-studio-toggle" aria-expanded="false">
+                                <span class="mypage__side-nav-icon icon-creator" aria-hidden="true"></span>
+                                크리에이터 스튜디오
+                                <svg class="mypage__side-parent-chevron" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="mypage__side-sub">
+                            <a href="preview-studio.html">내 채널 관리</a>
+                            <a href="preview-studio-content.html">콘텐츠 관리</a>
+                            <a href="preview-studio-revenue.html">수익 관리</a>
+                            <a href="preview-studio-comments.html">댓글 관리</a>
+                            </div>
+                        </div>
+                        <a href="preview-faq.html"><span class="mypage__side-nav-icon icon-faq" aria-hidden="true"></span>자주하는 질문</a>
+                        <a href="preview-inquiry.html"><span class="mypage__side-nav-icon icon-inquiry" aria-hidden="true"></span>1:1 문의</a>
+                        <a href="preview-notice.html"><span class="mypage__side-nav-icon icon-notice" aria-hidden="true"></span>공지사항</a>
+                        <a href="preview-event.html"><span class="mypage__side-nav-icon icon-event" aria-hidden="true"></span>이벤트</a>
+                        <a href="preview-ai-tools.html"><span class="mypage__side-nav-icon icon-aitool" aria-hidden="true"></span>AI 툴 도감</a>
+                    </nav>
+                </aside>
+
+                <!-- 우측 : 자주 찾는 질문 칩 + 문의 폼 (Figma "Main - 1:1 문의" 732:9718) -->
+                <!-- 우측 : 알림함 (전체 / 활동 / 서비스) -->
+                <div class="mypage__content mypage__content--dash">
+                    <div class="noti__head">
+                        <h2 class="mypage__page-title">알림 <span class="noti__unread">3</span></h2>
+                        <button type="button" class="noti__read-all js-noti-read-all">모두 읽음</button>
+                    </div>
+
+                    <div class="noti__tabs js-noti-tabs" role="tablist">
+                        <button type="button" class="noti__tab is-active" data-noti-tab="all" role="tab" aria-selected="true">전체 <span class="noti__tab-count">8</span></button>
+                        <button type="button" class="noti__tab" data-noti-tab="activity" role="tab" aria-selected="false">활동 <span class="noti__tab-count">4</span></button>
+                        <button type="button" class="noti__tab" data-noti-tab="service" role="tab" aria-selected="false">서비스 <span class="noti__tab-count">4</span></button>
+                    </div>
+
+                    <ul class="noti__list js-noti-list">
+                        <li class="noti__item is-unread" data-noti-group="activity"><a href="preview-detail.html" class="noti__link"><span class="noti__icon" data-noti-icon="upload" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">거스구스님이 새 영상을 올렸어요</strong><span class="noti__desc">그 계절, 우리가 사랑한 시간 · 12화</span></span><span class="noti__time">방금 전</span><span class="noti__dot" aria-label="읽지 않음"></span></a></li>
+                        <li class="noti__item is-unread" data-noti-group="service"><a href="preview-studio.html" class="noti__link"><span class="noti__icon" data-noti-icon="check" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">크리에이터 신청이 승인되었습니다</strong><span class="noti__desc">데뷔 영상 3편을 올리면 최종 검토가 시작됩니다.</span></span><span class="noti__time">2시간 전</span><span class="noti__dot" aria-label="읽지 않음"></span></a></li>
+                        <li class="noti__item is-unread" data-noti-group="activity"><a href="preview-detail.html" class="noti__link"><span class="noti__icon" data-noti-icon="comment" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">내 댓글에 답글이 달렸어요</strong><span class="noti__desc">&ldquo;저도 이 장면이 제일 좋았어요&rdquo; — 몽글스튜디오</span></span><span class="noti__time">5시간 전</span><span class="noti__dot" aria-label="읽지 않음"></span></a></li>
+                        <li class="noti__item" data-noti-group="service"><a href="preview-studio-revenue.html" class="noti__link"><span class="noti__icon" data-noti-icon="point" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">7월 수익이 확정되었습니다</strong><span class="noti__desc">1,284,000 P · 수익 관리에서 확인하세요.</span></span><span class="noti__time">어제</span></a></li>
+                        <li class="noti__item" data-noti-group="activity"><a href="preview-studio-content.html" class="noti__link"><span class="noti__icon" data-noti-icon="heart" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">내 영상이 100개의 좋아요를 받았어요</strong><span class="noti__desc">나의 알고리즘</span></span><span class="noti__time">어제</span></a></li>
+                        <li class="noti__item" data-noti-group="service"><a href="preview-notice.html" class="noti__link"><span class="noti__icon" data-noti-icon="notice" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">[공지] 7월 서비스 점검 안내</strong><span class="noti__desc">7월 31일 02:00~04:00 서비스 일시 중단</span></span><span class="noti__time">2일 전</span></a></li>
+                        <li class="noti__item" data-noti-group="activity"><a href="preview-detail.html" class="noti__link"><span class="noti__icon" data-noti-icon="upload" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">몽글스튜디오님이 새 영상을 올렸어요</strong><span class="noti__desc">아기 고양이의 모험 · 3화</span></span><span class="noti__time">3일 전</span></a></li>
+                        <li class="noti__item" data-noti-group="service"><a href="preview-studio-content.html" class="noti__link"><span class="noti__icon" data-noti-icon="check" aria-hidden="true"></span><span class="noti__body"><strong class="noti__title">콘텐츠 심사가 완료되었습니다</strong><span class="noti__desc">밤이 우리를 부를 때 · 공개로 전환되었습니다.</span></span><span class="noti__time">5일 전</span></a></li>
+                    </ul>
+
+                    <p class="noti__empty js-noti-empty" hidden>해당 알림이 없습니다.</p>
+                    <p class="noti__foot">알림 수신 설정은 <a href="preview-favorites.html#account">회원정보</a>에서 변경할 수 있습니다.</p>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="preview-doc-about.html">회사소개</a></li><li><a href="preview-doc-careers.html">채용</a></li><li><a href="preview-doc-newsroom.html">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="preview-doc-terms.html">이용약관</a></li><li><a href="preview-doc-privacy.html">개인정보처리방침</a></li><li><a href="preview-doc-settlement.html">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="preview-faq.html">고객센터</a></li><li><a href="preview-doc-creator-support.html">크리에이터 지원센터</a></li><li><a href="preview-notice.html">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

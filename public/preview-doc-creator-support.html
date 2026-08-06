@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>크리에이터 지원센터 · AIVEON (QA 프리뷰)</title>
+    <!--
+        [QA 전용] resources/views/docs/show.blade.php 정적 재현 (크리에이터 지원센터). -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#content" class="skip-link">본문 바로가기</a>
+
+    <div class="wrap">
+        <header class="gnb">
+            <div class="gnb__left">
+                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <nav class="gnb__nav" aria-label="주 메뉴">
+                    <a href="preview.html" class="gnb__nav-link">추천</a>
+                    <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
+                    <a href="preview-category-drama.html" class="gnb__nav-link">드라마</a>
+                    <a href="preview-category-movie.html" class="gnb__nav-link">영화</a>
+                    <a href="preview-category-animation.html" class="gnb__nav-link">애니메이션</a>
+                    <a href="preview-category-bl.html" class="gnb__nav-link">BL</a>
+                    <a href="preview-live.html" class="gnb__nav-link">AI 라이브채널</a>
+                    <a href="preview-category-adult.html" class="gnb__nav-link">성인 19+</a>
+                </nav>
+            </div>
+            <div class="gnb__utils">
+                <a href="preview-search.html" class="gnb__icon-btn gnb__icon-btn--search" aria-label="검색"><img src="images/common/ic_search.svg" alt=""></a>
+                <a href="preview-notifications.html" class="gnb__icon-btn gnb__bell" aria-label="알림">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    <span class="gnb__bell-dot" aria-hidden="true"></span>
+                </a>
+                <a href="preview-upload.html" class="gnb__upload">업로드 +</a>
+                <div class="gnb__profile-wrap">
+                    <a href="#" class="gnb__profile" aria-label="내 프로필" aria-haspopup="true">
+                        <img src="images/common/default_icon.png" alt="">
+                    </a>
+                    <div class="gnb__profile-pop" role="menu">
+                        <p class="gnb__profile-pop-text">로그인하고 다채로운<br>AI 영상을 계속 감상하세요</p>
+                        <a href="preview-login.html" class="gnb__profile-pop-btn" role="menuitem">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="content" class="content">
+        <!-- 정책·회사 문서 : 크리에이터 지원센터 -->
+        <section class="doc">
+            <aside class="doc__side" aria-label="문서 목록">
+                <p class="doc__side-title">약관·정책</p>
+                <nav class="doc__side-nav">
+                    <a href="preview-doc-terms.html">이용약관</a>
+                    <a href="preview-doc-privacy.html">개인정보처리방침</a>
+                    <a href="preview-doc-settlement.html">정산정책</a>
+                </nav>
+                <p class="doc__side-title">회사</p>
+                <nav class="doc__side-nav">
+                    <a href="preview-doc-about.html">회사소개</a>
+                    <a href="preview-doc-careers.html">채용</a>
+                    <a href="preview-doc-newsroom.html">뉴스룸</a>
+                </nav>
+                <p class="doc__side-title">고객지원</p>
+                <nav class="doc__side-nav">
+                    <a href="preview-doc-creator-support.html" class="is-active" aria-current="page">크리에이터 지원센터</a>
+                </nav>
+            </aside>
+
+            <article class="doc__body">
+                <header class="doc__head">
+                    <h1 class="doc__title">크리에이터 지원센터</h1>
+                    <p class="doc__lead">크리에이터 활동에 필요한 가이드와 정책을 모았습니다.</p>
+                    <p class="doc__updated">최종 수정일 2026-07-20</p>
+                </header>
+
+                    <section class="doc__section">
+                        <h2 class="doc__h">시작하기</h2>
+                        <ul class="doc__list">
+                            <li>크리에이터 신청 후 내부 심사(IP·계정 중복 확인)를 거칩니다. 결과는 3영업일 내 안내됩니다.</li>
+                            <li>승인 후 데뷔 영상 3편을 올리면 최종 검토가 시작되고, 통과 시 채널이 공개됩니다.</li>
+                            <li>업로드 시 사용한 AI 도구를 반드시 기록해 주세요. 콘텐츠 정보에 표시됩니다.</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc__section">
+                        <h2 class="doc__h">콘텐츠 심사 기준</h2>
+                        <ul class="doc__list">
+                            <li>기술 품질검사 : 해상도, 음량, 손상 프레임 등 자동 검사</li>
+                            <li>정책 심사 : 저작권·초상권 침해, 선정성, 폭력성 검토</li>
+                            <li>반려 시 사유와 보완 요청사항을 함께 안내하며, 수정 후 재제출할 수 있습니다.</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc__section">
+                        <h2 class="doc__h">수익과 정산</h2>
+                        <p class="doc__p">수익 구조와 지급 일정은 정산정책 문서를 참고해 주세요. 수익 현황은 크리에이터 스튜디오 &gt; 수익 관리에서 확인할 수 있습니다.</p>
+                    </section>
+
+                    <section class="doc__section">
+                        <h2 class="doc__h">자주 묻는 질문</h2>
+                        <ul class="doc__list">
+                            <li>데뷔 영상은 한 번에 올리지 않아도 됩니다. 3편이 모두 등록되면 검토가 시작됩니다.</li>
+                            <li>채널명과 핸들은 승인 후 채널 편집에서 변경할 수 있습니다(채널명은 14일에 2회).</li>
+                            <li>심사 반려가 반복되면 지원센터로 문의해 주세요.</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc__section">
+                        <h2 class="doc__h">문의</h2>
+                        <p class="doc__p">크리에이터 전용 문의 : creator@aiveon.kr</p>
+                    </section>
+            </article>
+        </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__cols">
+                <div class="footer__brand">
+                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
+                </div>
+                <nav class="footer__col" aria-label="회사">
+                    <h3 class="footer__col-title">회사</h3>
+                    <ul><li><a href="preview-doc-about.html">회사소개</a></li><li><a href="preview-doc-careers.html">채용</a></li><li><a href="preview-doc-newsroom.html">뉴스룸</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="약관·정책">
+                    <h3 class="footer__col-title">약관·정책</h3>
+                    <ul><li><a href="preview-doc-terms.html">이용약관</a></li><li><a href="preview-doc-privacy.html">개인정보처리방침</a></li><li><a href="preview-doc-settlement.html">정산정책</a></li></ul>
+                </nav>
+                <nav class="footer__col" aria-label="고객지원">
+                    <h3 class="footer__col-title">고객지원</h3>
+                    <ul><li><a href="preview-faq.html">고객센터</a></li><li><a href="preview-doc-creator-support.html">크리에이터 지원센터</a></li><li><a href="preview-notice.html">공지사항</a></li></ul>
+                </nav>
+            </div>
+            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>

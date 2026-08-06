@@ -3,19 +3,19 @@
     /* 컨트롤러가 $footerCols를 넘기지 않아도 기본 링크가 나오도록 폴백 */
     $footerCols = $footerCols ?? [
         '회사' => [
-            ['label' => '회사소개', 'url' => '#'],
-            ['label' => '채용', 'url' => '#'],
-            ['label' => '뉴스룸', 'url' => '#'],
+            ['label' => '회사소개', 'url' => route('doc', 'about')],
+            ['label' => '채용', 'url' => route('doc', 'careers')],
+            ['label' => '뉴스룸', 'url' => route('doc', 'newsroom')],
         ],
         '약관·정책' => [
-            ['label' => '이용약관', 'url' => '#'],
-            ['label' => '개인정보처리방침', 'url' => '#'],
-            ['label' => '정산정책', 'url' => '#'],
+            ['label' => '이용약관', 'url' => route('doc', 'terms')],
+            ['label' => '개인정보처리방침', 'url' => route('doc', 'privacy')],
+            ['label' => '정산정책', 'url' => route('doc', 'settlement')],
         ],
         '고객지원' => [
-            ['label' => '고객센터', 'url' => '#'],
-            ['label' => '크리에이터 지원센터', 'url' => '#'],
-            ['label' => '공지사항', 'url' => '#'],
+            ['label' => '고객센터', 'url' => route('faq')],
+            ['label' => '크리에이터 지원센터', 'url' => route('doc', 'creator-support')],
+            ['label' => '공지사항', 'url' => route('notice')],
         ],
     ];
 @endphp

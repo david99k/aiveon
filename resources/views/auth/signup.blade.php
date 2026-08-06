@@ -108,6 +108,13 @@
                         <span class="auth__prompt-q">이미 AIVEON 회원이신가요?</span>
                         <a href="{{ route('login') }}">로그인</a>
                     </p>
+
+                    {{-- 계정을 잊었을 때 --}}
+                    <p class="auth__find">
+                        <a href="{{ route('account.find') }}">아이디 찾기</a>
+                        <span class="auth__find-sep" aria-hidden="true"></span>
+                        <a href="{{ route('account.find') }}#pw">비밀번호 재설정</a>
+                    </p>
                 </section>
 
                 {{-- STEP 2 : 이메일 인증 + 약관 동의 --}}
