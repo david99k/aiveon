@@ -93,11 +93,11 @@ class StudioController
                 'avatar' => 'images/common/avatar_user.jpg',
                 'banner' => 'images/channel/banner_synergy.jpg',
                 'tagline' => 'AI로 만드는 따뜻한 이야기 · 매주 목요일 업로드',
-                'description' => "AIVEON에서 활동 중인 AI 영상 크리에이터입니다.\n로맨스·힐링 드라마를 중심으로 AI 영상 콘텐츠를 제작합니다. 협업 문의는 이메일로 부탁드립니다.",
-                'email' => 'synergy@aiveon.kr',
+                'description' => "VIBUZZ에서 활동 중인 AI 영상 크리에이터입니다.\n로맨스·힐링 드라마를 중심으로 AI 영상 콘텐츠를 제작합니다. 협업 문의는 이메일로 부탁드립니다.",
+                'email' => 'synergy@vibuzz.kr',
                 'links' => [
                     ['label' => '인스타그램', 'url' => 'https://instagram.com/synergy_on'],
-                    ['label' => '문의 메일', 'url' => 'mailto:synergy@aiveon.kr'],
+                    ['label' => '문의 메일', 'url' => 'mailto:synergy@vibuzz.kr'],
                 ],
                 'tools' => ['Midjourney', 'Runway', 'ElevenLabs', 'Premiere Pro'],
                 'visibility' => 'public',
@@ -122,38 +122,70 @@ class StudioController
         return view('studio.revenue', [
             // 포인트 사용처(외부 제휴 스토어) — 실주소 확정 시 교체
             'pointUrl' => '#',
-            'summary' => [
-                ['label' => '사용 가능 포인트', 'value' => '3,920,000', 'unit' => 'P', 'note' => '제휴 스토어에서 사용 가능', 'accent' => true],
-                ['label' => '이번 달 적립 수익', 'value' => '₩1,102,000', 'note' => '▲ 4.1% (지난달 대비)', 'dir' => 'up'],
-                ['label' => '총 누적 수익', 'value' => '₩10,650,000', 'note' => '2026.01 ~ 현재'],
-                ['label' => '이번 달 재생 수', 'value' => '128만', 'note' => '▲ 12.3%', 'dir' => 'up'],
+            'stamp' => '2026-07-31',
+            'cards' => [
+                ['ico' => 'point', 'label' => '보유 포인트', 'value' => '12,480', 'unit' => 'P'],
+                ['ico' => 'clock', 'label' => '정산 예정 포인트', 'value' => '1,720', 'unit' => 'P', 'note' => '정산 마감 후 확정', 'accent' => true],
+                ['ico' => 'chart', 'label' => '총 누적 포인트', 'value' => '24,860', 'unit' => 'P', 'note' => '2026.01 ~ 현재'],
+                ['ico' => 'eye', 'label' => '이번 달 유효 시청시간', 'value' => '42,000', 'unit' => '분'],
+                ['ico' => 'pool', 'label' => '이번 달 SVOD 정산풀', 'value' => '68,000', 'unit' => 'P', 'note' => '전체 크리에이터 배분 재원'],
             ],
-            // 월별 추이 (단위 만원). height 는 최대값 대비 비율(%)
+            'hero' => [
+                'label' => '보유 포인트',
+                'amount' => '12,480',
+                'unit' => 'P',
+                'desc' => 'VIBUZZ 제휴 스토어·서비스에서 사용할 수 있어요. (1P = 1원)',
+                'btn' => '포인트 사용하기',
+                'stats' => [
+                    ['label' => '유료 순시청자', 'value' => '1,260명'],
+                    ['label' => '작품 수', 'value' => '12편'],
+                ],
+            ],
+            // 이번 달 수익 1,720 P 를 100%로 나눈 값. 합이 총액과 맞아야 한다.
+            'mixTotal' => '1,720 P',
+            'mix' => [
+                ['label' => 'SVOD 구독 분배', 'pct' => 68, 'amount' => '1,170 P', 'color' => 'var(--brand-primary)'],
+                ['label' => '광고 수익', 'pct' => 17, 'amount' => '292 P', 'color' => 'var(--accent-premium)'],
+                ['label' => '외부 유통', 'pct' => 10, 'amount' => '172 P', 'color' => '#60a5fa'],
+                ['label' => '기타', 'pct' => 5, 'amount' => '86 P', 'color' => 'var(--accent-gold)'],
+            ],
+            // 총 수익(실선) · SVOD 수익(점선). top 은 세로축 최댓값.
             'trend' => [
-                ['month' => '2월', 'value' => 58, 'height' => 43],
-                ['month' => '3월', 'value' => 67, 'height' => 50],
-                ['month' => '4월', 'value' => 77, 'height' => 57],
-                ['month' => '5월', 'value' => 84, 'height' => 62],
-                ['month' => '6월', 'value' => 99, 'height' => 73],
-                ['month' => '7월', 'value' => 110, 'height' => 82, 'current' => true],
+                'labels' => ['3월', '4월', '5월', '6월', '7월', '8월'],
+                'total' => [850, 1020, 1250, 1420, 1620, 1720],
+                'svod' => [560, 680, 840, 960, 1110, 1170],
+                'top' => 2000,
+                'ticks' => 4,
+                'unit' => 'P',
             ],
-            'composition' => [
-                ['label' => '광고 수익', 'pct' => 67, 'color' => '#a78bfa'],
-                ['label' => '구독 분배', 'pct' => 33, 'color' => '#67e8c3'],
+            'notes' => [
+                ['title' => '회차별 정산점수', 'desc' => '정산용 유효 시청시간 × 완주율 가중치'],
+                ['title' => '크리에이터 점유율', 'desc' => '내 총점 ÷ 전체 크리에이터 총점'],
+                ['title' => '월 SVOD 정산액', 'desc' => '월 정산풀 × 크리에이터 점유율'],
             ],
-            'top' => [
-                'title' => '그 계절, 우리가 사랑한 시간',
-                'thumb' => 'images/main/poster_01.jpg',
-                'meta' => '₩360,000 · 재생 42만',
+            // 68,000 P × 1.72% = 1,170 P → 수익 구성의 SVOD 금액과 맞는다.
+            'metrics' => [
+                ['ico' => 'play', 'label' => '정산용 유효 시청시간', 'value' => '42,000분'],
+                ['ico' => 'star', 'label' => '내 총점', 'value' => '45,730점'],
+                ['ico' => 'users', 'label' => '전체 크리에이터 총점', 'value' => '2,658,720점'],
+                ['ico' => 'pie', 'label' => '크리에이터 점유율', 'value' => '1.72%', 'key' => true],
             ],
-            // status : done(적립 완료) | wait(적립 예정)
-            'history' => [
-                ['month' => '2026.07', 'ad' => '742,000', 'sub' => '360,000', 'point' => '1,102,000 P', 'status' => 'wait', 'statusLabel' => '적립 예정'],
-                ['month' => '2026.06', 'ad' => '668,000', 'sub' => '324,000', 'point' => '992,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
-                ['month' => '2026.05', 'ad' => '552,000', 'sub' => '286,000', 'point' => '838,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
-                ['month' => '2026.04', 'ad' => '505,000', 'sub' => '264,000', 'point' => '769,000 P', 'status' => 'done', 'statusLabel' => '적립 완료'],
+            // status : done(확정) | wait(보류·미달)
+            'detail' => [
+                ['title' => '김반장', 'episode' => '1화', 'minutes' => '10,000분', 'rate' => '80%', 'weight' => '× 1.13', 'score' => '11,300점', 'viewers' => '640명', 'status' => 'done', 'statusLabel' => '확정'],
+                ['title' => '김반장', 'episode' => '2화', 'minutes' => '12,000분', 'rate' => '90%', 'weight' => '× 1.19', 'score' => '14,280점', 'viewers' => '410명', 'status' => 'done', 'statusLabel' => '확정'],
+                ['title' => '실루엣', 'episode' => '1화', 'minutes' => '5,000분', 'rate' => '55%', 'weight' => '× 1.03', 'score' => '5,150점', 'viewers' => '195명', 'status' => 'done', 'statusLabel' => '확정'],
+                ['title' => '수위', 'episode' => '1화', 'minutes' => '15,000분', 'rate' => '90%', 'weight' => '미적용', 'score' => '15,000점', 'viewers' => '15명', 'status' => 'wait', 'statusLabel' => '최소표본 미달'],
             ],
-            'point' => ['balance' => '3,920,000', 'desc' => 'AIVEON 제휴 스토어·서비스에서 바로 사용할 수 있어요. (1P = 1원)'],
+            'detailTotal' => ['title' => '합계', 'episode' => '4편', 'minutes' => '42,000분', 'score' => '45,730점', 'viewers' => '1,260명'],
+            'guide' => [
+                ['ico' => 'play', 'text' => "동일 회원 · 동일 회차\n월 최대 인정 시간 150%"],
+                ['ico' => 'repeat', 'text' => "같은 구간 반복 시청\n완주율 미적용"],
+                ['ico' => 'users', 'text' => "최소 표본 20명 이하 회차\n완주율 가중치 미적용"],
+                ['ico' => 'chart', 'text' => "유효 시청시간과 완주율\n회차별로 별도 계산"],
+                ['ico' => 'shield', 'text' => "무료 콘텐츠 · 비정상 재생\n정산 대상 제외"],
+            ],
+            'foot' => '정산 데이터는 마감 후 확정되며, 세부 집계는 크리에이터 스튜디오 대시보드에서 확인할 수 있습니다.',
         ]);
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>수익 관리 · AIVEON (QA 프리뷰)</title>
+    <title>수익 관리 · VIBUZZ (QA 프리뷰)</title>
     <!--
         [QA 전용] resources/views/studio/revenue.blade.php 정적 재현.
         크리에이터 스튜디오 > 수익 관리.
@@ -21,7 +21,7 @@
     <div class="wrap">
         <header class="gnb">
             <div class="gnb__left">
-                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <h1><a href="preview.html" class="gnb__logo">VIBUZZ</a></h1>
                 <nav class="gnb__nav" aria-label="주 메뉴">
                     <a href="preview.html" class="gnb__nav-link">추천</a>
                     <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
@@ -94,110 +94,146 @@
                 </aside>
 
                 <!-- 우측 : 수익(포인트) 현황 — 출금 없이 제휴 스토어에서 포인트로 사용 -->
-                <div class="mypage__content mypage__content--studio">
-                    <h2 class="studio__title">수익 관리</h2>
-                    <p class="studio__lead">적립된 수익을 포인트로 확인하고, 제휴 스토어에서 사용하세요.</p>
-
-                    <div class="rev-cards">
-                        <div class="rev-card rev-card--accent">
-                            <span class="rev-card__label">사용 가능 포인트</span>
-                            <strong class="rev-card__value">3,920,000<span class="rev-card__unit">P</span></strong>
-                            <span class="rev-card__note rev-card__note--accent">제휴 스토어에서 사용 가능</span>
-                        </div>
-                        <div class="rev-card">
-                            <span class="rev-card__label">이번 달 적립 수익</span>
-                            <strong class="rev-card__value">₩1,102,000</strong>
-                            <span class="rev-card__note rev-card__note--up">▲ 4.1% (지난달 대비)</span>
-                        </div>
-                        <div class="rev-card">
-                            <span class="rev-card__label">총 누적 수익</span>
-                            <strong class="rev-card__value">₩10,650,000</strong>
-                            <span class="rev-card__note">2026.01 ~ 현재</span>
-                        </div>
-                        <div class="rev-card">
-                            <span class="rev-card__label">이번 달 재생 수</span>
-                            <strong class="rev-card__value">128만</strong>
-                            <span class="rev-card__note rev-card__note--up">▲ 12.3%</span>
-                        </div>
-                    </div>
-
-                    <div class="rev-grid">
-                        <div class="rev-panel">
-                            <div class="rev-panel__head">
-                                <h3 class="rev-panel__title">월별 수익 추이</h3>
-                                <span class="rev-panel__hint">최근 6개월 · 단위 만원</span>
-                            </div>
-                            <div class="rev-chart">
-                                <div class="rev-bar"><span class="rev-bar__value">58</span><span class="rev-bar__fill" style="height: 43%"></span><span class="rev-bar__month">2월</span></div>
-                                <div class="rev-bar"><span class="rev-bar__value">67</span><span class="rev-bar__fill" style="height: 50%"></span><span class="rev-bar__month">3월</span></div>
-                                <div class="rev-bar"><span class="rev-bar__value">77</span><span class="rev-bar__fill" style="height: 57%"></span><span class="rev-bar__month">4월</span></div>
-                                <div class="rev-bar"><span class="rev-bar__value">84</span><span class="rev-bar__fill" style="height: 62%"></span><span class="rev-bar__month">5월</span></div>
-                                <div class="rev-bar"><span class="rev-bar__value">99</span><span class="rev-bar__fill" style="height: 73%"></span><span class="rev-bar__month">6월</span></div>
-                                <div class="rev-bar"><span class="rev-bar__value">110</span><span class="rev-bar__fill rev-bar__fill--current" style="height: 82%"></span><span class="rev-bar__month">7월</span></div>
-                            </div>
-                        </div>
-
-                        <div class="rev-panel">
-                            <div class="rev-panel__head">
-                                <h3 class="rev-panel__title">수익 구성</h3>
-                                <span class="rev-panel__hint">이번 달</span>
-                            </div>
-                            <ul class="rev-comp">
-                                <li class="rev-comp__row"><span class="rev-comp__dot" style="background-color: #a78bfa"></span>광고 수익<span class="rev-comp__track"><span class="rev-comp__bar" style="width: 67%; background-color: #a78bfa"></span></span><span class="rev-comp__pct">67%</span></li>
-                                <li class="rev-comp__row"><span class="rev-comp__dot" style="background-color: #67e8c3"></span>구독 분배<span class="rev-comp__track"><span class="rev-comp__bar" style="width: 33%; background-color: #67e8c3"></span></span><span class="rev-comp__pct">33%</span></li>
-                            </ul>
-
-                            <div class="rev-top">
-                                <span class="rev-card__label">가장 수익이 높은 콘텐츠</span>
-                                <div class="rev-top__item">
-                                    <div class="rev-top__thumb"><img src="images/main/poster_01.jpg" alt=""></div>
-                                    <div>
-                                        <p class="rev-top__title">그 계절, 우리가 사랑한 시간</p>
-                                        <p class="rev-top__meta">₩360,000 · 재생 42만</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rev-panel">
-                        <div class="rev-panel__head">
-                            <h3 class="rev-panel__title">포인트 적립 내역</h3>
-                            <span class="rev-panel__hint">최근 4개월</span>
-                        </div>
-                        <div class="rev-table">
-                            <table>
-                                <thead>
-                                    <tr><th>적립월</th><th>광고</th><th>구독 분배</th><th>적립 포인트</th><th>상태</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>2026.07</td><td class="rev-table__num">742,000</td><td class="rev-table__num">360,000</td><td class="rev-table__num rev-table__strong">1,102,000 P</td><td><span class="rev-badge rev-badge--wait">적립 예정</span></td></tr>
-                                    <tr><td>2026.06</td><td class="rev-table__num">668,000</td><td class="rev-table__num">324,000</td><td class="rev-table__num rev-table__strong">992,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
-                                    <tr><td>2026.05</td><td class="rev-table__num">552,000</td><td class="rev-table__num">286,000</td><td class="rev-table__num rev-table__strong">838,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
-                                    <tr><td>2026.04</td><td class="rev-table__num">505,000</td><td class="rev-table__num">264,000</td><td class="rev-table__num rev-table__strong">769,000 P</td><td><span class="rev-badge rev-badge--done">적립 완료</span></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="rev-point">
-                        <div>
-                            <strong class="rev-point__amount">보유 포인트 3,920,000<span class="rev-point__unit">P</span></strong>
-                            <p class="rev-point__desc">AIVEON 제휴 스토어·서비스에서 바로 사용할 수 있어요. (1P = 1원)</p>
-                        </div>
-                        <a href="#" class="rev-point__btn" target="_blank" rel="noopener">
-                            포인트 사용하기
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
-                    </div>
+        <div class="mypage__content mypage__content--studio">
+          <div class="rev-head">
+            <div>
+              <h2 class="studio__title">수익 관리</h2>
+              <p class="studio__lead">적립된 수익을 포인트로 확인하고, 제휴 스토어에서 사용하세요.</p>
+            </div>
+            <span class="rev-stamp">정산 기준일 <b>2026-07-31</b></span>
+          </div>
+          <div class="rev-cards">
+            <div class="rev-card">
+              <div class="rev-card__top"><span class="rev-card__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M10 16V8.6h2.6a2.2 2.2 0 0 1 0 4.4H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rev-card__label">보유 포인트</span></div>
+              <strong class="rev-card__value">12,480<span class="rev-card__unit">P</span></strong>
+            </div>
+            <div class="rev-card">
+              <div class="rev-card__top"><span class="rev-card__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.6v4.7l3.1 1.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rev-card__label">정산 예정 포인트</span></div>
+              <strong class="rev-card__value">1,720<span class="rev-card__unit">P</span></strong>
+              <span class="rev-card__note rev-card__note--accent">정산 마감 후 확정</span>
+            </div>
+            <div class="rev-card">
+              <div class="rev-card__top"><span class="rev-card__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V11M12 19V5M19 19v-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rev-card__label">총 누적 포인트</span></div>
+              <strong class="rev-card__value">24,860<span class="rev-card__unit">P</span></strong>
+              <span class="rev-card__note">2026.01 ~ 현재</span>
+            </div>
+            <div class="rev-card">
+              <div class="rev-card__top"><span class="rev-card__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.6 12S6 6.4 12 6.4 21.4 12 21.4 12 18 17.6 12 17.6 2.6 12 2.6 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/></svg></span><span class="rev-card__label">이번 달 유효 시청시간</span></div>
+              <strong class="rev-card__value">42,000<span class="rev-card__unit">분</span></strong>
+            </div>
+            <div class="rev-card">
+              <div class="rev-card__top"><span class="rev-card__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5h8v2.6a4 4 0 0 1-8 0V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16 6h2.4a2 2 0 0 1 0 4H16M8 6H5.6a2 2 0 0 0 0 4H8M12 11.6V15m-3 4h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="rev-card__label">이번 달 SVOD 정산풀</span></div>
+              <strong class="rev-card__value">68,000<span class="rev-card__unit">P</span></strong>
+              <span class="rev-card__note">전체 크리에이터 배분 재원</span>
+            </div>
+          </div>
+          <div class="rev-grid">
+            <div class="rev-point">
+              <div class="rev-point__body">
+                <p class="rev-point__label">보유 포인트</p>
+                <strong class="rev-point__amount">12,480<span class="rev-point__unit">P</span></strong>
+                <p class="rev-point__desc">VIBUZZ 제휴 스토어·서비스에서 사용할 수 있어요. (1P = 1원)</p>
+                <div class="rev-point__stats">
+                  <span class="rev-point__stat"><span>유료 순시청자</span><b>1,260명</b></span>
+                  <span class="rev-point__stat"><span>작품 수</span><b>12편</b></span>
                 </div>
+              </div>
+              <a href="#" class="rev-point__btn" target="_blank" rel="noopener">포인트 사용하기<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13M13 6.6 18.4 12 13 17.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="rev-panel">
+              <div class="rev-panel__head"><h3 class="rev-panel__title">수익 구성</h3><span class="rev-panel__hint">이번 달 기준</span></div>
+              <div class="rev-mix">
+                <div class="rev-mix__fig"><svg viewBox="0 0 152 152" role="img" aria-label="수익 구성 비율"><circle cx="76.0" cy="76.0" r="67.0" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18"/><circle cx="76.0" cy="76.0" r="67.0" fill="none" stroke="var(--brand-primary)" stroke-width="18" stroke-dasharray="286.26 134.71" stroke-dashoffset="-0.0" transform="rotate(-90 76.0 76.0)"/><circle cx="76.0" cy="76.0" r="67.0" fill="none" stroke="var(--accent-premium)" stroke-width="18" stroke-dasharray="71.57 349.41" stroke-dashoffset="-286.26" transform="rotate(-90 76.0 76.0)"/><circle cx="76.0" cy="76.0" r="67.0" fill="none" stroke="#60a5fa" stroke-width="18" stroke-dasharray="42.1 378.88" stroke-dashoffset="-357.83" transform="rotate(-90 76.0 76.0)"/><circle cx="76.0" cy="76.0" r="67.0" fill="none" stroke="var(--accent-gold)" stroke-width="18" stroke-dasharray="21.05 399.92" stroke-dashoffset="-399.92" transform="rotate(-90 76.0 76.0)"/></svg><span class="rev-mix__mid"><span>이번 달 수익</span><b>1,720 P</b></span></div>
+                <ul class="rev-comp">
+                  <li class="rev-comp__row">
+                    <span class="rev-comp__key"><span class="rev-comp__dot" style="background-color: var(--brand-primary)"></span>SVOD 구독 분배</span>
+                    <span class="rev-comp__track"><span class="rev-comp__bar" style="width: 68%; background-color: var(--brand-primary)"></span></span>
+                    <span class="rev-comp__pct">68%</span>
+                    <span class="rev-comp__amt">1,170 P</span>
+                  </li>
+                  <li class="rev-comp__row">
+                    <span class="rev-comp__key"><span class="rev-comp__dot" style="background-color: var(--accent-premium)"></span>광고 수익</span>
+                    <span class="rev-comp__track"><span class="rev-comp__bar" style="width: 17%; background-color: var(--accent-premium)"></span></span>
+                    <span class="rev-comp__pct">17%</span>
+                    <span class="rev-comp__amt">292 P</span>
+                  </li>
+                  <li class="rev-comp__row">
+                    <span class="rev-comp__key"><span class="rev-comp__dot" style="background-color: #60a5fa"></span>외부 유통</span>
+                    <span class="rev-comp__track"><span class="rev-comp__bar" style="width: 10%; background-color: #60a5fa"></span></span>
+                    <span class="rev-comp__pct">10%</span>
+                    <span class="rev-comp__amt">172 P</span>
+                  </li>
+                  <li class="rev-comp__row">
+                    <span class="rev-comp__key"><span class="rev-comp__dot" style="background-color: var(--accent-gold)"></span>기타</span>
+                    <span class="rev-comp__track"><span class="rev-comp__bar" style="width: 5%; background-color: var(--accent-gold)"></span></span>
+                    <span class="rev-comp__pct">5%</span>
+                    <span class="rev-comp__amt">86 P</span>
+                  </li>
+                </ul>
+              </div>
+              <p class="rev-foot">* 금액은 반올림한 값입니다.</p>
+            </div>
+          </div>
+          <div class="rev-grid2">
+            <div class="rev-panel">
+              <div class="rev-panel__head">
+                <h3 class="rev-panel__title">월별 수익 추이</h3>
+                <span class="rev-keys"><span class="rev-key"><i></i>총 수익</span><span class="rev-key"><i class="is-dash"></i>SVOD 수익</span></span>
+                <span class="rev-panel__hint">최근 6개월 · 단위 P</span>
+              </div>
+              <svg class="rev-chart" viewBox="0 0 660 260" role="img" aria-label="월별 수익 추이"><line x1="52" y1="30.0" x2="638" y2="30.0" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><text x="42" y="34.0" text-anchor="end" fill="rgba(255,255,255,0.42)" font-size="11">2,000</text><line x1="52" y1="78.0" x2="638" y2="78.0" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><text x="42" y="82.0" text-anchor="end" fill="rgba(255,255,255,0.42)" font-size="11">1,500</text><line x1="52" y1="126.0" x2="638" y2="126.0" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><text x="42" y="130.0" text-anchor="end" fill="rgba(255,255,255,0.42)" font-size="11">1,000</text><line x1="52" y1="174.0" x2="638" y2="174.0" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><text x="42" y="178.0" text-anchor="end" fill="rgba(255,255,255,0.42)" font-size="11">500</text><line x1="52" y1="222.0" x2="638" y2="222.0" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><text x="42" y="226.0" text-anchor="end" fill="rgba(255,255,255,0.42)" font-size="11">0</text><path d="M52.0 168.2 L169.2 156.7 L286.4 141.4 L403.6 129.8 L520.8 115.4 L638.0 109.7" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-dasharray="2 5" opacity="0.85" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52.0" cy="168.2" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="52.0" y="185.2" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">560</text><circle cx="169.2" cy="156.7" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="169.2" y="173.7" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">680</text><circle cx="286.4" cy="141.4" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="286.4" y="158.4" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">840</text><circle cx="403.6" cy="129.8" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="403.6" y="146.8" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">960</text><circle cx="520.8" cy="115.4" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="520.8" y="132.4" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">1,110</text><circle cx="638.0" cy="109.7" r="2.8" fill="var(--bg-surface)" stroke="var(--brand-primary)" stroke-width="1.6"/><text x="638.0" y="126.7" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">1,170</text><path d="M52.0 140.4 L169.2 124.1 L286.4 102.0 L403.6 85.7 L520.8 66.5 L638.0 56.9" fill="none" stroke="var(--brand-primary)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52.0" cy="140.4" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="52.0" y="128.4" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">850</text><circle cx="169.2" cy="124.1" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="169.2" y="112.1" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">1,020</text><circle cx="286.4" cy="102.0" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="286.4" y="90.0" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">1,250</text><circle cx="403.6" cy="85.7" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="403.6" y="73.7" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">1,420</text><circle cx="520.8" cy="66.5" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="520.8" y="54.5" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">1,620</text><circle cx="638.0" cy="56.9" r="3.6" fill="var(--brand-primary)" stroke="var(--brand-primary)" stroke-width="0"/><text x="638.0" y="44.9" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-size="11" font-weight="600">1,720</text><text x="52.0" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">3월</text><text x="169.2" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">4월</text><text x="286.4" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">5월</text><text x="403.6" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">6월</text><text x="520.8" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">7월</text><text x="638.0" y="248" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-size="11">8월</text></svg>
+            </div>
+            <div class="rev-panel">
+              <div class="rev-panel__head"><h3 class="rev-panel__title">정산 산식</h3><span class="rev-panel__hint">이번 달 기준</span></div>
+              <div class="rev-calc">
+                <div class="rev-calc__notes">
+                  <div class="rev-calc__note"><b>회차별 정산점수</b><span>= 정산용 유효 시청시간 × 완주율 가중치</span></div>
+                  <div class="rev-calc__note"><b>크리에이터 점유율</b><span>= 내 총점 ÷ 전체 크리에이터 총점</span></div>
+                  <div class="rev-calc__note"><b>월 SVOD 정산액</b><span>= 월 정산풀 × 크리에이터 점유율</span></div>
+                </div>
+                <div class="rev-metrics">
+                  <div class="rev-metric"><span class="rev-metric__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.6" stroke="currentColor" stroke-width="1.7"/><path d="m10.3 8.9 5 3.1-5 3.1V8.9Z" fill="currentColor"/></svg></span><span class="rev-metric__label">정산용 유효 시청시간</span><strong class="rev-metric__value">42,000분</strong></div>
+                  <div class="rev-metric"><span class="rev-metric__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 4.6 2.3 4.9 5.2.7-3.8 3.7.9 5.3-4.6-2.5-4.6 2.5.9-5.3-3.8-3.7 5.2-.7L12 4.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="rev-metric__label">내 총점</span><strong class="rev-metric__value">45,730점</strong></div>
+                  <div class="rev-metric"><span class="rev-metric__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9.5" cy="8.6" r="3.1" stroke="currentColor" stroke-width="1.7"/><path d="M3.6 19c0-3 2.6-4.8 5.9-4.8s5.9 1.8 5.9 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.4 6.4a2.9 2.9 0 0 1 0 5.6M17.6 14.6c1.8.5 2.9 1.8 2.9 3.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="rev-metric__label">전체 크리에이터 총점</span><strong class="rev-metric__value">2,658,720점</strong></div>
+                  <div class="rev-metric rev-metric--key"><span class="rev-metric__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.6v8.4h8.4A8.4 8.4 0 0 0 12 3.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20 15.2A8.4 8.4 0 1 1 8.8 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="rev-metric__label">크리에이터 점유율</span><strong class="rev-metric__value">1.72%</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="rev-panel">
+            <div class="rev-panel__head"><h3 class="rev-panel__title">콘텐츠별 정산 상세</h3><span class="rev-panel__hint">이번 달 · 회차 단위</span></div>
+            <div class="rev-table">
+              <table>
+                <thead><tr><th>제목</th><th>회차</th><th class="rev-table__num">유효 시청시간</th><th class="rev-table__num">평균 완주율</th><th class="rev-table__num">가중치</th><th class="rev-table__num">회차별 정산점수</th><th class="rev-table__num">유료 순시청자</th><th>상태</th></tr></thead>
+                <tbody>
+                  <tr><td>김반장</td><td>1화</td><td class="rev-table__num">10,000분</td><td class="rev-table__num">80%</td><td class="rev-table__num">× 1.13</td><td class="rev-table__num rev-table__strong">11,300점</td><td class="rev-table__num">640명</td><td><span class="rev-badge rev-badge--done">확정</span></td></tr>
+                  <tr><td>김반장</td><td>2화</td><td class="rev-table__num">12,000분</td><td class="rev-table__num">90%</td><td class="rev-table__num">× 1.19</td><td class="rev-table__num rev-table__strong">14,280점</td><td class="rev-table__num">410명</td><td><span class="rev-badge rev-badge--done">확정</span></td></tr>
+                  <tr><td>실루엣</td><td>1화</td><td class="rev-table__num">5,000분</td><td class="rev-table__num">55%</td><td class="rev-table__num">× 1.03</td><td class="rev-table__num rev-table__strong">5,150점</td><td class="rev-table__num">195명</td><td><span class="rev-badge rev-badge--done">확정</span></td></tr>
+                  <tr><td>수위</td><td>1화</td><td class="rev-table__num">15,000분</td><td class="rev-table__num">90%</td><td class="rev-table__num">미적용</td><td class="rev-table__num rev-table__strong">15,000점</td><td class="rev-table__num">15명</td><td><span class="rev-badge rev-badge--wait">최소표본 미달</span></td></tr>
+                  <tr class="is-total"><td>합계</td><td>4편</td><td class="rev-table__num is-brand">42,000분</td><td class="rev-table__num">—</td><td class="rev-table__num">—</td><td class="rev-table__num is-brand">45,730점</td><td class="rev-table__num is-brand">1,260명</td><td><span class="rev-badge rev-badge--none">—</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="rev-panel">
+            <div class="rev-panel__head"><h3 class="rev-panel__title">정산 기준 안내</h3><span class="rev-panel__hint">기준 변경 시 공지로 안내드립니다</span></div>
+            <div class="rev-guide">
+              <div class="rev-guide__item"><span class="rev-guide__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.6" stroke="currentColor" stroke-width="1.7"/><path d="m10.3 8.9 5 3.1-5 3.1V8.9Z" fill="currentColor"/></svg></span><span class="rev-guide__text">동일 회원 · 동일 회차<br>월 최대 인정 시간 150%</span></div>
+              <div class="rev-guide__item"><span class="rev-guide__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.6 9.6A7.4 7.4 0 0 1 17.4 7M19.4 14.4A7.4 7.4 0 0 1 6.6 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M4.4 5.6v4h4M19.6 18.4v-4h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rev-guide__text">같은 구간 반복 시청<br>완주율 미적용</span></div>
+              <div class="rev-guide__item"><span class="rev-guide__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9.5" cy="8.6" r="3.1" stroke="currentColor" stroke-width="1.7"/><path d="M3.6 19c0-3 2.6-4.8 5.9-4.8s5.9 1.8 5.9 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.4 6.4a2.9 2.9 0 0 1 0 5.6M17.6 14.6c1.8.5 2.9 1.8 2.9 3.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="rev-guide__text">최소 표본 20명 이하 회차<br>완주율 가중치 미적용</span></div>
+              <div class="rev-guide__item"><span class="rev-guide__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V11M12 19V5M19 19v-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="rev-guide__text">유효 시청시간과 완주율<br>회차별로 별도 계산</span></div>
+              <div class="rev-guide__item"><span class="rev-guide__ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.6 19 6v5.4c0 4-2.9 7.4-7 8.9-4.1-1.5-7-4.9-7-8.9V6l7-2.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9.1 12.1 2 2 3.8-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="rev-guide__text">무료 콘텐츠 · 비정상 재생<br>정산 대상 제외</span></div>
+            </div>
+            <p class="rev-foot">정산 데이터는 마감 후 확정되며, 세부 집계는 크리에이터 스튜디오 대시보드에서 확인할 수 있습니다.</p>
+          </div>
+        </div>
             </section>
         </main>
 
         <footer class="footer">
             <div class="footer__cols">
                 <div class="footer__brand">
-                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__logo">VIBUZZ</p>
                     <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
                 </div>
                 <nav class="footer__col" aria-label="회사">
@@ -213,7 +249,7 @@
                     <ul><li><a href="preview-faq.html">고객센터</a></li><li><a href="preview-doc-creator-support.html">크리에이터 지원센터</a></li><li><a href="preview-notice.html">공지사항</a></li></ul>
                 </nav>
             </div>
-            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+            <p class="footer__copy">&copy; 2026 VIBUZZ. All rights reserved.</p>
         </footer>
     </div>
 
