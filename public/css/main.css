@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /* ==========================================================================
-   AIVEON 메인 (Synergy-on)
+   VIBUZZ 메인 (Synergy-on)
    Figma: Synergy-on_aiveon / Main - 로그인 전 (node 160:3061, 1920 기준)
    ========================================================================== */
 
@@ -126,18 +126,26 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 23px 64px;
-  /* 최상단(히어로 위)에서는 시안대로 거의 투명 */
-  background-color: rgba(24, 24, 31, 0.1);
-  border-bottom: 1px solid transparent;
-  transition: background-color 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease;
-}
-
-/* 스크롤을 내리면 프로스티드 글래스 배경으로 전환해 콘텐츠 위에서도 가독성 확보 */
-.gnb.is-scrolled {
-  background-color: rgba(12, 12, 16, 0.72);
+  /* 헤더는 항상 불투명 — 투명 오버레이 제거로 메뉴 가독성 확보(티빙 스타일 상단 바) */
+  background-color: rgba(12, 12, 16, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* 스크롤 시에도 동일한 불투명 바 유지(살짝만 더 진하게) */
+.gnb.is-scrolled {
+  background-color: rgba(8, 8, 11, 0.98);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 히어로가 첫 콘텐츠인 페이지(홈·카테고리·상세 등):
+   고정 헤더 높이만큼 본문을 내려 히어로가 헤더 뒤로 가려지지 않게 한다.
+   헤더 높이는 브레이크포인트마다 달라져 JS가 --gnb-h 로 실측값을 넣어준다
+   (JS 미실행 시 데스크톱 기준 86px 폴백). */
+.content:has(> .hero:first-child) {
+  padding-top: var(--gnb-h, 86px);
 }
 
 .gnb__left {
@@ -607,7 +615,7 @@ body:not(.is-authed) .gnb__usermenu { display: none; }
 .mypage__content {
   flex: 1;
   min-width: 0;
-  padding: 70px 40px 90px 106px;
+  padding: 70px 40px 90px 40px;   /* 좌우 대칭 : 106/40 비대칭이던 것을 GNB·홈과 같은 거터로 통일 */
 }
 
 /* "전단계로 가기" 뒤로가기 (모바일 하위 페이지 상단 : 사이드바 메뉴 대체) — 아이콘 전용.
@@ -1469,6 +1477,36 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
   color: var(--text-primary);
 }
 
+/* 레일 헤더 행 : 제목(좌) + 전체보기(우) */
+.section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* 전체보기 링크 (티빙 '더보기' 자리) */
+.section__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.section__more:hover,
+.section__more:focus-visible { color: var(--text-primary); }
+.section__more svg { width: 18px; height: 18px; }
+
+/* 히어로 바로 아래 첫 콘텐츠 레일과의 간격 확대 (기본 28px 패딩 위에 마진 추가) */
+.hero + .section { margin-top: 44px; }
+@media (max-width: 767px) {
+  .hero + .section { margin-top: 22px; }
+}
+
 /* 섹션 좌우 패딩(40px)을 스크롤 영역 안쪽으로 옮겨 풀블리드 처리.
    시안처럼 넘치는 카드가 화면 오른쪽 끝에 걸쳐 보인다. */
 .scroll-x {
@@ -1661,7 +1699,7 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
 }
 
 /* --------------------------------------------------------------------------
-   9. AIVEON TOP6 (rank-card)
+   9. VIBUZZ TOP6 (rank-card)
    -------------------------------------------------------------------------- */
 .rank-list {
   display: flex;
@@ -3919,11 +3957,12 @@ body.page-player { overflow: hidden; }
 /* 아코디언 화살표는 예외 : 메뉴 아이콘보다 작게 */
 .mypage__side-nav .mypage__side-parent-chevron { width: 11px; height: 7px; }
 
-/* 스튜디오 콘텐츠는 카드 그리드라 기본(106px)보다 좌측 여백을 줄여 넓게 쓴다 */
-/* 여백은 기본 .mypage__content 를 그대로 사용해 마이페이지 전 페이지와 통일한다 (폭 제한만 추가) */
-.mypage__content--studio { max-width: 1180px; }
+/* 표·차트·카드 그리드가 들어가는 화면은 밴드를 거의 다 쓴다.
+   1600 은 초대형 모니터에서 한 행이 과도하게 늘어나는 것만 막는 상한.
+   여백은 기본 .mypage__content 를 그대로 사용해 마이페이지 전 페이지와 통일한다. */
+.mypage__content--studio { max-width: 1600px; }
 /* 마이페이지 대시보드 : 내 채널 관리와 동일한 콘텐츠 폭 */
-.mypage__content--dash { max-width: 1180px; }
+.mypage__content--dash { max-width: 1600px; }
 
 .studio__title {
   font-size: 24px;
@@ -6007,7 +6046,7 @@ a.player__ai-chip:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px var
 .hub__more:hover { color: var(--brand-primary); }
 
 /* 허브 안의 가로 스크롤 행 : 콘텐츠 컬럼 기준으로 좌우 풀블리드 (마이페이지 패딩 상쇄) */
-.hub__row { margin: -8px -40px -8px -106px; padding: 8px 40px 8px 106px; }
+.hub__row { margin: -8px -40px; padding: 8px 40px; }
 
 /* 시청 기록 카드 : 이어보기 진행률 배지 */
 .hub-history .poster-card__thumb { position: relative; }
@@ -6394,7 +6433,7 @@ body:not(.is-adult) .is-adult-gate::after {
   /* Hero : 콘텐츠를 하단 고정으로 리플로우 */
   /* 홈/카테고리 히어로 : 와이드 키아트가 좌우로 잘리지 않게 16:9 비율 그대로 노출하고
      텍스트(배지·타이틀·설명·버튼)는 이미지 아래 흐름 배치로 내린다 (.hero--detail 은 기존 규칙 유지) */
-  .hero:not(.hero--detail) { height: auto; padding-top: 120px; background-color: var(--bg-page); } /* 모바일 GNB 실높이 117px 아래에서 이미지 시작 (헤더 뒤로 안 올라가게) */
+  .hero:not(.hero--detail) { height: auto; background-color: var(--bg-page); } /* 헤더 클리어런스는 .content padding-top(--gnb-h)로 일원화 (히어로 내부 padding-top 제거) */
   .hero:not(.hero--detail) .hero__bg {
     position: relative;
     inset: auto;
@@ -6411,7 +6450,7 @@ body:not(.is-adult) .is-adult-gate::after {
   /* 상세 히어로 : 홈 히어로처럼 GNB 아래에서 시작 + 키아트 16:9 온전 노출(좌우 안 잘림) +
      콘텐츠(배지·제목·태그·구독·시놉시스·바로재생/공유/저장 버튼)를 이미지 아래 흐름 배치.
      기존엔 .hero__bg 가 absolute 라 static 콘텐츠를 덮어 버튼이 안 보이던 문제 수정. */
-  .hero--detail { height: auto; padding-top: 120px; background-color: var(--bg-page); }
+  .hero--detail { height: auto; background-color: var(--bg-page); }
   .hero--detail .hero__bg {
     position: relative;
     inset: auto;
@@ -8316,3 +8355,80 @@ body.is-authed .gnb__bell { display: inline-flex; }
   .more-menu__list { min-width: 146px; }
   .player__rail-item.more-menu--adopt .more-menu__list { right: calc(100% + 8px); }
 }
+
+/* ===== 사용자 차단 =====
+   신고는 운영자에게 알리는 것, 차단은 내 화면에서 가리는 것.
+   차단해도 댓글을 완전히 지우지 않고 "보기"로 펼 수 있게 남긴다. */
+.comment.is-blocked > *:not(.comment__blocked) { display: none; }
+.comment.is-blocked.is-revealed > * { display: revert; }
+.comment__blocked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px dashed var(--field-border);
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.42);
+}
+.comment__blocked-show {
+  margin-left: auto;
+  padding: 4px 11px;
+  border: 1px solid var(--field-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.comment__blocked-show:hover { color: var(--text-primary); border-color: rgba(255, 255, 255, 0.3); }
+.comment__menu-item--block { color: var(--text-secondary); }
+.comment__menu-item--block:hover { color: var(--field-error); }
+.comment__menu-item--block.is-on { color: var(--accent-premium); }
+
+/* 신고 완료 후 차단 제안 */
+.report__done-hint { margin-top: 14px; font-size: 13px; color: rgba(255, 255, 255, 0.45); }
+
+/* 마이페이지 차단 목록 진입점 */
+.mydash-blocked { margin-top: 26px; font-size: 13.5px; color: rgba(255, 255, 255, 0.42); }
+.mydash-blocked__link {
+  margin-left: 4px;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13.5px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.mydash-blocked__link:hover { color: var(--text-primary); }
+
+/* 차단 목록 모달 */
+.blocklist { margin-top: 18px; max-height: 320px; overflow-y: auto; }
+.blocklist__empty { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+.blocklist__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.blocklist__row:last-child { border-bottom: 0; }
+.blocklist__name { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.blocklist__off {
+  flex-shrink: 0;
+  padding: 6px 13px;
+  border: 1px solid var(--field-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.blocklist__off:hover { border-color: var(--accent-premium); color: var(--accent-premium); }
+
+/* 차단 상태인 더보기 메뉴 항목 */
+.more-menu__item.is-on { color: var(--accent-premium); }

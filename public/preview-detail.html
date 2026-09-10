@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>빛이 빛날 때 · AIVEON (QA 프리뷰)</title>
+    <title>빛이 빛날 때 · VIBUZZ (QA 프리뷰)</title>
     <!--
         [QA 전용] resources/views/detail/show.blade.php 출력 결과를 정적으로 재현한 파일입니다.
         메인의 히어로 '상세보기'/콘텐츠 카드 클릭 시 이 페이지로 이동합니다. (Figma 338:4681)
@@ -20,7 +20,7 @@
     <div class="wrap">
         <header class="gnb">
             <div class="gnb__left">
-                <h1><a href="preview.html" class="gnb__logo">AIVEON</a></h1>
+                <h1><a href="preview.html" class="gnb__logo">VIBUZZ</a></h1>
                 <nav class="gnb__nav" aria-label="주 메뉴">
                     <a href="preview.html" class="gnb__nav-link">추천</a>
                     <a href="preview-category-shorts.html" class="gnb__nav-link">숏츠</a>
@@ -107,7 +107,10 @@
 
             <!-- 함께 많이 찾는 영상 (세로 포스터) -->
             <section class="section section--poster">
-                <h2 class="section__title">빛이 빛날때를 보시는 분들이 많이 찾는 영상</h2>
+                <div class="section__head">
+                  <h2 class="section__title">빛이 빛날때를 보시는 분들이 많이 찾는 영상</h2>
+                  <a class="section__more" href="preview-category-drama.html" aria-label="빛이 빛날때를 보시는 분들이 많이 찾는 영상 전체보기">전체보기</a>
+                </div>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="빛이 빛날때를 보시는 분들이 많이 찾는 영상">
                     <ul class="poster-list">
                         <li><div class="poster-card"><a href="preview-detail.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_01.jpg" alt="" loading="lazy"><span class="badge badge--premium">PREMIUM</span></figure><div class="poster-card__info"><strong class="poster-card__title">그 계절, 우리가 사랑한 시간</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_01.jpg" alt="" loading="lazy">거스구스 · 조회수 12만</span></div></a></div></li>
@@ -123,7 +126,10 @@
 
             <!-- 추천 컨텐츠 -->
             <section class="section section--poster">
-                <h2 class="section__title">추천 컨텐츠</h2>
+                <div class="section__head">
+                  <h2 class="section__title">추천 컨텐츠</h2>
+                  <a class="section__more" href="preview-category-drama.html" aria-label="추천 컨텐츠 전체보기">전체보기</a>
+                </div>
                 <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="추천 컨텐츠">
                     <ul class="poster-list">
                         <li><article class="poster-card"><a href="preview-player.html" class="poster-card__link"><figure class="poster-card__thumb"><img src="images/main/poster_03.jpg" alt="" loading="lazy"></figure><div class="poster-card__info"><strong class="poster-card__title">영상 타이틀</strong><span class="poster-card__meta"><img class="poster-card__avatar" src="images/main/creator_profile_03.jpg" alt="" loading="lazy">크리에이터 · 조회수 12만</span></div></a></article></li>
@@ -142,7 +148,7 @@
         <footer class="footer">
             <div class="footer__cols">
                 <div class="footer__brand">
-                    <p class="footer__logo">AIVEON</p>
+                    <p class="footer__logo">VIBUZZ</p>
                     <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
                 </div>
 
@@ -174,7 +180,7 @@
                 </nav>
             </div>
 
-            <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+            <p class="footer__copy">&copy; 2026 VIBUZZ. All rights reserved.</p>
         </footer>
     </div>
 

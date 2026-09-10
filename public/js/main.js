@@ -1,5 +1,5 @@
 /**
- * AIVEON 메인 - 공통 스크립트
+ * VIBUZZ 메인 - 공통 스크립트
  * 가로 스크롤 리스트([data-scroll-x])에 마우스 드래그 스크롤을 적용한다.
  */
 (function () {
@@ -1308,6 +1308,19 @@
         var gnb = document.querySelector('.gnb');
         if (!gnb) { return; }
 
+        // 히어로가 첫 콘텐츠인 페이지에서 히어로가 고정 헤더 뒤로 가려지지 않도록,
+        // 헤더의 실제(펼친) 높이를 CSS 변수 --gnb-h 로 노출한다. 브레이크포인트마다
+        // 내비 줄바꿈으로 헤더 높이가 달라지므로 로드·리사이즈·폰트로드 시 재계산한다.
+        function syncGnbHeight() {
+            var collapsed = gnb.classList.contains('is-collapsed');
+            if (collapsed) { gnb.classList.remove('is-collapsed'); }
+            document.documentElement.style.setProperty('--gnb-h', gnb.offsetHeight + 'px');
+            if (collapsed) { gnb.classList.add('is-collapsed'); }
+        }
+        syncGnbHeight();
+        window.addEventListener('resize', syncGnbHeight);
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(syncGnbHeight); }
+
         // 쇼츠 플레이어: 문서 스크롤이 잠겨 있으므로 헤더를 항상 접힘(탭메뉴만) + 프로스티드 배경으로 고정
         if (document.body.classList.contains('page-player')) {
             gnb.classList.add('is-scrolled', 'is-collapsed');
@@ -1330,6 +1343,30 @@
 
         window.addEventListener('scroll', update, { passive: true });
         update(); // 새로고침 시 스크롤 위치 반영
+    }
+
+    /**
+     * 레일 '전체보기' 노출 제어.
+     * 콘텐츠가 가로로 넘쳐 실제로 스크롤되는 레일에만 '전체보기'를 보여준다.
+     * 크리에이터(VIBUZZ TOP6)·재생목록처럼 한 줄에 다 들어와 "중간에 끝나는" 레일은
+     * 더 볼 것이 없으므로 숨긴다. 뷰포트가 바뀌면(리사이즈) 다시 판정한다.
+     */
+    function initRailMoreVisibility() {
+        var heads = document.querySelectorAll('.section__head');
+        if (!heads.length) { return; }
+        function update() {
+            heads.forEach(function (head) {
+                var more = head.querySelector('.section__more');
+                if (!more) { return; }
+                var sec = head.closest('.section') || head.parentElement;
+                var scroll = sec ? sec.querySelector('.scroll-x') : null;
+                var scrollable = scroll && (scroll.scrollWidth - scroll.clientWidth > 8);
+                more.hidden = !scrollable;
+            });
+        }
+        update();
+        window.addEventListener('resize', update);
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(update); }
     }
 
     /**
@@ -1495,7 +1532,7 @@
      * 실서비스에서는 서버 인증 상태로 body.is-authed 를 정하고 이 토글은 제거하면 된다.
      */
     function initAuthDemo() {
-        var KEY = 'aiveon-demo-auth';
+        var KEY = 'vibuzz-demo-auth';
         var body = document.body;
         var wrap = document.querySelector('.gnb__profile-wrap');
 
@@ -1542,7 +1579,7 @@
         ];
         var STAGE_KEYS = ['applied', 'debut', 'creator'];   /* 낮은 단계 → 높은 단계 */
         var demo = { auth: false, adult: false, premium: false, applied: false, debut: false, creator: false };
-        STATES.forEach(function (s) { try { demo[s.key] = localStorage.getItem('aiveon-demo-' + s.key) === '1'; } catch (e) {} });
+        STATES.forEach(function (s) { try { demo[s.key] = localStorage.getItem('vibuzz-demo-' + s.key) === '1'; } catch (e) {} });
 
         /* 저장된 값이 사다리 규칙에 어긋나면(예전 배타 방식으로 저장된 경우) 읽을 때 바로잡는다 */
         (function normalizeStages() {
@@ -1552,7 +1589,7 @@
                 var want = i <= top;
                 if (demo[k] === want) { return; }
                 demo[k] = want;
-                try { localStorage.setItem('aiveon-demo-' + k, want ? '1' : '0'); } catch (e) { /* 무시 */ }
+                try { localStorage.setItem('vibuzz-demo-' + k, want ? '1' : '0'); } catch (e) { /* 무시 */ }
             });
         }());
 
@@ -1645,7 +1682,7 @@
 
         function setState(key, val) {
             demo[key] = val;
-            try { localStorage.setItem('aiveon-demo-' + key, val ? '1' : '0'); } catch (e) {}
+            try { localStorage.setItem('vibuzz-demo-' + key, val ? '1' : '0'); } catch (e) {}
             /* 구독을 직접 켜고 끄면 해지 예약은 의미가 없으므로 함께 초기화 */
             if (key === 'premium') { setPremCancel(false); }
             /* 승인 단계는 누적 : 켜면 앞 단계도 함께 켜고(신청 없이 심사중일 수 없다),
@@ -1657,7 +1694,7 @@
                     var next = val ? (i < idx ? true : demo[k]) : (i > idx ? false : demo[k]);
                     if (demo[k] === next) { return; }
                     demo[k] = next;
-                    try { localStorage.setItem('aiveon-demo-' + k, next ? '1' : '0'); } catch (e) { /* 무시 */ }
+                    try { localStorage.setItem('vibuzz-demo-' + k, next ? '1' : '0'); } catch (e) { /* 무시 */ }
                 });
             }
             apply(); // 메뉴는 열린 채로 두어 상태 전환을 바로 확인
@@ -2046,7 +2083,7 @@
                     if (e.target === modal || e.target.closest('.js-gate-close')) { closeGate(modal); }
                     if (e.target.closest('.js-gate-verify')) {
                         // 데모 : 인증 완료 처리 후 성인 19+ 페이지로 이동 (실서비스는 본인인증 모듈 연동 지점)
-                        try { localStorage.setItem('aiveon-demo-adult', '1'); } catch (err) {}
+                        try { localStorage.setItem('vibuzz-demo-adult', '1'); } catch (err) {}
                         document.body.classList.add('is-adult');
                         closeGate(modal);
                         location.href = adultUrl;
@@ -2080,7 +2117,7 @@
             var vp = main.querySelector('.js-gate-verify-page');
             if (vp) {
                 vp.addEventListener('click', function () {
-                    try { localStorage.setItem('aiveon-demo-adult', '1'); } catch (err) {}
+                    try { localStorage.setItem('vibuzz-demo-adult', '1'); } catch (err) {}
                     document.body.classList.add('is-adult');
                     location.reload();
                 });
@@ -2774,7 +2811,7 @@
 
         // 핸들 → 채널 주소 미리보기 (허용 문자만 남김)
         if (handle && handleUrl) {
-            var baseUrl = 'aiveon.kr/@';
+            var baseUrl = 'vibuzz.kr/@';
             var updateUrl = function () {
                 handle.value = handle.value.replace(/[^0-9A-Za-z_]/g, '');
                 handleUrl.textContent = baseUrl + handle.value;
@@ -2786,7 +2823,7 @@
         /* 제출 → 심사중 상태로 전환(진행 상황 화면 진입점이 열린다).
            실서비스에서는 서버가 신청 레코드를 만들고 상태를 내려준다. */
         form.addEventListener('submit', function () {
-            try { localStorage.setItem('aiveon-demo-applied', '1'); } catch (e) { /* 프라이빗 모드 - 무시 */ }
+            try { localStorage.setItem('vibuzz-demo-applied', '1'); } catch (e) { /* 프라이빗 모드 - 무시 */ }
         });
 
         form.addEventListener('input', sync);
@@ -2994,7 +3031,7 @@
                 if (next) { next.textContent = (yearly && yearly.checked) ? '2027-07-30' : '2026-08-30'; }
 
                 /* 데모 상태 반영 (initAuthDemo 와 같은 저장 키) */
-                try { localStorage.setItem('aiveon-demo-premium', '1'); } catch (e) { /* 무시 */ }
+                try { localStorage.setItem('vibuzz-demo-premium', '1'); } catch (e) { /* 무시 */ }
                 document.body.classList.add('is-premium');
                 setPremCancel(false);
                 syncPlanLabels();
@@ -3164,7 +3201,7 @@
             var contactLabel = contact ? panel.querySelector('label[for="' + contact.id + '"]') : null;
             var FIELD = {
                 phone: { label: '휴대폰 번호', type: 'tel', ph: '“-” 없이 입력' },
-                email: { label: '이메일 주소', type: 'email', ph: 'example@aiveon.kr' }
+                email: { label: '이메일 주소', type: 'email', ph: 'example@vibuzz.kr' }
             };
             function applyMethod(key) {
                 var f = FIELD[key] || FIELD.phone;
@@ -3308,7 +3345,7 @@
     /* ---------- 프리미엄 구독 상태 ----------
        해지해도 남은 이용 기간 동안 혜택이 유지되므로(약관 기준), 즉시 해지가 아니라
        "해지 예약" 상태를 따로 둔다. 실서비스에서는 서버의 구독 상태(cancel_at_period_end)로 대체. */
-    var PREM_CANCEL_KEY = 'aiveon-demo-premium-cancel';
+    var PREM_CANCEL_KEY = 'vibuzz-demo-premium-cancel';
     var PREM_END = '2026-08-02';                 /* 데모 : 남은 이용 기간 만료일 */
     function isPremium() { return document.body.classList.contains('is-premium'); }
     function premCancelScheduled() {
@@ -3638,8 +3675,11 @@
             var go = pel('a', 'btn btn--primary studio__stage-btn', '진행 상황 보기');
             go.href = /\.html$/.test(location.pathname) ? 'preview-creator-applied.html' : '/creator/applied';
             box.appendChild(go);
-            var anchor = host.querySelector('.studio__channel');
-            if (anchor) { host.insertBefore(box, anchor); } else { host.appendChild(box); }
+            /* 항상 화면 맨 위(제목 바로 아래)에 둔다.
+               채널 편집처럼 .studio__channel 이 없는 화면에서 맨 아래로 밀리지 않도록 제목을 기준으로 잡는다. */
+            var title = host.querySelector('.studio__title');
+            if (title) { title.insertAdjacentElement('afterend', box); }
+            else { host.insertBefore(box, host.firstChild); }
         }
     }
 
@@ -3686,7 +3726,11 @@
                     '<span class="report__done-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
                     '<p class="report__done-title">신고가 접수되었습니다</p>' +
                     '<p class="report__done-desc">검토 후 운영정책에 따라 처리하며,<br>결과는 알림으로 안내드립니다.</p>' +
-                    '<div class="modal__actions"><button type="button" class="btn btn--primary js-report-close">확인</button></div>' +
+                    '<p class="report__done-hint js-report-blockhint" hidden>이 사용자를 더 보고 싶지 않다면 차단할 수 있어요.</p>' +
+                    '<div class="modal__actions modal__actions--split">' +
+                        '<button type="button" class="btn btn--ghost js-report-block" hidden>차단하기</button>' +
+                        '<button type="button" class="btn btn--primary js-report-close">확인</button>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
         document.body.appendChild(modal);
@@ -3699,8 +3743,10 @@
         var form = modal.querySelector('.js-report-form');
         var done = modal.querySelector('.js-report-done');
 
-        function open(type, target) {
+        var blockWho = '';
+        function open(type, target, who) {
             var kind = REASONS[type] ? type : 'content';
+            blockWho = who || '';
             titleEl.textContent = TITLES[kind];
             targetEl.innerHTML = '';
             targetEl.appendChild(document.createTextNode('신고 대상'));
@@ -3742,18 +3788,32 @@
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && modal.classList.contains('is-open')) { close(); }
         });
+        var blockBtn = modal.querySelector('.js-report-block');
+        var blockHint = modal.querySelector('.js-report-blockhint');
         submit.addEventListener('click', function () {
             // TODO: 신고 접수 API 호출
             form.hidden = true;
             done.hidden = false;
+            /* 사람을 대상으로 한 신고에만 차단을 함께 제안한다 */
+            var offer = !!blockWho && !isBlocked(blockWho);
+            if (blockBtn) { blockBtn.hidden = !offer; }
+            if (blockHint) { blockHint.hidden = !offer; }
         });
+        if (blockBtn) {
+            blockBtn.addEventListener('click', function () {
+                setBlocked(blockWho, true);
+                close();
+            });
+        }
 
         /* 신고 버튼 · 댓글 메뉴의 "신고하기" 를 이벤트 위임으로 처리 */
         document.addEventListener('click', function (e) {
             var t = e.target.closest ? e.target.closest('[data-report-type]') : null;
             if (t) {
                 e.preventDefault();
-                open(t.getAttribute('data-report-type'), t.getAttribute('data-report-target'));
+                var rt = t.getAttribute('data-report-type');
+                var rg = t.getAttribute('data-report-target');
+                open(rt, rg, (rt === 'creator' || rt === 'member') ? rg : '');
                 return;
             }
             /* 기존 댓글 메뉴 : 텍스트가 "신고하기" 인 버튼 */
@@ -3762,7 +3822,7 @@
                 e.preventDefault();
                 var c = btn.closest('.comment');
                 var who = c ? (c.querySelector('.comment__name') || {}).textContent : '';
-                open('comment', (who || '').trim() + '님의 댓글');
+                open('comment', (who || '').trim() + '님의 댓글', (who || '').trim());
             }
         });
     }
@@ -3823,6 +3883,190 @@
      *   채널                      : 구독 줄 더보기(⋯) → 크리에이터 신고
      *   숏폼 플레이어             : 레일에 이미 있는 더보기 버튼 → 콘텐츠·크리에이터 신고
      */
+    /* ---------- 사용자 차단 ----------
+       신고가 "운영자에게 알리는 것"이라면 차단은 "내 화면에서 지우는 것"이다.
+       차단하면 그 사용자의 댓글이 내 화면에서 가려지고, 언제든 목록에서 해제할 수 있다.
+       실서비스에서는 계정별 차단 목록 API 로 대체한다. */
+    var BLOCK_KEY = 'vibuzz-blocked';
+    function readBlocked() {
+        var arr;
+        try {
+            var raw = localStorage.getItem(BLOCK_KEY);
+            arr = raw ? JSON.parse(raw) : [];
+        } catch (e) { return []; }
+        if (Object.prototype.toString.call(arr) !== '[object Array]') { return []; }
+        var seen = {};
+        var out = [];
+        arr.forEach(function (v) {
+            if (typeof v !== 'string') { return; }
+            var name = v.trim();
+            if (!name || seen[name]) { return; }
+            seen[name] = true;
+            out.push(name);
+        });
+        return out;
+    }
+    function writeBlocked(list) {
+        try { localStorage.setItem(BLOCK_KEY, JSON.stringify(list)); } catch (e) { /* 프라이빗 모드 - 무시 */ }
+    }
+    function isBlocked(name) { return readBlocked().indexOf((name || '').trim()) >= 0; }
+    function setBlocked(name, on) {
+        var who = (name || '').trim();
+        if (!who) { return; }
+        var list = readBlocked();
+        var i = list.indexOf(who);
+        if (on && i < 0) { list.push(who); }
+        if (!on && i >= 0) { list.splice(i, 1); }
+        writeBlocked(list);
+        applyBlocked();
+    }
+
+    /* 차단한 사용자의 댓글을 가린다. 완전히 지우지 않고 "보기"로 펼 수 있게 남긴다. */
+    function applyBlocked() {
+        var list = readBlocked();
+        Array.prototype.forEach.call(document.querySelectorAll('.comment'), function (c) {
+            var nameEl = c.querySelector('.comment__name');
+            var who = nameEl ? nameEl.textContent.trim() : '';
+            var hit = who && list.indexOf(who) >= 0;
+            c.classList.toggle('is-blocked', !!hit);
+            if (!hit) {
+                var vail = c.querySelector('.comment__blocked');
+                if (vail) { c.removeChild(vail); }
+                c.classList.remove('is-revealed');
+                return;
+            }
+            if (c.querySelector('.comment__blocked')) { return; }
+            var veil = pel('div', 'comment__blocked');
+            veil.appendChild(pel('span', null, '차단한 사용자의 댓글입니다'));
+            var show = pel('button', 'comment__blocked-show', '보기');
+            show.type = 'button';
+            show.addEventListener('click', function () { c.classList.toggle('is-revealed'); show.textContent = c.classList.contains('is-revealed') ? '숨기기' : '보기'; });
+            veil.appendChild(show);
+            c.insertBefore(veil, c.firstChild);
+        });
+        syncBlockLabels();
+    }
+
+    /* 차단/해제 버튼 문구를 현재 상태에 맞춘다 */
+    function syncBlockLabels() {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-block-target]'), function (b) {
+            var on = isBlocked(b.getAttribute('data-block-target'));
+            b.textContent = on ? (b.getAttribute('data-block-off') || '차단 해제') : (b.getAttribute('data-block-on') || '차단하기');
+            b.classList.toggle('is-on', on);
+        });
+    }
+
+    /* 차단 확인 : 실수로 눌러 대화가 끊기지 않도록 한 번 되묻는다 */
+    function askBlock(name, avatar) {
+        if (isBlocked(name)) { setBlocked(name, false); return; }
+        openConfirm({
+            title: '이 사용자를 차단할까요?',
+            target: name,
+            avatar: avatar || '',
+            desc: '차단하면 이 사용자의 댓글이 내 화면에서 가려집니다. 상대에게는 차단 사실이 알려지지 않아요.',
+            cancel: '취소',
+            ok: '차단하기',
+            danger: true,
+            onOk: function () { setBlocked(name, true); }
+        });
+    }
+
+    /* 차단 목록 (마이페이지에서 열람 · 해제) */
+    var blockListModal = null;
+    function openBlockList() {
+        if (!blockListModal) {
+            var m = document.createElement('div');
+            m.className = 'modal js-blocklist-modal';
+            m.setAttribute('role', 'dialog');
+            m.setAttribute('aria-modal', 'true');
+            m.innerHTML =
+                '<div class="modal__box">' +
+                    '<div class="modal__head">' +
+                        '<h2 class="modal__title">차단한 사용자</h2>' +
+                        '<button type="button" class="modal__close js-blocklist-close" aria-label="닫기"><svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>' +
+                    '</div>' +
+                    '<div class="blocklist js-blocklist"></div>' +
+                    '<div class="modal__actions"><button type="button" class="btn btn--primary js-blocklist-close">확인</button></div>' +
+                '</div>';
+            document.body.appendChild(m);
+            blockListModal = m;
+            Array.prototype.forEach.call(m.querySelectorAll('.js-blocklist-close'), function (b) {
+                b.addEventListener('click', function () { m.classList.remove('is-open'); document.body.style.overflow = ''; });
+            });
+            m.addEventListener('click', function (e) { if (e.target === m) { m.classList.remove('is-open'); document.body.style.overflow = ''; } });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && m.classList.contains('is-open')) { m.classList.remove('is-open'); document.body.style.overflow = ''; }
+            });
+        }
+        renderBlockList();
+        blockListModal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    }
+    function renderBlockList() {
+        if (!blockListModal) { return; }
+        var box = blockListModal.querySelector('.js-blocklist');
+        var list = readBlocked();
+        box.innerHTML = '';
+        if (!list.length) {
+            box.appendChild(pel('p', 'blocklist__empty', '차단한 사용자가 없습니다. 댓글이나 채널의 더보기 메뉴에서 차단할 수 있어요.'));
+            return;
+        }
+        list.forEach(function (name) {
+            var row = pel('div', 'blocklist__row');
+            row.appendChild(pel('span', 'blocklist__name', name));
+            var off = pel('button', 'blocklist__off', '차단 해제');
+            off.type = 'button';
+            off.addEventListener('click', function () { setBlocked(name, false); renderBlockList(); });
+            row.appendChild(off);
+            box.appendChild(row);
+        });
+    }
+
+    /**
+     * 차단 진입점 주입.
+     *   댓글 더보기 메뉴 → "차단하기"
+     *   채널·크리에이터 더보기 메뉴 → "크리에이터 차단" (initReportEntries 에서 함께 구성)
+     *   마이페이지 회원정보 → "차단한 사용자" 목록
+     */
+    function initBlock() {
+        /* 댓글 메뉴에 차단 항목 추가 */
+        Array.prototype.forEach.call(document.querySelectorAll('.comment__menu'), function (menu) {
+            if (menu.querySelector('[data-block-target]')) { return; }
+            var reportBtn = menu.querySelector('.comment__menu-item--report');
+            if (!reportBtn) { return; }          /* 내 댓글(수정·삭제)에는 붙이지 않는다 */
+            var c = menu.closest('.comment');
+            var nameEl = c ? c.querySelector('.comment__name') : null;
+            var who = nameEl ? nameEl.textContent.trim() : '';
+            if (!who) { return; }
+            var b = pel('button', 'comment__menu-item comment__menu-item--block');
+            b.type = 'button';
+            b.setAttribute('role', 'menuitem');
+            b.setAttribute('data-block-target', who);
+            b.setAttribute('data-block-on', '차단하기');
+            b.setAttribute('data-block-off', '차단 해제');
+            b.addEventListener('click', function (e) {
+                e.preventDefault();
+                var av = c ? c.querySelector('.comment__avatar img') : null;
+                askBlock(who, av ? av.getAttribute('src') : '');
+            });
+            reportBtn.insertAdjacentElement('afterend', b);
+        });
+
+        /* 마이페이지 회원정보 : 차단 목록 진입점 */
+        var withdraw = document.querySelector('.mydash-withdraw');
+        if (withdraw && !document.querySelector('.js-blocklist-open')) {
+            var row = pel('p', 'mydash-blocked');
+            row.appendChild(document.createTextNode('불편한 사용자가 있나요? '));
+            var open = pel('button', 'mydash-blocked__link js-blocklist-open', '차단한 사용자 관리');
+            open.type = 'button';
+            open.addEventListener('click', openBlockList);
+            row.appendChild(open);
+            withdraw.insertAdjacentElement('beforebegin', row);
+        }
+
+        applyBlocked();
+    }
+
     function initReportEntries() {
         var FLAG = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.6 21V4h8.9l-.8 2.8h5.7l-1.1 4.2h-5.4l.7 3.1H5.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         var DOTS = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5.2" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="18.8" r="1.7" fill="currentColor"/></svg>';
@@ -3857,6 +4101,13 @@
                 if (it.href) {
                     node = document.createElement('a');
                     node.href = it.href;
+                } else if (it.block) {
+                    node = document.createElement('button');
+                    node.type = 'button';
+                    node.setAttribute('data-block-target', it.block);
+                    node.setAttribute('data-block-on', it.label);
+                    node.setAttribute('data-block-off', '차단 해제');
+                    node.addEventListener('click', function () { askBlock(it.block, ''); });
                 } else {
                     node = document.createElement('button');
                     node.type = 'button';
@@ -3865,7 +4116,7 @@
                 }
                 node.className = 'more-menu__item' + (it.danger ? ' more-menu__item--danger' : '');
                 node.setAttribute('role', 'menuitem');
-                node.textContent = it.label;
+                if (!it.block) { node.textContent = it.label; }
                 list.appendChild(node);
             });
             return list;
@@ -3924,7 +4175,8 @@
         if (chActions && !chActions.querySelector('.more-menu')) {
             chActions.appendChild(newMenu([
                 { label: '채널 공유', href: '#' },
-                { label: '크리에이터 신고', type: 'creator', target: creatorTarget(), danger: true }
+                { label: '크리에이터 신고', type: 'creator', target: creatorTarget(), danger: true },
+                { label: '크리에이터 차단', block: creatorTarget(), danger: true }
             ], '채널 옵션'));
         }
 
@@ -3937,6 +4189,7 @@
             var link = slide.querySelector('.player__channel-name');
             adoptMenu(host, trigger, [
                 { label: '콘텐츠 신고', type: 'content', target: contentTarget(slide), danger: true },
+                { label: '크리에이터 차단', block: creatorTarget(slide), danger: true },
                 { label: '채널 방문', href: (link && link.getAttribute('href')) || 'preview-channel.html' }
             ]);
         });
@@ -3954,6 +4207,7 @@
         initAiPicker();
         initCreatorApply();
         initStickyGnb();
+        initRailMoreVisibility();
         initPasswordToggles();
         initTermsAgree();
         initCodeTimer();
@@ -3983,6 +4237,7 @@
         initChannelTabs();
         initReport();
         initReportEntries();
+        initBlock();
         initAvatarModal();
         initMypageStudioNav();
         initMypageBack();
