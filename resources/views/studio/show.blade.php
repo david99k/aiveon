@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '크리에이터 스튜디오 · AIVEON')
+@section('title', '크리에이터 스튜디오 · VIBUZZ')
 
 {{-- 마이페이지 셸 재사용 : 사이드바가 푸터까지 이어지도록 --}}
 @section('body-class', 'is-mypage')

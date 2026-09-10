@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '이벤트 · AIVEON')
+@section('title', '이벤트 · VIBUZZ')
 
 @section('body-class', 'is-mypage')
 

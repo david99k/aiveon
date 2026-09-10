@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $video['title'] . ' · AIVEON')
+@section('title', $video['title'] . ' · VIBUZZ')
 
 {{-- 재생 페이지: 푸터 제외 (Figma 338:5601 / 484:4617) --}}
 @section('hide-footer', '1')

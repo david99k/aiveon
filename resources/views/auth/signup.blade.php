@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', '회원가입 · AIVEON')
+@section('title', '회원가입 · VIBUZZ')
 
 @php
     /* 서버 유효성 실패 시, 첫(가장 이른) 에러 단계를 자동으로 펼친다.
@@ -48,7 +48,7 @@
                 {{-- STEP 1 : 가입 정보 --}}
                 <section class="auth-step" data-step="1" aria-label="가입 정보 입력" @if($errStep !== 1) inert aria-hidden="true" @endif>
                     <div class="auth__head">
-                        <h2 class="auth__title">AIVEON에 오신 걸 환영해요</h2>
+                        <h2 class="auth__title">VIBUZZ에 오신 걸 환영해요</h2>
                         <p class="auth__subtitle">몇 초면 끝나요. 바로 시청을 시작하세요</p>
                     </div>
 
@@ -105,7 +105,7 @@
                     </div>
 
                     <p class="auth__prompt">
-                        <span class="auth__prompt-q">이미 AIVEON 회원이신가요?</span>
+                        <span class="auth__prompt-q">이미 VIBUZZ 회원이신가요?</span>
                         <a href="{{ route('login') }}">로그인</a>
                     </p>
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $channel['name'] . ' · AIVEON')
+@section('title', $channel['name'] . ' · VIBUZZ')
 
 @section('content')
     {{-- 크리에이터 공개 채널 (유튜브 채널 페이지 구조 기반) --}}
@@ -92,7 +92,7 @@
                     <div><dt>가입일</dt><dd>{{ $channel['since'] }}</dd></div>
                 </dl>
 
-                {{-- 이 채널이 주로 쓰는 AI 툴 (AIVEON 고유 : 업로드 시 기록한 "사용한 AI") --}}
+                {{-- 이 채널이 주로 쓰는 AI 툴 (VIBUZZ 고유 : 업로드 시 기록한 "사용한 AI") --}}
                 <div class="channel__tools">
                     <span class="channel__tools-label">주로 사용하는 AI 툴</span>
                     <ul class="channel__tools-list">

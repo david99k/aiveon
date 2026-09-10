@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $tool['name'] . ' · AI 툴 도감 · AIVEON')
+@section('title', $tool['name'] . ' · AI 툴 도감 · VIBUZZ')
 
 {{-- 마이페이지 셸 재사용 : 좌측 계정 사이드바 유지 --}}
 @section('body-class', 'is-mypage')
@@ -19,7 +19,7 @@
                 <h1 class="aitool__name">
                     {{ $tool['name'] }}
                     @if ($tool['official'])
-                        <span class="aitool__verified">AIVEON 추천</span>
+                        <span class="aitool__verified">VIBUZZ 추천</span>
                     @endif
                 </h1>
                 <p class="aitool__kor">{{ $tool['korName'] }} · <span class="aitool__cat">{{ $tool['category'] }}</span></p>
@@ -42,7 +42,7 @@
         {{-- 핵심 지표 --}}
         <div class="aitool__stats">
             <div class="aitool__stat">
-                <span class="aitool__stat-label">AIVEON 사용 영상</span>
+                <span class="aitool__stat-label">VIBUZZ 사용 영상</span>
                 <strong class="aitool__stat-value">{{ $tool['videoCount'] }}</strong>
             </div>
             <div class="aitool__stat">
@@ -57,7 +57,7 @@
             @endforeach
         </div>
 
-        {{-- 이 툴로 만든 AIVEON 영상 (AIVEON 고유 섹션) --}}
+        {{-- 이 툴로 만든 VIBUZZ 영상 (VIBUZZ 고유 섹션) --}}
         <x-poster-row :title="$tool['name'] . '(으)로 만든 영상'" :items="$videos" />
 
         {{-- 핵심 기능 --}}

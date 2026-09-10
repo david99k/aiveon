@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '회원 탈퇴 · AIVEON')
+@section('title', '회원 탈퇴 · VIBUZZ')
 
 {{-- 사이드바가 푸터까지 이어지도록 (body.is-mypage) --}}
 @section('body-class', 'is-mypage')
@@ -110,7 +110,7 @@
                     <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="m8.4 12.4 2.4 2.4 4.8-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
                 <h2 class="wd-confirm__title" id="modal-wd-done-title">탈퇴가 완료되었습니다</h2>
-                <p class="wd-confirm__desc">그동안 AIVEON을 이용해 주셔서 감사합니다.<br>더 나은 서비스로 다시 만나뵙기를 바랍니다.</p>
+                <p class="wd-confirm__desc">그동안 VIBUZZ을 이용해 주셔서 감사합니다.<br>더 나은 서비스로 다시 만나뵙기를 바랍니다.</p>
                 <div class="wd-confirm__actions">
                     <a href="{{ route('main') }}" class="mypage__btn mypage__btn--primary">홈으로</a>
                 </div>

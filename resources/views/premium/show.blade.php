@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', '프리미엄 구독 · AIVEON')
+@section('title', '프리미엄 구독 · VIBUZZ')
 
 @section('content')
     <section class="prem">
         {{-- 히어로 --}}
         <div class="prem__hero">
             <span class="prem__badge">PREMIUM</span>
-            <h1 class="prem__title">AIVEON 프리미엄으로<br><em>모든 이야기</em>를 끝까지</h1>
+            <h1 class="prem__title">VIBUZZ 프리미엄으로<br><em>모든 이야기</em>를 끝까지</h1>
             <p class="prem__lead">프리미엄 전용 콘텐츠부터 신작 먼저보기까지, 하나의 구독으로 전부 즐기세요.</p>
         </div>
 

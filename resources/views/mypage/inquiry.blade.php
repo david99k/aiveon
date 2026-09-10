@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '1:1 문의 · AIVEON')
+@section('title', '1:1 문의 · VIBUZZ')
 
 {{-- 사이드바가 푸터까지 이어지도록 (body.is-mypage) --}}
 @section('body-class', 'is-mypage')

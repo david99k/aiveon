@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '공지사항 · AIVEON')
+@section('title', '공지사항 · VIBUZZ')
 
 {{-- 마이페이지 셸 재사용 : 좌측 계정 사이드바 유지 --}}
 @section('body-class', 'is-mypage')

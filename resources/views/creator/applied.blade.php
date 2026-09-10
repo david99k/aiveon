@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '크리에이터 신청 완료 · AIVEON')
+@section('title', '크리에이터 신청 완료 · VIBUZZ')
 
 @section('content')
     <section class="capply capply--done">

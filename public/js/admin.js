@@ -1,5 +1,5 @@
 /* ============================================================
-   AIVEON ADMIN (시너지온 관리자) — 화면 렌더러
+   VIBUZZ ADMIN (시너지온 관리자) — 화면 렌더러
    - 메뉴 구조 : SYNERGYON_ADMIN_메뉴화면설명서_V1.0 (대시보드 + 01~11)
    - 화면 데이터 : js/admin-data.js 의 window.ADMIN_DATA
    - 해시 라우팅 (#/섹션/화면) 기반 데모 · 실서비스 연동 시
@@ -199,7 +199,7 @@
 
   /* ---------- 즐겨찾기 ----------
      localStorage 에 {sec, id} 목록을 저장한다. 실서비스에서는 관리자 계정별 설정 API 로 교체. */
-  var FAV_KEY = 'aiveon-adm-favs';
+  var FAV_KEY = 'vibuzz-adm-favs';
   /* 저장값은 사용자가 직접 건드릴 수 있으므로 읽을 때마다 형태를 검증한다.
      항목이 깨져 있어도 화면 전체가 죽지 않아야 한다. */
   function readFavs() {
@@ -1368,7 +1368,7 @@
 
   /* ---------- 다크 / 라이트 테마 (좌측 패널 하단) ---------- */
   function initTheme() {
-    var KEY = 'aiveon-adm-theme';
+    var KEY = 'vibuzz-adm-theme';
     var right = document.querySelector('.adm-side__foot');
     if (!right || right.querySelector('.adm-theme')) { return; }
 

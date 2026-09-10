@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '콘텐츠 업로드 · AIVEON')
+@section('title', '콘텐츠 업로드 · VIBUZZ')
 
 @section('content')
     <section class="upload">
@@ -167,7 +167,7 @@
                     <circle cx="18" cy="27" r="1.6" fill="#fff"/>
                 </svg>
                 <p class="modal__notice">영상은 내부 심사를 통해 게시됩니다.<br>심사로 인해 동영상 업로드가 지연될 수 있습니다.</p>
-                <p class="modal__notice">아티스트가 저작권 침해·음란·폭력·테러 등 위법 영상물을 게시할 경우 제3자 피해를 포함한 모든 책임은 업로드한 아티스트에게 있으며, AIVEON은 해당 영상물의 삭제·차단 및 계정 접근 제한 등의 조치를 취할 수 있습니다.</p>
+                <p class="modal__notice">아티스트가 저작권 침해·음란·폭력·테러 등 위법 영상물을 게시할 경우 제3자 피해를 포함한 모든 책임은 업로드한 아티스트에게 있으며, VIBUZZ은 해당 영상물의 삭제·차단 및 계정 접근 제한 등의 조치를 취할 수 있습니다.</p>
             </div>
             <div class="modal__actions">
                 <button type="button" class="btn btn--primary js-notice-ok">확인</button>

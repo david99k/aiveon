@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A안 · 단계형 위저드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="_mock-capply.css">
+</head>
+<body>
+
+<div class="mock-gnb">
+    <span class="mock-gnb__logo">VIBUZZ</span>
+    <nav class="mock-gnb__menu"><span>추천</span><span>숏츠</span><span>드라마</span><span>영화</span><span>애니메이션</span><span>BL</span><span>AI 라이브채널</span></nav>
+    <div class="mock-gnb__right"><span class="mock-gnb__avatar"></span></div>
+</div>
+
+<div class="wrap wrap--narrow">
+    <h1 class="ttl">크리에이터 신청</h1>
+    <p class="lead">AI로 만든 영상을 VIBUZZ에 올리고 광고·구독 수익을 배분받으세요.<br>신청 후 내부 심사(계정·중복 확인)를 거쳐 데뷔 영상 3편을 제출하면 활동이 시작됩니다.</p>
+
+    <ol class="steps">
+        <li class="step done"><div class="step__no">✓</div><p class="step__t">자격 확인</p></li>
+        <li class="step cur"><div class="step__no">2</div><p class="step__t">채널 정보</p></li>
+        <li class="step"><div class="step__no">3</div><p class="step__t">활동 정보</p></li>
+        <li class="step"><div class="step__no">4</div><p class="step__t">약관 동의</p></li>
+    </ol>
+
+    <div class="card">
+        <div class="card__head">
+            <h2 class="sec-ttl">채널 정보</h2>
+            <span style="margin-left:auto;font-size:13px;color:rgba(255,255,255,.38)">2 / 4 단계</span>
+        </div>
+        <div class="card__body">
+            <div class="row">
+                <p class="row__label">채널명<span class="req">*</span></p>
+                <div class="row__field">
+                    <input class="inp" value="synergy 스튜디오">
+                    <p class="hint">시청자에게 보이는 이름입니다 · 최대 30자</p>
+                </div>
+            </div>
+            <div class="row">
+                <p class="row__label">채널 핸들<span class="req">*</span></p>
+                <div class="row__field">
+                    <input class="inp" value="@synergy_on">
+                    <p class="hint">vibuzz.kr/@synergy_on · 영문·숫자·밑줄만 사용</p>
+                </div>
+            </div>
+            <div class="row">
+                <p class="row__label">프로필 이미지</p>
+                <div class="row__field">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <img src="images/common/avatar_user.jpg" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover">
+                        <button type="button" class="btn btn--ghost" style="height:38px;font-size:13.5px">이미지 변경</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <p class="row__label">한 줄 소개</p>
+                <div class="row__field">
+                    <input class="inp" value="AI로 만드는 따뜻한 이야기 · 매주 목요일 업로드">
+                    <p class="hint">채널명 아래에 표시됩니다 · 최대 60자</p>
+                </div>
+            </div>
+            <div class="row">
+                <p class="row__label">채널 소개<span class="req">*</span></p>
+                <div class="row__field">
+                    <textarea class="txt">VIBUZZ에서 활동할 AI 영상 크리에이터입니다.
+로맨스·힐링 드라마를 중심으로 주 1회 업로드할 계획입니다.</textarea>
+                    <p class="hint">어떤 콘텐츠를 만들 계획인지 적어주세요 · 최소 50자</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="acts">
+        <button class="btn btn--ghost">이전</button>
+        <button class="btn btn--pri">다음 단계</button>
+    </div>
+</div>
+
+</body>
+</html>

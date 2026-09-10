@@ -1,5 +1,5 @@
 /* ============================================================
-   AIVEON ADMIN (시너지온 관리자) — 전용 스타일시트
+   VIBUZZ ADMIN (시너지온 관리자) — 전용 스타일시트
    메뉴·화면 구조 : SYNERGYON_ADMIN_메뉴화면설명서_V1.0 기준
    서비스(main.css)와 독립적으로 동작하는 다크 어드민 테마
    ============================================================ */
@@ -306,7 +306,9 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== 상단 1차 메뉴 + 드롭다운 ===== */
-.adm-gnb { display: flex; align-items: center; flex: 1; min-width: 0; }
+/* 로고와 첫 메뉴가 붙어 보이지 않도록 왼쪽 여백을 둔다(좁아지면 tight 단계에서 줄인다) */
+.adm-gnb { display: flex; align-items: center; flex: 1; min-width: 0; margin-left: 26px; }
+.adm.gnb-tight .adm-gnb { margin-left: 12px; }
 .adm-gnb__item { position: relative; flex: 0 0 auto; }   /* 줄어들지 않아야 폭 실측이 정확하다 */
 .adm-gnb__btn {
   display: inline-flex;
@@ -1079,7 +1081,7 @@ body.adm-modal-open { overflow: hidden; }
 }
 
 /* ===== 라이트 모드 =====
-   html[data-adm-theme='light'] 로 전환. 선택은 localStorage(aiveon-adm-theme)에 유지. */
+   html[data-adm-theme='light'] 로 전환. 선택은 localStorage(vibuzz-adm-theme)에 유지. */
 :root[data-adm-theme='light'] {
   --adm-bg: #f3f4f8;
   --adm-side: #ffffff;

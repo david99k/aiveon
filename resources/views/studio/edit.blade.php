@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '채널 편집 · AIVEON')
+@section('title', '채널 편집 · VIBUZZ')
 
 {{-- 마이페이지 셸 재사용 : 사이드바가 푸터까지 이어지도록 --}}
 @section('body-class', 'is-mypage')
@@ -65,7 +65,7 @@
                                 <span class="chedit__handle-at">@</span>
                                 <input type="text" id="ch-handle" class="inquiry__input chedit__handle-input" value="{{ $channel['handle'] }}" maxlength="20">
                             </div>
-                            <p class="chedit__hint">영문·숫자·밑줄(_)만 사용 · aiveon.kr/@{{ $channel['handle'] }}</p>
+                            <p class="chedit__hint">영문·숫자·밑줄(_)만 사용 · vibuzz.kr/@{{ $channel['handle'] }}</p>
                         </div>
                     </div>
 

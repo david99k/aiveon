@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '검색 · AIVEON')
+@section('title', '검색 · VIBUZZ')
 
 {{-- 검색 오버레이 : 푸터 제외 --}}
 @section('hide-footer', '1')

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($shorts[0]['title'] ?? '쇼츠') . ' · AIVEON')
+@section('title', ($shorts[0]['title'] ?? '쇼츠') . ' · VIBUZZ')
 
 {{-- 몰입형 플레이어 화면: 푸터 제외 + 문서 스크롤 잠금 (Figma 338:5895) --}}
 @section('hide-footer', '1')

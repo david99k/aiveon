@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '아이디 · 비밀번호 찾기 · AIVEON')
+@section('title', '아이디 · 비밀번호 찾기 · VIBUZZ')
 
 @section('content')
     <section class="find js-find">

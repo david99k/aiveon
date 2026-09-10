@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '크리에이터 신청 · AIVEON')
+@section('title', '크리에이터 신청 · VIBUZZ')
 
 @section('content')
     <section class="capply">
@@ -81,7 +81,7 @@
                                     <input type="text" id="ca-handle" name="handle" class="capply-input capply-handle__input js-capply-required js-capply-handle"
                                            value="{{ $form['handle'] }}" maxlength="20" placeholder="synergy_on" required>
                                 </div>
-                                <p class="capply-hint">영문·숫자·밑줄(_)만 사용 · <span class="js-capply-handle-url">aiveon.kr/@</span></p>
+                                <p class="capply-hint">영문·숫자·밑줄(_)만 사용 · <span class="js-capply-handle-url">vibuzz.kr/@</span></p>
                             </div>
                         </div>
 

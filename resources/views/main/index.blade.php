@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($pageTitle ?? 'AIVEON'))
+@section('title', ($pageTitle ?? 'VIBUZZ'))
 
 @section('content')
     {{-- 상단 비주얼 (2026-07-23) :
@@ -19,11 +19,11 @@
     {{-- 시청중인 영상 --}}
     <x-poster-row title="시청중인 영상" :items="$watching" />
 
-    {{-- AIVEON TOP 10 --}}
+    {{-- VIBUZZ TOP 10 --}}
     <section class="section section--top">
-        <h2 class="section__title">AIVEON TOP 10</h2>
+        <h2 class="section__title">VIBUZZ TOP 10</h2>
 
-        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="AIVEON TOP 10">
+        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="VIBUZZ TOP 10">
             <ol class="rank-list">
                 @foreach ($topList as $item)
                     <x-rank-card :item="$item" :rank="$loop->iteration" />

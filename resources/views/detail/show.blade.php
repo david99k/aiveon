@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $title['name'] . ' · AIVEON')
+@section('title', $title['name'] . ' · VIBUZZ')
 
 @section('content')
     {{-- 상세 히어로 (Figma 338:4681) --}}

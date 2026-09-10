@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($noResults ? '검색결과 없음' : '검색결과') . ' · AIVEON')
+@section('title', ($noResults ? '검색결과 없음' : '검색결과') . ' · VIBUZZ')
 
 @section('content')
     <section class="search-results">

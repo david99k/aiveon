@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'AI 툴 도감 · AIVEON')
+@section('title', 'AI 툴 도감 · VIBUZZ')
 
 {{-- 마이페이지 셸 재사용 : 좌측 계정 사이드바 유지 --}}
 @section('body-class', 'is-mypage')
@@ -14,7 +14,7 @@
         {{-- 헤더 --}}
         <header class="aitools__head">
             <h1 class="aitools__title">AI 툴 도감</h1>
-            <p class="aitools__lead">AIVEON 크리에이터들이 실제로 사용하는 AI 툴을 카테고리별로 확인하세요.<br>각 툴 페이지에서 <strong>그 툴로 만든 영상</strong>을 바로 볼 수 있습니다.</p>
+            <p class="aitools__lead">VIBUZZ 크리에이터들이 실제로 사용하는 AI 툴을 카테고리별로 확인하세요.<br>각 툴 페이지에서 <strong>그 툴로 만든 영상</strong>을 바로 볼 수 있습니다.</p>
 
             <div class="aitools__search">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-3.4-3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -39,7 +39,7 @@
                         <strong class="aitool-card__name">
                             {{ $tool['name'] }}
                             @if ($tool['official'])
-                                <span class="aitool-card__verified" title="AIVEON 추천 툴">
+                                <span class="aitool-card__verified" title="VIBUZZ 추천 툴">
                                     <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 9.7 5l3.8.5-2.7 2.7.6 3.8L8 10.2 4.6 12l.6-3.8L2.5 5.5 6.3 5 8 1.5Z" fill="currentColor"/></svg>
                                 </span>
                             @endif

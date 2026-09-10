@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $notice['title'] . ' · 공지사항 · AIVEON')
+@section('title', $notice['title'] . ' · 공지사항 · VIBUZZ')
 
 @section('body-class', 'is-mypage')
 

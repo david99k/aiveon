@@ -87,7 +87,7 @@ Route::get('/mypage/event', [MypageController::class, 'event'])->name('event');
 Route::get('/mypage/event/{id}', [MypageController::class, 'eventShow'])->name('event.show');
 
 /*
- * AIVEON ADMIN (관리자) — SYNERGYON_ADMIN_메뉴화면설명서_V1.0.
+ * VIBUZZ ADMIN (관리자) — SYNERGYON_ADMIN_메뉴화면설명서_V1.0.
  * 해시 라우팅(#/섹션/화면) 데모 셸. 실서비스 연동 시 관리자 인증 미들웨어 필수.
  */
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');

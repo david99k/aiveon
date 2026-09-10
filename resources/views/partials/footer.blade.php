@@ -22,7 +22,7 @@
 <footer class="footer">
     <div class="footer__cols">
         <div class="footer__brand">
-            <p class="footer__logo">AIVEON</p>
+            <p class="footer__logo">VIBUZZ</p>
             <p class="footer__tagline">AI 영상 콘텐츠 플랫폼</p>
         </div>
 
@@ -38,5 +38,5 @@
         @endforeach
     </div>
 
-    <p class="footer__copy">&copy; 2026 AIVEON. All rights reserved.</p>
+    <p class="footer__copy">&copy; 2026 VIBUZZ. All rights reserved.</p>
 </footer>

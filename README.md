@@ -1,4 +1,4 @@
-# AIVEON 메인 페이지 (라라벨 블레이드 퍼블리싱)
+# VIBUZZ 메인 페이지 (라라벨 블레이드 퍼블리싱)
 
 Figma 시안 [Synergy-on_aiveon / Main - 로그인 전](https://www.figma.com/design/8NTaMQ9Pizo0dGA6tCFrNM/Synergy-on_aiveon?node-id=160-3061)을
 라라벨 블레이드 템플릿으로 구현한 퍼블리싱 딜리버러블입니다. (데스크톱 1920 기준)
@@ -83,7 +83,7 @@ PHP 내장 서버는 Range를 지원하지 않아 이 라우터 없이는 `<vide
 
 ## 참고 사항
 
-- **크리에이터 섹션 타이틀**: 시안 원본에 "AIVEON TOP6"로 표기되어 있어 그대로 반영했습니다
+- **크리에이터 섹션 타이틀**: 시안 원본에 "VIBUZZ TOP6"로 표기되어 있어 그대로 반영했습니다
   (랭킹 섹션과 중복 — 기획/디자인 확인 필요). 수정은 `MainController`의 `creatorSectionTitle` 값만 바꾸면 됩니다.
 - **TOP6 랭킹 숫자**: 투명 채움 + 브랜드 컬러(#a78bfa) 4px 외곽선(`-webkit-text-stroke`).
   placeholder 카드 위로는 보이고 포스터 이미지 뒤로는 가려지는 시안 구조를 z-index로 재현했습니다.

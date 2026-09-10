@@ -88,14 +88,23 @@ class LiveController
     {
         $avatars = ['creator_profile_05', 'creator_profile_02', 'creator_profile_07', 'creator_profile_03', 'creator_profile_04', 'creator_profile_05'];
 
-        $comments = array_map(fn (string $avatar) => [
-            'user' => 'User3325421',
+        $people = [
+            ['User3325421', '너무 슬퍼요 재미있을줄 알았는데 밤새...'],
+            ['달빛서재', '연출이 진짜 좋네요. 다음 화 언제 나오나요'],
+            ['User7782013', '마지막 장면 여운이 오래 갑니다'],
+            ['piknicon', '이거 AI로 만든 거 맞아요? 퀄리티 미쳤다'],
+            ['User2094117', '배경음악 정보 아시는 분 계실까요'],
+            ['라온', '2화부터 몰아봤는데 시간 순삭이었어요'],
+        ];
+
+        $comments = array_map(fn (string $avatar, int $i) => [
+            'user' => $people[$i % count($people)][0],
             'date' => '2026.07.08',
-            'text' => '너무 슬퍼요 재미있을줄 알았는데 밤새...',
+            'text' => $people[$i % count($people)][1],
             'avatar' => "images/main/{$avatar}.jpg",
             'is_reply' => false,
             'is_mine' => false, // 내 댓글 여부 : 인증 연동 시 작성자==현재 유저로 판정
-        ], $avatars);
+        ], $avatars, array_keys($avatars));
 
         // 시안 : 첫 댓글을 '내 댓글'로 표시해 더보기 메뉴(수정/삭제) 노출을 시연
         $comments[0]['is_mine'] = true;

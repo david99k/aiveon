@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '취향 선택 · AIVEON')
+@section('title', '취향 선택 · VIBUZZ')
 
 {{-- 온보딩 : 몰입형 화면이라 푸터 제외 --}}
 @section('hide-footer', '1')

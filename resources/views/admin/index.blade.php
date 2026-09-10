@@ -1,5 +1,5 @@
 {{--
-    AIVEON ADMIN 셸 (SYNERGYON_ADMIN_메뉴화면설명서_V1.0).
+    VIBUZZ ADMIN 셸 (SYNERGYON_ADMIN_메뉴화면설명서_V1.0).
     서비스 레이아웃(layouts.app)과 분리된 독립 화면 :
     상단 1차 메뉴 · 좌측 패널 · 콘텐츠는 js/admin.js 가 js/admin-data.js 기준으로 렌더링한다.
 --}}
@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
-    <title>AIVEON ADMIN · 관리자</title>
+    <title>VIBUZZ ADMIN · 관리자</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
@@ -23,7 +23,7 @@
             </button>
 
             <a class="adm-top__logo" href="#/dashboard">
-                <span class="adm-top__logo-name">AIVEON</span>
+                <span class="adm-top__logo-name">VIBUZZ</span>
                 <span class="adm-top__logo-badge">ADMIN</span>
             </a>
 

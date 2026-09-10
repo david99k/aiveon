@@ -7,8 +7,8 @@ use Illuminate\View\View;
 /**
  * AI 툴 도감 (AI Tools).
  *
- * AIVEON 고유 포인트 : 업로드 시 기록한 "사용한 AI"와 연결되어,
- * 각 툴 페이지에서 "이 툴로 만든 AIVEON 영상"을 바로 볼 수 있다.
+ * VIBUZZ 고유 포인트 : 업로드 시 기록한 "사용한 AI"와 연결되어,
+ * 각 툴 페이지에서 "이 툴로 만든 VIBUZZ 영상"을 바로 볼 수 있다.
  *
  * 카테고리 체계는 업로드 폼(UploadController::aiToolGroups)과 동일하게 유지한다.
  * 아래 값은 시안용 더미 — 실서비스 연동 시 DB/API 조회로 교체하세요.
@@ -32,7 +32,7 @@ class AiToolController
 
         return view('ai-tools.show', [
             'tool' => array_merge($tool, $this->detail($tool)),
-            // 이 툴을 사용해 만든 AIVEON 영상 (업로드 시 기록된 "사용한 AI" 기준)
+            // 이 툴을 사용해 만든 VIBUZZ 영상 (업로드 시 기록된 "사용한 AI" 기준)
             'videos' => $this->videos(),
             'related' => collect($tools)
                 ->where('category', $tool['category'])
@@ -108,7 +108,7 @@ class AiToolController
     {
         return [
             'summary' => "{$tool['name']}({$tool['korName']})은(는) {$tool['category']} 분야에서 가장 널리 쓰이는 AI 툴 중 하나입니다. "
-                . 'AIVEON 크리에이터들이 실제 작업에 사용하고 있으며, 아래에서 이 툴로 만든 영상을 확인할 수 있습니다.',
+                . 'VIBUZZ 크리에이터들이 실제 작업에 사용하고 있으며, 아래에서 이 툴로 만든 영상을 확인할 수 있습니다.',
             'meta' => [
                 ['label' => '카테고리', 'value' => $tool['category']],
                 ['label' => '요금', 'value' => '무료 체험 + 유료 플랜'],
@@ -127,11 +127,11 @@ class AiToolController
                 ['name' => 'Standard', 'price' => '월 $12~', 'desc' => '상업적 이용 가능 · 워터마크 없음'],
                 ['name' => 'Pro', 'price' => '월 $30~', 'desc' => '고해상도 · 우선 처리 · 팀 협업'],
             ],
-            'tips' => 'AIVEON에 업로드할 때 "사용한 AI"에 이 툴을 선택하면, 이 페이지의 "이 툴로 만든 영상"에 자동으로 노출됩니다.',
+            'tips' => 'VIBUZZ에 업로드할 때 "사용한 AI"에 이 툴을 선택하면, 이 페이지의 "이 툴로 만든 영상"에 자동으로 노출됩니다.',
         ];
     }
 
-    /** 이 툴로 만든 AIVEON 영상 (세로 포스터) @return array<int, array<string, mixed>> */
+    /** 이 툴로 만든 VIBUZZ 영상 (세로 포스터) @return array<int, array<string, mixed>> */
     private function videos(): array
     {
         $items = [

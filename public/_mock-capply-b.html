@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B안 · 원페이지 폼</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="_mock-capply.css">
+</head>
+<body>
+
+<div class="mock-gnb">
+    <span class="mock-gnb__logo">VIBUZZ</span>
+    <nav class="mock-gnb__menu"><span>추천</span><span>숏츠</span><span>드라마</span><span>영화</span><span>애니메이션</span><span>BL</span><span>AI 라이브채널</span></nav>
+    <div class="mock-gnb__right"><span class="mock-gnb__avatar"></span></div>
+</div>
+
+<div class="wrap">
+    <h1 class="ttl">크리에이터 신청</h1>
+    <p class="lead">한 화면에서 모두 작성하고 제출합니다. 작성 중인 내용은 자동 임시저장됩니다.</p>
+
+    <div class="two">
+        <div class="stack">
+
+            <div class="card">
+                <div class="card__head"><span class="grp-no">1</span><h2 class="grp-ttl">기본 정보</h2></div>
+                <div class="card__body">
+                    <div class="row">
+                        <p class="row__label">이름<span class="req">*</span></p>
+                        <div class="row__field"><input class="inp" value="김서연" style="max-width:280px"></div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">본인 인증<span class="req">*</span></p>
+                        <div class="row__field">
+                            <div style="display:flex;align-items:center;gap:12px">
+                                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(94,234,212,.14);color:#5eead4;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700">✓ 인증 완료</span>
+                                <span style="font-size:13px;color:rgba(255,255,255,.4)">휴대폰 본인인증 · 2026-07-28</span>
+                            </div>
+                            <p class="hint">정산 지급을 위해 실명 확인이 필요합니다.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">연락 이메일<span class="req">*</span></p>
+                        <div class="row__field"><input class="inp" value="seoyeon.kim@example.com" style="max-width:380px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__head"><span class="grp-no">2</span><h2 class="grp-ttl">채널 정보</h2></div>
+                <div class="card__body">
+                    <div class="row">
+                        <p class="row__label">채널명<span class="req">*</span></p>
+                        <div class="row__field"><input class="inp" value="synergy 스튜디오"><p class="hint">시청자에게 보이는 이름 · 최대 30자</p></div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">채널 핸들<span class="req">*</span></p>
+                        <div class="row__field"><input class="inp" value="@synergy_on"><p class="hint">vibuzz.kr/@synergy_on</p></div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">채널 소개<span class="req">*</span></p>
+                        <div class="row__field"><textarea class="txt">AI로 만드는 따뜻한 이야기. 로맨스·힐링 드라마 중심으로 주 1회 업로드할 계획입니다.</textarea></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__head"><span class="grp-no">3</span><h2 class="grp-ttl">활동 정보</h2></div>
+                <div class="card__body">
+                    <div class="row">
+                        <p class="row__label">주력 카테고리<span class="req">*</span></p>
+                        <div class="row__field">
+                            <div class="pills">
+                                <span class="pill">숏츠</span><span class="pill on">드라마</span><span class="pill">영화</span><span class="pill on">애니메이션</span><span class="pill">BL</span>
+                            </div>
+                            <p class="hint">최대 2개까지 선택할 수 있어요</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">사용하는 AI 툴<span class="req">*</span></p>
+                        <div class="row__field">
+                            <div class="pills">
+                                <span class="pill pill--ai on"><span class="pill__ico" style="color:#6b46f7">M</span>Midjourney</span>
+                                <span class="pill pill--ai on"><span class="pill__ico" style="color:#111">R</span>Runway</span>
+                                <span class="pill pill--ai on"><span class="pill__ico" style="color:#1a8f6b">E</span>ElevenLabs</span>
+                                <span class="pill pill--ai"><span class="pill__ico" style="color:#c0392b">+</span>AI 툴 선택하기</span>
+                            </div>
+                            <p class="hint">업로드 시 기록하는 &ldquo;사용한 AI&rdquo;와 같은 목록입니다</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">업로드 계획<span class="req">*</span></p>
+                        <div class="row__field"><select class="sel" style="max-width:280px"><option>주 1회</option></select></div>
+                    </div>
+                    <div class="row">
+                        <p class="row__label">포트폴리오</p>
+                        <div class="row__field">
+                            <div class="drop"><strong style="color:rgba(255,255,255,.6)">영상 파일을 끌어오거나 클릭해 선택</strong><span>MP4 · 최대 3편 · 선택 사항 (심사 가산)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__head"><span class="grp-no">4</span><h2 class="grp-ttl">약관 동의</h2></div>
+                <div class="card__body">
+                    <div class="row" style="border-bottom:0;padding-bottom:4px">
+                        <div class="row__field" style="display:flex;flex-direction:column;gap:13px">
+                            <label style="display:flex;gap:10px;font-size:14.5px"><span style="color:#5eead4">☑</span> 크리에이터 이용약관 및 수익 배분 정책에 동의합니다 <span style="color:#f16063">(필수)</span></label>
+                            <label style="display:flex;gap:10px;font-size:14.5px"><span style="color:#5eead4">☑</span> 저작권·초상권을 침해하지 않은 창작물임을 확인합니다 <span style="color:#f16063">(필수)</span></label>
+                            <label style="display:flex;gap:10px;font-size:14.5px"><span style="color:#5eead4">☑</span> AI 생성물 표기 정책을 준수합니다 <span style="color:#f16063">(필수)</span></label>
+                            <label style="display:flex;gap:10px;font-size:14.5px;color:var(--text-secondary)"><span style="color:rgba(255,255,255,.25)">☐</span> 프로모션·이벤트 참여 안내 수신 (선택)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <aside class="side">
+            <div class="card" style="padding:20px">
+                <div class="prog__top"><span style="font-size:14px;font-weight:700">작성 진행률</span><span class="prog__pct">60%</span></div>
+                <div class="prog__track"><span class="prog__fill"></span></div>
+                <ul class="chk">
+                    <li class="ok"><span class="mk">✓</span>기본 정보</li>
+                    <li class="ok"><span class="mk">✓</span>채널 정보</li>
+                    <li class="ok"><span class="mk">✓</span>활동 정보</li>
+                    <li><span class="mk"></span>포트폴리오 (선택)</li>
+                    <li><span class="mk"></span>약관 동의</li>
+                </ul>
+                <button class="btn btn--pri btn--full" style="margin-top:20px">신청서 제출</button>
+                <p class="hint" style="text-align:center">제출 후 3영업일 내 심사 결과 안내</p>
+            </div>
+
+            <div class="notice">
+                <strong style="display:block;margin-bottom:7px;color:#fff">승인 후 진행 순서</strong>
+                심사 승인 → 데뷔 영상 3편 업로드 → 최종 검토 → 채널 공개
+            </div>
+        </aside>
+    </div>
+</div>
+
+</body>
+</html>

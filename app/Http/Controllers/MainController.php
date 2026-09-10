@@ -29,7 +29,7 @@ class MainController
             'watching' => $this->watching(),
             'topList' => $this->topList(),
             'newPosters' => $this->newPosters(),
-            'creatorSectionTitle' => 'AIVEON TOP6',
+            'creatorSectionTitle' => 'VIBUZZ TOP6',
             'creators' => $this->creators(),
             'family' => $this->family(),
             'discover' => $this->discover(),
@@ -59,7 +59,7 @@ class MainController
         // TOP 랭킹·신규 행도 shorts 로 강제해 이 페이지에서는 가로 watch 로 새는 카드가 없도록 한다.
         if (in_array($slug, ['shorts', 'shortform'], true)) {
             return view('main.vertical', [
-                'pageTitle' => $config['active'] . ' · AIVEON',
+                'pageTitle' => $config['active'] . ' · VIBUZZ',
                 'gnbMenus' => $this->gnbMenus($config['active']),
                 'heroPosters' => $this->typed($this->heroPosters(), 'shorts'),
                 'recommended' => $this->posterRow('shorts'),
@@ -119,7 +119,7 @@ class MainController
         ][$slug] ?? null;
 
         return view('main.index', [
-            'pageTitle' => $config['active'] . ' · AIVEON',
+            'pageTitle' => $config['active'] . ' · VIBUZZ',
             'gnbMenus' => $this->gnbMenus($config['active']),
             'heroes' => $categoryHeroes,
             'heroPosters' => $categoryHeroes
@@ -128,7 +128,7 @@ class MainController
             'watching' => $rows($this->watching()),
             'topList' => $rows($this->topList()),
             'newPosters' => $rows($this->newPosters()),
-            'creatorSectionTitle' => 'AIVEON TOP6',
+            'creatorSectionTitle' => 'VIBUZZ TOP6',
             'creators' => $this->creators(),
             'family' => $rows($this->family()),
             'discover' => $rows($this->discover()),
@@ -205,7 +205,7 @@ class MainController
         ];
     }
 
-    /** AIVEON TOP 10 (세로 포스터 + 큰 순위) : type 별 재생 @return array<int, array<string, mixed>> */
+    /** VIBUZZ TOP 10 (세로 포스터 + 큰 순위) : type 별 재생 @return array<int, array<string, mixed>> */
     private function topList(): array
     {
         return [

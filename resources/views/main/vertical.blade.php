@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($pageTitle ?? 'AIVEON'))
+@section('title', ($pageTitle ?? 'VIBUZZ'))
 
 {{-- 쇼츠·숏폼 : 히어로 없이 세로 포스터 카드 위주 (Sub - AI 쇼츠 / AI 숏폼 드라마) --}}
 @section('content')
@@ -13,10 +13,10 @@
 
     <x-poster-row title="추천영상" :items="$recommended" />
 
-    {{-- AIVEON TOP6 (랭킹) --}}
+    {{-- VIBUZZ TOP6 (랭킹) --}}
     <section class="section section--top">
-        <h2 class="section__title">AIVEON TOP6</h2>
-        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="AIVEON TOP6">
+        <h2 class="section__title">VIBUZZ TOP6</h2>
+        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="VIBUZZ TOP6">
             <ol class="rank-list">
                 @foreach ($topList as $item)
                     <x-rank-card :item="$item" :rank="$loop->iteration" />
@@ -28,10 +28,10 @@
     <x-poster-row title="새로운 영상" :items="$newNew" />
     <x-poster-row title="새로운 영상" :items="$newPremium" />
 
-    {{-- AIVEON TOP6 (크리에이터) --}}
+    {{-- VIBUZZ TOP6 (크리에이터) --}}
     <section class="section section--creator">
-        <h2 class="section__title">AIVEON TOP6</h2>
-        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="AIVEON TOP6">
+        <h2 class="section__title">VIBUZZ TOP6</h2>
+        <div class="scroll-x" data-scroll-x tabindex="0" role="region" aria-label="VIBUZZ TOP6">
             <ul class="creator-list">
                 @foreach ($creators as $creator)
                     <x-creator-item :creator="$creator" />

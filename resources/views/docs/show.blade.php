@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $doc['title'] . ' · AIVEON')
+@section('title', $doc['title'] . ' · VIBUZZ')
 
 @section('content')
     <section class="doc">

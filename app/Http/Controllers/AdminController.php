@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 
 /**
- * AIVEON ADMIN (시너지온 관리자).
+ * VIBUZZ ADMIN (시너지온 관리자).
  *
  * 메뉴·화면 구조 : SYNERGYON_ADMIN_메뉴화면설명서_V1.0
  *   대시보드 + 11개 1단계 메뉴, 2단계 98개 화면(콘텐츠 관리 하위 3단계 12개 포함).

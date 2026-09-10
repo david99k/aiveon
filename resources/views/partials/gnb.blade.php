@@ -21,7 +21,7 @@
 @endphp
 <header class="gnb">
     <div class="gnb__left">
-        <h1><a href="{{ url('/') }}" class="gnb__logo">AIVEON</a></h1>
+        <h1><a href="{{ url('/') }}" class="gnb__logo">VIBUZZ</a></h1>
 
         <nav class="gnb__nav" aria-label="주 메뉴">
             @foreach ($gnbMenus as $menu)
