@@ -1370,6 +1370,111 @@
     }
 
     /**
+     * 더보기 목록 페이지(preview-list.html): ?t= 쿼리의 타이틀을 제목/문서제목에 반영.
+     */
+    function initListPageTitle() {
+        var titleEl = document.getElementById('listTitle');
+        if (!titleEl) { return; }
+        var t = '';
+        try {
+            var params = new URLSearchParams(location.search);
+            t = params.get('t') || '';
+        } catch (e) {
+            var m = location.search.match(/[?&]t=([^&]*)/);
+            t = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+        }
+        t = (t || '').trim();
+        if (t) {
+            titleEl.textContent = t;
+            document.title = t + ' · VIBUZZ';
+        }
+    }
+
+    /**
+     * 관심(찜) 타이틀 등록 — Wavve 식.
+     * 포스터 카드 썸네일에 하트 버튼을 주입해 타이틀 단위로 관심 등록/해제한다.
+     * 상태는 localStorage('vibuzz-fav')에 타이틀 배열로 저장해 새로고침·페이지이동 후에도 유지.
+     * 상세페이지의 '저장' 버튼도 같은 관심 토글로 연결한다.
+     */
+    function initFavorites() {
+        var KEY = 'vibuzz-fav';
+        function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { return []; } }
+        function save(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) { /* 무시 */ } }
+        var favs = load();
+        function isFav(t) { return favs.indexOf(t) !== -1; }
+        function toggle(t) {
+            var i = favs.indexOf(t);
+            if (i === -1) { favs.push(t); } else { favs.splice(i, 1); }
+            save(favs);
+            return i === -1; // 새로 등록되면 true
+        }
+
+        var HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3l-1.1-1C6.1 15 3 12.1 3 8.6 3 6 5 4 7.5 4c1.5 0 2.9.7 3.8 1.9L12 7l.7-1.1C13.6 4.7 15 4 16.5 4 19 4 21 6 21 8.6c0 3.5-3.1 6.4-7.9 10.7l-1.1 1z"/></svg>';
+
+        // 토스트
+        var toastEl = null, toastTimer = null;
+        function toast(msg) {
+            if (!toastEl) {
+                toastEl = document.createElement('div');
+                toastEl.className = 'fav-toast';
+                document.body.appendChild(toastEl);
+            }
+            toastEl.textContent = msg;
+            toastEl.classList.add('is-show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { toastEl.classList.remove('is-show'); }, 1600);
+        }
+
+        // 포스터 카드에 하트 버튼 주입
+        document.querySelectorAll('.poster-card').forEach(function (card) {
+            var thumb = card.querySelector('.poster-card__thumb');
+            var titleEl = card.querySelector('.poster-card__title');
+            if (!thumb || !titleEl || card.querySelector('.poster-card__fav')) { return; }
+            var title = titleEl.textContent.trim();
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'poster-card__fav' + (isFav(title) ? ' is-active' : '');
+            btn.setAttribute('aria-label', '관심 등록');
+            btn.setAttribute('aria-pressed', isFav(title) ? 'true' : 'false');
+            btn.innerHTML = HEART;
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation(); // 카드 링크 이동 방지
+                var added = toggle(title);
+                btn.classList.toggle('is-active', added);
+                btn.setAttribute('aria-pressed', added ? 'true' : 'false');
+                toast(added ? '관심 등록됨' : '관심 해제됨');
+            });
+            thumb.appendChild(btn);
+        });
+
+        // 상세페이지 '저장' 버튼 → 관심 토글
+        var saveBtn = null;
+        document.querySelectorAll('.btn--icon').forEach(function (b) {
+            if (/저장/.test(b.textContent)) { saveBtn = b; }
+        });
+        if (saveBtn) {
+            // 상세 콘텐츠 제목 (GNB 로고 h1 을 잡지 않도록 hero__title/detail__title 우선)
+            var dTitleEl = document.querySelector('.hero--detail .hero__title, .detail__title, #content .hero__title');
+            var dTitle = dTitleEl ? dTitleEl.textContent.trim() : (document.title.split('·')[0] || '').trim();
+            var label = saveBtn.childNodes[0];
+            function syncSave() {
+                var on = isFav(dTitle);
+                saveBtn.classList.toggle('is-fav', on);
+                saveBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                if (label && label.nodeType === 3) { label.nodeValue = on ? '관심 등록됨' : '저장'; }
+            }
+            syncSave();
+            saveBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var added = toggle(dTitle);
+                syncSave();
+                toast(added ? '관심 등록됨' : '관심 해제됨');
+            });
+        }
+    }
+
+    /**
      * 댓글 더보기(⋮) 메뉴.
      * ⋮ 버튼 클릭 시 해당 댓글의 옵션 메뉴를 토글한다. 메뉴 항목 노출은
      * CSS 가 .is-mine(내 댓글) 기준으로 제어한다(내 댓글=수정·삭제, 타인=신고하기).
@@ -4208,6 +4313,8 @@
         initCreatorApply();
         initStickyGnb();
         initRailMoreVisibility();
+        initListPageTitle();
+        initFavorites();
         initPasswordToggles();
         initTermsAgree();
         initCodeTimer();

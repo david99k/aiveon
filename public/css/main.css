@@ -1507,6 +1507,76 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
   .hero + .section { margin-top: 22px; }
 }
 
+/* ============================================================
+   더보기 목록 페이지(preview-list) + 관심(찜) 버튼
+   ============================================================ */
+/* 히어로 없는 목록 페이지는 고정 GNB 아래에서 시작 (그리드는 기존 .fav-grid 재사용) */
+.section--list { padding-top: calc(var(--gnb-h, 86px) + 20px); }
+.section__head--list { margin-bottom: 22px; }
+
+/* 관심(찜) 하트 버튼 — JS가 포스터 카드 썸네일에 주입 */
+.poster-card__thumb { position: relative; }
+.poster-card__fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
+}
+.poster-card:hover .poster-card__fav,
+.poster-card:focus-within .poster-card__fav,
+.poster-card__fav.is-active,
+.poster-card__fav:focus-visible {
+  opacity: 1;
+  transform: none;
+}
+.poster-card__fav:hover { background: rgba(0, 0, 0, 0.78); }
+.poster-card__fav svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+}
+.poster-card__fav.is-active { background: var(--brand-primary); }
+.poster-card__fav.is-active svg { fill: #fff; stroke: #fff; }
+
+/* 관심 등록/해제 토스트 */
+.fav-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%) translateY(12px);
+  z-index: 2000;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(20, 20, 26, 0.95);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.fav-toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 상세페이지 '저장' 버튼이 관심 등록되면 강조 */
+.btn--icon.is-fav { color: var(--brand-primary); border-color: var(--brand-primary); }
+
 /* 섹션 좌우 패딩(40px)을 스크롤 영역 안쪽으로 옮겨 풀블리드 처리.
    시안처럼 넘치는 카드가 화면 오른쪽 끝에 걸쳐 보인다. */
 .scroll-x {
