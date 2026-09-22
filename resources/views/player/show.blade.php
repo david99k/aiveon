@@ -66,6 +66,15 @@
                                 </button>
                                 <span class="player__rail-label">{{ $short['likes'] }}</span>
                             </div>
+                            {{-- 회차 : 시리즈물에만 노출. 누르면 오른쪽 에피소드 패널이 열린다 --}}
+                            @if (!empty($short['episodes']))
+                                <div class="player__rail-item">
+                                    <button type="button" class="player__rail-btn js-episodes-toggle" aria-label="회차" aria-expanded="false" aria-controls="player-episodes">
+                                        <img src="{{ asset('images/player/ic_episodes.svg') }}" alt="">
+                                    </button>
+                                    <span class="player__rail-label">회차</span>
+                                </div>
+                            @endif
                             <div class="player__rail-item">
                                 <button type="button" class="player__rail-btn js-comments-toggle" aria-label="댓글" aria-expanded="false" aria-controls="player-comments">
                                     <img src="{{ asset('images/player/ic_comment.svg') }}" alt="">
@@ -138,6 +147,53 @@
                 <button type="button" class="player__comments-cancel">취소</button>
                 <button type="button" class="player__comments-submit">댓글</button>
             </div>
+        </aside>
+
+        {{-- 회차 패널 : 회차 버튼 클릭 시 댓글 패널과 같은 자리에서 슬라이드 인 (회차 노출 _ PC _ 리스트형) --}}
+        @php
+            /* 회차를 가진 첫 영상의 시즌 목록 — 패널 머리말의 시즌 선택에 쓴다 */
+            $railSeasons = [];
+            foreach ($shorts as $s) {
+                if (!empty($s['episodes'])) { $railSeasons = $s['seasons'] ?? []; break; }
+            }
+        @endphp
+        <aside class="player__episodes" id="player-episodes" aria-label="에피소드" aria-hidden="true">
+            <div class="player__episodes-head">
+                <h3 class="player__episodes-title">에피소드</h3>
+                @if (count($railSeasons))
+                    <div class="watch__season-dropdown">
+                        <button type="button" class="watch__season js-season-toggle" aria-haspopup="true" aria-expanded="false">
+                            <span class="js-season-label">{{ $railSeasons[0] }}</span>
+                            <svg class="watch__season-chevron" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div class="watch__season-menu js-season-menu" role="menu" aria-label="시즌 선택">
+                            @foreach ($railSeasons as $i => $season)
+                                <button type="button" class="watch__season-option js-season-option{{ $i === 0 ? ' is-selected' : '' }}" role="menuitemradio" aria-checked="{{ $i === 0 ? 'true' : 'false' }}" data-season="{{ $i + 1 }}">{{ $season }}</button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+                <button type="button" class="player__episodes-close js-episodes-close" aria-label="회차 닫기">
+                    <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5l12 12M13.5 1.5l-12 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+
+            {{-- 슬라이드별 회차 목록 : 활성 영상 것만 표시(JS player:slidechange 로 전환) --}}
+            @foreach ($shorts as $si => $short)
+                @if (!empty($short['episodes']))
+                    <ul class="watch__episode-list player__episodes-list" data-episodes-for="{{ $si }}" @if ($si > 0) hidden @endif>
+                        @foreach ($short['episodes'] as $ep)
+                            <li class="watch__episode">
+                                <a href="{{ $ep['url'] }}" class="watch__episode-thumb"><img src="{{ asset($ep['thumb']) }}" alt="" loading="lazy"></a>
+                                <div class="watch__episode-body">
+                                    <p class="watch__episode-title">{{ $ep['title'] }}@if (!empty($ep['premium']))<span class="watch__episode-premium">PREMIUM</span>@endif</p>
+                                    <p class="watch__episode-desc">{{ $ep['desc'] }}</p>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            @endforeach
         </aside>
     </section>
 @endsection

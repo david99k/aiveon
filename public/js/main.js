@@ -1011,9 +1011,10 @@
      * 바깥 클릭·Esc 로 닫힌다. (실제 에피소드 목록 교체는 백엔드 연동 지점)
      */
     function initWatchSeason() {
-        var dropdown = document.querySelector('.watch__season-dropdown');
-        if (!dropdown) { return; }
+        Array.prototype.forEach.call(document.querySelectorAll('.watch__season-dropdown'), initOneSeason);
+    }
 
+    function initOneSeason(dropdown) {
         var toggle = dropdown.querySelector('.js-season-toggle');
         var label = dropdown.querySelector('.js-season-label');
         var options = dropdown.querySelectorAll('.js-season-option');
@@ -1080,7 +1081,13 @@
                 t.setAttribute('aria-expanded', String(open));
             });
             panel.setAttribute('aria-hidden', String(!open));
+            // 회차 패널과 자리가 같으므로 열릴 때 서로 밀어낸다
+            if (open) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'comments' } })); }
         }
+
+        player.addEventListener('player:panelopen', function (e) {
+            if (e.detail && e.detail.name !== 'comments') { setOpen(false); }
+        });
 
         // 슬라이드별 댓글 목록(data-comments-for) 전환 : 활성 영상의 목록만 표시 + 카운트 갱신
         var lists = panel.querySelectorAll('[data-comments-for]');
@@ -1128,6 +1135,80 @@
     }
 
     /**
+     * 플레이어 회차(에피소드) 패널.
+     * 레일의 회차 버튼(.js-episodes-toggle) 클릭 시 .is-episodes 를 토글해
+     * 댓글 패널과 같은 자리에서 슬라이드 인 된다. X 버튼과 Esc 로 닫힌다.
+     * 회차는 시리즈물에만 있으므로, 회차가 없는 영상으로 넘어가면 패널을 닫는다.
+     */
+    function initPlayerEpisodes() {
+        var player = document.querySelector('.player');
+        if (!player) { return; }
+
+        var toggles = player.querySelectorAll('.js-episodes-toggle');
+        var panel = player.querySelector('.player__episodes');
+        if (!toggles.length || !panel) { return; }
+
+        var closeBtn = panel.querySelector('.js-episodes-close');
+        var lists = panel.querySelectorAll('[data-episodes-for]');
+        var lastToggle = toggles[0];
+
+        function setOpen(open) {
+            player.classList.toggle('is-episodes', open);
+            Array.prototype.forEach.call(toggles, function (t) {
+                t.setAttribute('aria-expanded', String(open));
+            });
+            panel.setAttribute('aria-hidden', String(!open));
+            if (open) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'episodes' } })); }
+        }
+
+        player.addEventListener('player:panelopen', function (e) {
+            if (e.detail && e.detail.name !== 'episodes') { setOpen(false); }
+        });
+
+        // 활성 영상의 회차 목록만 표시. 회차가 없는 영상이면 패널 자체를 닫는다.
+        function syncTo(slideIndex) {
+            var has = false;
+            Array.prototype.forEach.call(lists, function (list) {
+                var mine = Number(list.getAttribute('data-episodes-for')) === slideIndex;
+                if (mine) {
+                    has = true;
+                    list.removeAttribute('hidden');
+                    list.scrollTop = 0;
+                } else {
+                    list.setAttribute('hidden', '');
+                }
+            });
+            if (!has) { setOpen(false); }
+        }
+
+        player.addEventListener('player:slidechange', function (e) {
+            syncTo(e.detail ? e.detail.index : 0);
+        });
+        syncTo(0);
+
+        Array.prototype.forEach.call(toggles, function (toggle) {
+            toggle.addEventListener('click', function () {
+                lastToggle = toggle;
+                setOpen(!player.classList.contains('is-episodes'));
+            });
+        });
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                setOpen(false);
+                lastToggle.focus();
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && player.classList.contains('is-episodes')) {
+                setOpen(false);
+                lastToggle.focus();
+            }
+        });
+    }
+
+    /**
      * 쇼츠 세로 피드: 위로 드래그(스와이프/휠)하면 다음 슬라이드가 아래에서 올라오고,
      * 아래로 드래그하면 이전 슬라이드로. 활성 슬라이드의 영상만 재생한다.
      * 진행바 시킹/레일 버튼/링크/댓글 패널 위에서 시작한 제스처는 스와이프로 보지 않는다.
@@ -1149,7 +1230,7 @@
         var swiping = false;  // 세로 스와이프 확정
         var didSwipe = false; // 직전 제스처가 스와이프였는지(클릭 차단용)
         var height = 0;
-        var IGNORE = '.player__progress, .player__rail, .player__mute, .player__play, .player__comments, button, a, input, textarea';
+        var IGNORE = '.player__progress, .player__rail, .player__mute, .player__play, .player__comments, .player__episodes, button, a, input, textarea';
 
         function setActive(i) {
             Array.prototype.forEach.call(slides, function (slide, si) {
@@ -4323,6 +4404,7 @@
         initHeroSwiper();
         initPlayerVideo();
         initPlayerComments();
+        initPlayerEpisodes();
         initPlayerFeed();
         initWatchVideo();
         initWatchSeason();

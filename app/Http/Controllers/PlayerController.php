@@ -55,6 +55,9 @@ class PlayerController
                 ],
                 'aiTools' => $aiTools,
                 'commentList' => $this->comments(),
+                // 시리즈물만 회차를 가진다. 비어 있으면 레일의 회차 버튼이 노출되지 않는다.
+                'seasons' => ['시즌 1', '시즌 2'],
+                'episodes' => $this->episodes(),
             ],
             [
                 'title' => '여름의 기억',
@@ -74,8 +77,30 @@ class PlayerController
                 ],
                 'aiTools' => $aiTools,
                 'commentList' => $this->summerComments(),
+                // 단편이라 회차가 없다 — 이 슬라이드에서는 회차 버튼이 숨는다.
+                'seasons' => [],
+                'episodes' => [],
             ],
         ];
+    }
+
+    /**
+     * 슬라이드 0 (빛이 빛날 때) 회차 목록.
+     * 레일의 회차 버튼을 누르면 열리는 패널에 표시된다.
+     * 실서비스에서는 시즌별 회차 조회로 교체하세요.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function episodes(): array
+    {
+        return array_map(fn (int $n) => [
+            'title' => "{$n}화",
+            'desc' => '"당신의 하루에, 가장 따뜻한 빛이 되기를"이라는 메인 카피처럼, 치열하고 삭막한 현실 속에서 길을 잃고 지친 사람들이 어떻게 서로...',
+            // 쇼츠 회차라 세로(9:16) 썸네일을 쓴다 — 가로 이미지는 비율이 맞지 않는다
+            'thumb' => 'images/player/poster_algorithm.jpg',
+            'url' => route('watch', 'drama'),
+            'premium' => $n >= 3, // 3화부터 프리미엄(유료) — 회차 옆 PREMIUM 배지
+        ], range(1, 6));
     }
 
     /** 슬라이드 0 (빛이 빛날 때) 댓글 @return array<int, array<string, string>> */

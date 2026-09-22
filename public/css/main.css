@@ -2388,8 +2388,9 @@ body.page-player { overflow: hidden; }
   transition: left 0.45s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 댓글 열림: 정보가 영상 위 오버레이로 이동 (Figma 498:2736 - video+24, bottom 48) */
-.player.is-comments .player__info {
+/* 댓글·회차 열림: 정보가 영상 위 오버레이로 이동 (Figma 498:2736 - video+24, bottom 48) */
+.player.is-comments .player__info,
+.player.is-episodes .player__info {
   left: 24px;
   bottom: 48px;
 }
@@ -2530,7 +2531,8 @@ body.page-player { overflow: hidden; }
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.player.is-comments .player__stage { transform: translateX(-210px); } /* Figma: 663 -> 453 */
+.player.is-comments .player__stage,
+.player.is-episodes .player__stage { transform: translateX(-210px); } /* Figma: 663 -> 453 */
 
 .player__video {
   position: relative;
@@ -2699,8 +2701,9 @@ body.page-player { overflow: hidden; }
   object-fit: cover;
 }
 
-/* --- 댓글 패널 (Figma 498:2734) : 우측에서 슬라이드 인 --- */
-.player__comments {
+/* --- 댓글·회차 패널 (Figma 498:2734) : 우측에서 슬라이드 인 --- */
+.player__comments,
+.player__episodes {
   position: absolute;
   right: 110px;
   bottom: 47px;
@@ -2719,10 +2722,68 @@ body.page-player { overflow: hidden; }
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s;
 }
 
-.player.is-comments .player__comments {
+.player.is-comments .player__comments,
+.player.is-episodes .player__episodes {
   transform: none;
   visibility: visible;
 }
+
+/* 회차 패널 : 머리말(제목 + 시즌 선택 + 닫기)과 목록만 다르고 껍데기는 댓글 패널과 같다 */
+.player__episodes-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.player__episodes-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+/* 닫기 버튼은 항상 오른쪽 끝 (시즌 선택 유무와 무관) */
+.player__episodes-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border-radius: 50%;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+
+.player__episodes-close:hover,
+.player__episodes-close:focus-visible { background-color: rgba(255, 255, 255, 0.08); }
+
+.player__episodes-close svg { width: 15px; height: 15px; display: block; }
+
+/* 목록은 시청 페이지(watch__episode-*)와 같은 카드를 쓰고 패널 높이에 맞춰 스크롤된다 */
+.player__episodes-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.player__episodes-list::-webkit-scrollbar { display: none; }
+
+/* 활성 영상 것만 표시 (display:flex 가 hidden 속성을 이기지 않도록) */
+.player__episodes-list[hidden] { display: none; }
+
+/* 쇼츠는 세로 영상이라 회차 썸네일도 9:16 으로 세운다.
+   (시청 페이지의 16:9 가로 카드와 다른 점 — watch__episode-* 를 재사용하되 비율만 덮어쓴다) */
+.player__episodes .watch__episode-thumb {
+  width: 64px;
+  height: auto;              /* 가로 카드(72px 고정)를 풀고 비율로 세운다 */
+  aspect-ratio: 9 / 16;      /* 쇼츠 원본 1080x1920 과 같은 비율 */
+  border-radius: 8px;
+}
+
+.player__episodes .watch__episode { gap: 12px; }
 
 .player__comments-head {
   display: flex;
@@ -3009,16 +3070,20 @@ body.page-player { overflow: hidden; }
   .player__ai-chip { width: 26px; height: 26px; }
   .player__ai-chip img { width: 26px; height: 26px; }
 
-  /* 댓글: 우측 여백 축소 + 남은 공간 중앙으로 스테이지 이동 ((460+24)/2) */
-  .player__comments { right: 24px; }
-  .player.is-comments .player__stage { transform: translateX(-242px); }
+  /* 댓글·회차: 우측 여백 축소 + 남은 공간 중앙으로 스테이지 이동 ((460+24)/2) */
+  .player__comments,
+  .player__episodes { right: 24px; }
+  .player.is-comments .player__stage,
+  .player.is-episodes .player__stage { transform: translateX(-242px); }
 }
 
 /* 스테이지+패널이 나란히 설 공간이 없으면 패널이 화면 위로 슬라이드 오버 */
 @media (max-width: 1099px) {
-  .player.is-comments .player__stage { transform: none; }
+  .player.is-comments .player__stage,
+  .player.is-episodes .player__stage { transform: none; }
 
-  .player__comments {
+  .player__comments,
+  .player__episodes {
     position: fixed;
     right: 16px;
     bottom: 16px;
@@ -3030,7 +3095,8 @@ body.page-player { overflow: hidden; }
     transform: translateX(calc(100% + 40px));
   }
 
-  .player.is-comments .player__comments { transform: none; }
+  .player.is-comments .player__comments,
+  .player.is-episodes .player__episodes { transform: none; }
 }
 
 /* --------------------------------------------------------------------------
@@ -6647,8 +6713,9 @@ body:not(.is-adult) .is-adult-gate::after {
   .player__synopsis { font-size: 13px; line-height: 19px; }
   .player__ai-label { font-size: 13px; }
 
-  /* 댓글 : 하단 시트(유튜브 쇼츠 스타일) — 밑에서 올라오고 화면 일부만 덮는다 */
-  .player__comments {
+  /* 댓글·회차 : 하단 시트(유튜브 쇼츠 스타일) — 밑에서 올라오고 화면 일부만 덮는다 */
+  .player__comments,
+  .player__episodes {
     position: fixed;
     top: auto;
     left: 0;
@@ -6663,19 +6730,28 @@ body:not(.is-adult) .is-adult-gate::after {
     z-index: 95;
     transform: translateY(100%);
   }
-  .player.is-comments .player__comments { transform: none; }
+  .player.is-comments .player__comments,
+  .player.is-episodes .player__episodes { transform: none; }
   .player__comments-head { margin-bottom: 16px; }
   .player__comments-list { gap: 22px; }
   .player__comments-form .comment__avatar { width: 36px; height: 36px; }
+  .player__episodes-head { margin-bottom: 14px; }
 
   /* 시트가 열리면 영상은 상단 남은 영역 중앙에 작게 (정보·레일·진행바는 숨김) */
-  .player.is-comments .player__slide { padding: 70px 16px calc(62dvh + 14px); }
-  .player.is-comments .player__stage { align-items: center; justify-content: center; }
-  .player.is-comments .player__video { width: auto; height: 100%; border-radius: 10px; }
+  .player.is-comments .player__slide,
+  .player.is-episodes .player__slide { padding: 70px 16px calc(62dvh + 14px); }
+  .player.is-comments .player__stage,
+  .player.is-episodes .player__stage { align-items: center; justify-content: center; }
+  .player.is-comments .player__video,
+  .player.is-episodes .player__video { width: auto; height: 100%; border-radius: 10px; }
   .player.is-comments .player__info,
   .player.is-comments .player__rail,
   .player.is-comments .player__mute,
-  .player.is-comments .player__progress { display: none; }
+  .player.is-comments .player__progress,
+  .player.is-episodes .player__info,
+  .player.is-episodes .player__rail,
+  .player.is-episodes .player__mute,
+  .player.is-episodes .player__progress { display: none; }
 
   /* Footer : 브랜드는 첫 행 전체, 링크 컬럼들은 줄바꿈 배치 */
   .footer { padding: 32px 16px; }
