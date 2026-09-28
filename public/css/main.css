@@ -6706,6 +6706,10 @@ body:not(.is-adult) .is-adult-gate::after {
 
   /* 정보 : 좌측 하단, 레일 공간만큼 우측 확보 + 모바일에서 텍스트 한 단계 축소 */
   .player__info { left: 16px; right: 76px; bottom: 18px; gap: 10px; }
+
+  /* 진행바 : 기본값(bottom 23px)이면 정보 블록 마지막 줄('사용 AI')을 가로지른다.
+     모바일은 정보가 영상 위 오버레이라 바를 영상 맨 아래로 내려 겹침을 없앤다. */
+  .player__progress { bottom: 6px; }
   .player__channel-avatar { width: 34px; height: 34px; }
   .player__channel-name { font-size: 14px; line-height: 20px; }
   .player__follow { padding: 5px 12px; font-size: 13px; }
