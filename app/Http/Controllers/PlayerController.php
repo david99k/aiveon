@@ -93,11 +93,21 @@ class PlayerController
      */
     private function episodes(): array
     {
+        /* 회차별 썸네일. 쇼츠라 세로 이미지만 쓴다 — 가로 이미지는 비율이 맞지 않는다.
+           1화는 현재 재생 중인 회차라 이 시리즈의 포스터를 그대로 쓴다. */
+        $thumbs = [
+            'images/player/poster_algorithm.jpg',
+            'images/main/poster_03.jpg',
+            'images/main/poster_04.jpg',
+            'images/main/poster_05.jpg',
+            'images/main/poster_06.jpg',
+            'images/main/poster_02.jpg',
+        ];
+
         return array_map(fn (int $n) => [
             'title' => "{$n}화",
             'desc' => '"당신의 하루에, 가장 따뜻한 빛이 되기를"이라는 메인 카피처럼, 치열하고 삭막한 현실 속에서 길을 잃고 지친 사람들이 어떻게 서로...',
-            // 쇼츠 회차라 세로(9:16) 썸네일을 쓴다 — 가로 이미지는 비율이 맞지 않는다
-            'thumb' => 'images/player/poster_algorithm.jpg',
+            'thumb' => $thumbs[$n - 1],
             'url' => route('watch', 'drama'),
             'premium' => $n >= 3, // 3화부터 프리미엄(유료) — 회차 옆 PREMIUM 배지
         ], range(1, 6));
