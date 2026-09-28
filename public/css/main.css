@@ -2761,10 +2761,12 @@ body.page-player { overflow: hidden; }
 
 .player__episodes-close svg { width: 15px; height: 15px; display: block; }
 
-/* 목록은 시청 페이지(watch__episode-*)와 같은 카드를 쓰고 패널 높이에 맞춰 스크롤된다 */
-.player__episodes-list {
+/* 목록은 시청 페이지(watch__episode-*)와 같은 카드를 쓰고 패널 높이에 맞춰 스크롤된다.
+   시청 페이지 목록의 max-height:420px 를 풀어야 패널 바닥까지 채운다(안 그러면 아래가 빈다). */
+.player__episodes .player__episodes-list {
   flex: 1;
   min-height: 0;
+  max-height: none;   /* .watch__episode-list 가 파일 뒤쪽이라 선택자를 한 단계 올려 덮는다 */
   overflow-y: auto;
   scrollbar-width: none;
 }
