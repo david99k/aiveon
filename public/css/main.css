@@ -2758,6 +2758,10 @@ body.page-player { overflow: hidden; }
   visibility: visible;
 }
 
+/* PC 는 회차 패널이 고정으로 떠 있고 댓글이 같은 자리에 겹치므로,
+   댓글이 회차 위에 덮이도록 쌓임 순서를 올린다(HTML 순서상 회차가 뒤라 기본은 회차가 위). */
+.player__comments { z-index: 6; }
+
 /* 회차 패널 : 머리말(제목 + 시즌 선택 + 닫기)과 목록만 다르고 껍데기는 댓글 패널과 같다 */
 .player__episodes-head {
   display: flex;
@@ -3140,6 +3144,7 @@ body.page-player { overflow: hidden; }
 
   .player.is-comments .player__comments,
   .player.is-episodes .player__episodes { transform: none; }
+  .player__comments { z-index: 91; }
 }
 
 /* --------------------------------------------------------------------------
@@ -6779,6 +6784,7 @@ body:not(.is-adult) .is-adult-gate::after {
   }
   .player.is-comments .player__comments,
   .player.is-episodes .player__episodes { transform: none; }
+  .player__comments { z-index: 96; }
   .player__comments-head { margin-bottom: 16px; }
   .player__comments-list { gap: 22px; }
   .player__comments-form .comment__avatar { width: 36px; height: 36px; }

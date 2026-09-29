@@ -1082,7 +1082,7 @@
                 t.setAttribute('aria-expanded', String(open));
             });
             panel.setAttribute('aria-hidden', String(!open));
-            /* 회차 패널과 자리가 같으므로 열릴 때 서로 밀어낸다.
+            /* 태블릿·모바일은 자리가 같아 서로 밀어내야 한다(PC 는 댓글이 회차 위에 덮이므로 그대로 둔다).
                상태가 실제로 바뀔 때만 알린다(서로 알림을 주고받다 무한 루프가 되지 않도록). */
             if (open && !was) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'comments' } })); }
             if (!open && was) { player.dispatchEvent(new CustomEvent('player:panelclose', { detail: { name: 'comments' } })); }
@@ -1174,14 +1174,24 @@
             if (open && !was) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'episodes' } })); }
         }
 
+        /* 태블릿·모바일은 패널이 화면을 덮으므로 하나만 띄운다.
+           PC 는 회차가 고정 노출이고 댓글이 그 위에 덮이므로 닫지 않는다. */
         player.addEventListener('player:panelopen', function (e) {
-            if (e.detail && e.detail.name !== 'episodes') { setOpen(false); }
+            if (!e.detail || e.detail.name === 'episodes') { return; }
+            if (!isSideBySide()) { setOpen(false); return; }
+            /* PC : 회차는 그대로 두되 댓글에 가려지므로 키보드 탭 순서에서는 빼둔다 */
+            setCovered(true);
         });
 
-        /* 댓글이 닫히면 PC 에서는 기본 상태(회차 열림)로 돌아온다 */
         player.addEventListener('player:panelclose', function (e) {
-            if (e.detail && e.detail.name === 'comments' && isSideBySide() && hasList()) { setOpen(true); }
+            if (e.detail && e.detail.name === 'comments') { setCovered(false); }
         });
+
+        function setCovered(covered) {
+            if ('inert' in panel) { panel.inert = covered; }
+            else if (covered) { panel.setAttribute('inert', ''); }
+            else { panel.removeAttribute('inert'); }
+        }
 
         // 활성 영상의 회차 목록만 표시. 회차가 없는 영상이면 패널 자체를 닫는다.
         function syncTo(slideIndex) {
@@ -1197,8 +1207,8 @@
                 }
             });
             if (!has) { setOpen(false); return; }
-            /* PC 는 회차가 있는 영상이면 항상 열어둔다(댓글을 보고 있을 때는 건드리지 않는다) */
-            if (isSideBySide() && !player.classList.contains('is-comments')) { setOpen(true); }
+            /* PC 는 회차가 있는 영상이면 항상 열어둔다(댓글은 그 위에 덮이므로 상관없다) */
+            if (isSideBySide()) { setOpen(true); }
         }
 
         player.addEventListener('player:slidechange', function (e) {
@@ -1222,7 +1232,7 @@
             if (now === wasSideBySide) { return; }
             wasSideBySide = now;
             if (now) {
-                if (hasList() && !player.classList.contains('is-comments')) { setOpen(true); }
+                if (hasList()) { setOpen(true); }
             } else {
                 setOpen(false);
             }
