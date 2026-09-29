@@ -1076,13 +1076,16 @@
         var lastToggle = toggles[0];
 
         function setOpen(open) {
+            var was = player.classList.contains('is-comments');
             player.classList.toggle('is-comments', open);
             Array.prototype.forEach.call(toggles, function (t) {
                 t.setAttribute('aria-expanded', String(open));
             });
             panel.setAttribute('aria-hidden', String(!open));
-            // 회차 패널과 자리가 같으므로 열릴 때 서로 밀어낸다
-            if (open) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'comments' } })); }
+            /* 회차 패널과 자리가 같으므로 열릴 때 서로 밀어낸다.
+               상태가 실제로 바뀔 때만 알린다(서로 알림을 주고받다 무한 루프가 되지 않도록). */
+            if (open && !was) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'comments' } })); }
+            if (!open && was) { player.dispatchEvent(new CustomEvent('player:panelclose', { detail: { name: 'comments' } })); }
         }
 
         player.addEventListener('player:panelopen', function (e) {
@@ -1152,17 +1155,32 @@
         var lists = panel.querySelectorAll('[data-episodes-for]');
         var lastToggle = toggles[0];
 
+        /* 1100px 이상에서는 패널이 영상 옆에 서서 화면을 가리지 않는다(CSS 와 같은 경계).
+           그래서 PC 는 기본으로 열어두고 닫기 버튼을 숨기며(CSS),
+           태블릿·모바일은 화면을 덮으므로 버튼으로 열고 닫기 버튼도 보여준다. */
+        var sideBySide = window.matchMedia('(min-width: 1100px)');
+        function isSideBySide() { return sideBySide.matches; }
+        function hasList() {
+            return Array.prototype.some.call(lists, function (l) { return !l.hasAttribute('hidden'); });
+        }
+
         function setOpen(open) {
+            var was = player.classList.contains('is-episodes');
             player.classList.toggle('is-episodes', open);
             Array.prototype.forEach.call(toggles, function (t) {
                 t.setAttribute('aria-expanded', String(open));
             });
             panel.setAttribute('aria-hidden', String(!open));
-            if (open) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'episodes' } })); }
+            if (open && !was) { player.dispatchEvent(new CustomEvent('player:panelopen', { detail: { name: 'episodes' } })); }
         }
 
         player.addEventListener('player:panelopen', function (e) {
             if (e.detail && e.detail.name !== 'episodes') { setOpen(false); }
+        });
+
+        /* 댓글이 닫히면 PC 에서는 기본 상태(회차 열림)로 돌아온다 */
+        player.addEventListener('player:panelclose', function (e) {
+            if (e.detail && e.detail.name === 'comments' && isSideBySide() && hasList()) { setOpen(true); }
         });
 
         // 활성 영상의 회차 목록만 표시. 회차가 없는 영상이면 패널 자체를 닫는다.
@@ -1178,13 +1196,45 @@
                     list.setAttribute('hidden', '');
                 }
             });
-            if (!has) { setOpen(false); }
+            if (!has) { setOpen(false); return; }
+            /* PC 는 회차가 있는 영상이면 항상 열어둔다(댓글을 보고 있을 때는 건드리지 않는다) */
+            if (isSideBySide() && !player.classList.contains('is-comments')) { setOpen(true); }
         }
 
         player.addEventListener('player:slidechange', function (e) {
             syncTo(e.detail ? e.detail.index : 0);
         });
+
+        /* 첫 화면에서 패널이 슬라이드 인 되는 것처럼 보이지 않도록 전환을 잠깐 끈다 */
+        if (isSideBySide()) { player.classList.add('is-noanim'); }
         syncTo(0);
+        if (player.classList.contains('is-noanim')) {
+            var unlock = function () { player.classList.remove('is-noanim'); };
+            window.requestAnimationFrame(function () { window.requestAnimationFrame(unlock); });
+            window.setTimeout(unlock, 100);   // 백그라운드 탭 등 rAF 가 멈춘 경우 대비
+        }
+
+        /* 창 크기가 경계(1100px)를 넘나들 때만 기본 상태를 다시 맞춘다.
+           경계 안에서의 리사이즈로는 건드리지 않아, 사용자가 직접 닫아둔 상태를 되살리지 않는다. */
+        var wasSideBySide = isSideBySide();
+        function onBreakpoint() {
+            var now = isSideBySide();
+            if (now === wasSideBySide) { return; }
+            wasSideBySide = now;
+            if (now) {
+                if (hasList() && !player.classList.contains('is-comments')) { setOpen(true); }
+            } else {
+                setOpen(false);
+            }
+        }
+        /* matchMedia 이벤트가 오지 않는 환경이 있어 resize 로도 확인한다 */
+        if (sideBySide.addEventListener) { sideBySide.addEventListener('change', onBreakpoint); }
+        else if (sideBySide.addListener) { sideBySide.addListener(onBreakpoint); }
+        var bpTimer = null;
+        window.addEventListener('resize', function () {
+            window.clearTimeout(bpTimer);
+            bpTimer = window.setTimeout(onBreakpoint, 120);
+        });
 
         Array.prototype.forEach.call(toggles, function (toggle) {
             toggle.addEventListener('click', function () {
@@ -1201,7 +1251,8 @@
         }
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && player.classList.contains('is-episodes')) {
+            /* PC 는 패널이 기본 노출이라 Esc 로 닫지 않는다 */
+            if (e.key === 'Escape' && !isSideBySide() && player.classList.contains('is-episodes')) {
                 setOpen(false);
                 lastToggle.focus();
             }

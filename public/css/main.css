@@ -2761,6 +2761,17 @@ body.page-player { overflow: hidden; }
 
 .player__episodes-close svg { width: 15px; height: 15px; display: block; }
 
+/* 1100px 이상(패널이 영상 옆에 서는 구간)에서는 회차 패널이 기본으로 떠 있으므로
+   닫기 버튼을 숨긴다. 그 아래 폭은 패널이 화면을 덮어 닫기 버튼이 필요하다. */
+@media (min-width: 1100px) {
+  .player__episodes-close { display: none; }
+}
+
+/* 첫 화면에서 기본 열림 상태가 슬라이드 인 되어 보이지 않도록 전환을 잠깐 끈다 */
+.player.is-noanim .player__episodes,
+.player.is-noanim .player__comments,
+.player.is-noanim .player__stage { transition: none; }
+
 /* 목록은 시청 페이지(watch__episode-*)와 같은 카드를 쓰고 패널 높이에 맞춰 스크롤된다.
    시청 페이지 목록의 max-height:420px 를 풀어야 패널 바닥까지 채운다(안 그러면 아래가 빈다). */
 .player__episodes .player__episodes-list {
