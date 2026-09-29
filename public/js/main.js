@@ -1523,6 +1523,54 @@
     }
 
     /**
+     * 공용 토스트. 화면 하단 가운데에 잠깐 떴다 사라진다.
+     * 관심(찜) 등록/해제, 좋아요 취소 등에서 같은 모양으로 쓴다.
+     */
+    var toastEl = null, toastTimer = null;
+    function showToast(msg) {
+        if (!toastEl) {
+            toastEl = document.createElement('div');
+            toastEl.className = 'fav-toast';
+            toastEl.setAttribute('role', 'status');
+            toastEl.setAttribute('aria-live', 'polite');
+            document.body.appendChild(toastEl);
+        }
+        toastEl.textContent = msg;
+        toastEl.classList.add('is-show');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function () { toastEl.classList.remove('is-show'); }, 1600);
+    }
+
+    /**
+     * 플레이어 좋아요(하트).
+     * 누르면 하트가 채워지고 숫자가 1 오른다. 채워진 하트를 다시 누르면
+     * 빈 하트로 돌아가고 '좋아요가 취소되었습니다.' 토스트를 띄운다.
+     * 실서비스 연동 시 여기서 좋아요 API 를 호출하고 응답으로 숫자를 갱신하세요.
+     */
+    function initPlayerLike() {
+        var buttons = document.querySelectorAll('.js-like-toggle');
+        if (!buttons.length) { return; }
+
+        Array.prototype.forEach.call(buttons, function (btn) {
+            var item = btn.parentNode;
+            var label = item ? item.querySelector('.player__rail-label') : null;
+            /* '1.2만' 같은 축약 표기는 계산하지 않고 그대로 둔다 */
+            var raw = label ? label.textContent.trim() : '';
+            var countable = /^\d+$/.test(raw);
+            var base = countable ? parseInt(raw, 10) : 0;
+
+            btn.addEventListener('click', function () {
+                var liked = !btn.classList.contains('is-liked');
+                btn.classList.toggle('is-liked', liked);
+                btn.setAttribute('aria-pressed', String(liked));
+                btn.setAttribute('aria-label', liked ? '좋아요 취소' : '좋아요');
+                if (countable && label) { label.textContent = String(base + (liked ? 1 : 0)); }
+                if (!liked) { showToast('좋아요가 취소되었습니다.'); }
+            });
+        });
+    }
+
+    /**
      * 관심(찜) 타이틀 등록 — Wavve 식.
      * 포스터 카드 썸네일에 하트 버튼을 주입해 타이틀 단위로 관심 등록/해제한다.
      * 상태는 localStorage('vibuzz-fav')에 타이틀 배열로 저장해 새로고침·페이지이동 후에도 유지.
@@ -1543,19 +1591,7 @@
 
         var HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3l-1.1-1C6.1 15 3 12.1 3 8.6 3 6 5 4 7.5 4c1.5 0 2.9.7 3.8 1.9L12 7l.7-1.1C13.6 4.7 15 4 16.5 4 19 4 21 6 21 8.6c0 3.5-3.1 6.4-7.9 10.7l-1.1 1z"/></svg>';
 
-        // 토스트
-        var toastEl = null, toastTimer = null;
-        function toast(msg) {
-            if (!toastEl) {
-                toastEl = document.createElement('div');
-                toastEl.className = 'fav-toast';
-                document.body.appendChild(toastEl);
-            }
-            toastEl.textContent = msg;
-            toastEl.classList.add('is-show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(function () { toastEl.classList.remove('is-show'); }, 1600);
-        }
+        var toast = showToast;   /* 공용 토스트 (좋아요 등 다른 기능과 같은 모양) */
 
         // 포스터 카드에 하트 버튼 주입
         document.querySelectorAll('.poster-card').forEach(function (card) {
@@ -4456,6 +4492,7 @@
         initPlayerVideo();
         initPlayerComments();
         initPlayerEpisodes();
+        initPlayerLike();
         initPlayerFeed();
         initWatchVideo();
         initWatchSeason();

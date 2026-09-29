@@ -1574,6 +1574,11 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
 }
 .fav-toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* 모바일 하단 독이 있으면 토스트가 독에 걸치므로 독 위로 올린다 */
+@media (max-width: 767px) {
+  body.has-mobile-dock .fav-toast { bottom: calc(82px + env(safe-area-inset-bottom, 0px)); }
+}
+
 /* 상세페이지 '저장' 버튼이 관심 등록되면 강조 */
 .btn--icon.is-fav { color: var(--brand-primary); border-color: var(--brand-primary); }
 
@@ -2669,6 +2674,31 @@ body.page-player { overflow: hidden; }
   height: auto;
   max-height: 30px;
   display: block;
+}
+
+/* 좋아요 : 기본은 빈 하트(ic_heart.svg), 누르면 브랜드색으로 채운 하트로 바뀐다 */
+.player__rail-heart-on {
+  display: none;
+  width: 30px;
+  height: 30px;
+  fill: var(--brand-primary);
+}
+
+.player__rail-btn.is-liked img { display: none; }
+
+.player__rail-btn.is-liked .player__rail-heart-on {
+  display: block;
+  animation: like-pop 0.22s ease-out;
+}
+
+@keyframes like-pop {
+  0%   { transform: scale(0.8); }
+  60%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player__rail-btn.is-liked .player__rail-heart-on { animation: none; }
 }
 
 /* 더보기(점 3개) 아이콘: 세로 스트립(3.6x19.8) 원본을 90도 회전해 가로 ••• 로 표시 */

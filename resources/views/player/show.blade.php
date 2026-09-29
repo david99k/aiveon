@@ -60,9 +60,11 @@
                         </div>
 
                         <aside class="player__rail" aria-label="영상 액션">
+                            {{-- 좋아요 : 누르면 채워진 하트로 바뀌고 숫자가 오른다 (JS initPlayerLike) --}}
                             <div class="player__rail-item">
-                                <button type="button" class="player__rail-btn" aria-label="좋아요">
+                                <button type="button" class="player__rail-btn js-like-toggle" aria-label="좋아요" aria-pressed="false">
                                     <img src="{{ asset('images/player/ic_heart.svg') }}" alt="">
+                                    <svg class="player__rail-heart-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3l-1.1-1C6.1 15 3 12.1 3 8.6 3 6 5 4 7.5 4c1.5 0 2.9.7 3.8 1.9L12 7l.7-1.1C13.6 4.7 15 4 16.5 4 19 4 21 6 21 8.6c0 3.5-3.1 6.4-7.9 10.7l-1.1 1z"/></svg>
                                 </button>
                                 <span class="player__rail-label">{{ $short['likes'] }}</span>
                             </div>
