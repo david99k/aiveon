@@ -1,0 +1,162 @@
+/* ============================================================
+   VIBUZZ ADMIN — 심사·승인 관리 (js/admin-review.js) 전용 스타일
+   admin.css 의 토큰(--adm-*)·카드·표·모달을 그대로 쓰고 이 화면에만 필요한 것만 더한다.
+   ============================================================ */
+
+/* ===== 상태 탭 ===== */
+.rv-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--adm-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.rv-tabs::-webkit-scrollbar { display: none; }
+.rv-tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 14px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--adm-text-2);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.rv-tab:hover { color: var(--adm-text); }
+.rv-tab.is-on { color: var(--adm-text); border-bottom-color: var(--adm-brand); }
+.rv-tab:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: -2px; border-radius: 6px 6px 0 0; }
+.rv-tab__count {
+  min-width: 22px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background-color: var(--adm-surface-2);
+  color: var(--adm-text-3);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.rv-tab.is-on .rv-tab__count { background-color: var(--adm-brand); color: #14111f; }
+
+/* ===== 조회 조건 ===== */
+.rv-toolbar__role { margin-left: auto; }
+.rv-toolbar__role select { min-width: 150px; }
+
+/* ===== 표 셀 ===== */
+.rv-table td { vertical-align: middle; }
+.rv-table tr.is-clickable { cursor: pointer; }
+.rv-table tr.is-clickable:focus-visible { outline: 2px solid var(--adm-brand); outline-offset: -2px; }
+.rv-id { font-weight: 600; color: var(--adm-text-2); }
+.rv-content { display: flex; flex-direction: column; gap: 3px; min-width: 200px; }
+.rv-content__title { font-weight: 600; color: var(--adm-text); white-space: normal; }
+.rv-content__sub { font-size: 11.5px; color: var(--adm-text-3); }
+.rv-long { display: inline-block; min-width: 200px; max-width: 320px; white-space: normal; line-height: 1.5; color: var(--adm-text-2); }
+.rv-pending { color: var(--adm-text-3); }
+.rv-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.rv-table th:last-child { text-align: right; }
+
+.rv-progress { display: inline-flex; align-items: center; gap: 8px; }
+.rv-progress__bar { width: 84px; height: 6px; border-radius: 999px; background-color: var(--adm-surface-2); overflow: hidden; }
+.rv-progress__fill { display: block; height: 100%; border-radius: inherit; background-color: var(--adm-brand); }
+.rv-progress__val { font-size: 12px; color: var(--adm-text-2); font-variant-numeric: tabular-nums; }
+
+.rv-empty { padding: 44px 18px; text-align: center; font-size: 13px; color: var(--adm-text-3); }
+
+/* ===== 대화상자 ===== */
+.adm-modal__panel.rv-modal--wide { max-width: 680px; }
+.rv-error {
+  margin-bottom: 14px;
+  padding: 11px 13px;
+  border-left: 2px solid var(--adm-err);
+  border-radius: 0 var(--adm-radius-sm) var(--adm-radius-sm) 0;
+  background-color: rgba(241, 96, 99, 0.08);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--adm-text);
+}
+.rv-error strong { display: block; margin-bottom: 3px; color: var(--adm-err); }
+.rv-error ul { margin: 0; padding-left: 18px; color: var(--adm-text-2); }
+.rv-subform { margin-top: 4px; padding: 2px 14px 14px; border: 1px solid var(--adm-border); border-radius: var(--adm-radius-sm); }
+.adm-modal__field input[type='date'] {
+  padding: 8px 12px;
+  border: 1px solid var(--adm-border-strong);
+  border-radius: var(--adm-radius-sm);
+  background-color: var(--adm-surface-2);
+  color: var(--adm-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  color-scheme: dark;
+}
+
+/* 선택지 : 라디오(단일) · 체크박스(복수)를 같은 칩 모양으로 */
+.rv-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.rv-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 13px;
+  border: 1px solid var(--adm-border-strong);
+  border-radius: var(--adm-radius-sm);
+  background-color: var(--adm-surface-2);
+  font-size: 13px;
+  color: var(--adm-text-2);
+  cursor: pointer;
+}
+.rv-choice input { width: 15px; height: 15px; margin: 0; accent-color: var(--adm-brand); cursor: pointer; }
+.rv-choice:has(input:checked) { border-color: var(--adm-brand); color: var(--adm-text); background-color: rgba(167, 139, 250, 0.1); }
+.rv-choice:has(input:focus-visible) { outline: 2px solid var(--adm-brand); outline-offset: 1px; }
+
+/* 등급 확정 확인 단계 */
+.rv-summary { margin-top: 14px; }
+.rv-summary__lead { font-size: 13px; color: var(--adm-text-2); margin-bottom: 10px; }
+.rv-summary__list,
+.rv-detail__list { margin: 0; }
+.rv-summary__list > div,
+.rv-detail__list > div { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--adm-border); font-size: 13px; }
+.rv-summary__list dt,
+.rv-detail__list dt { flex: 0 0 104px; color: var(--adm-text-3); font-weight: 600; }
+.rv-summary__list dd,
+.rv-detail__list dd { flex: 1; min-width: 0; margin: 0; color: var(--adm-text); line-height: 1.55; word-break: keep-all; }
+
+/* ===== 상세 보기 ===== */
+.rv-detail__sec + .rv-detail__sec { margin-top: 20px; }
+.rv-detail__title { margin: 0 0 4px; font-size: 13px; font-weight: 700; color: var(--adm-brand); letter-spacing: 0.02em; }
+.rv-autolist { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 7px; font-size: 12.5px; color: var(--adm-text-2); }
+.rv-autolist li { display: flex; align-items: center; gap: 9px; }
+
+.rv-history { list-style: none; margin: 8px 0 0; padding: 0; }
+.rv-history__item { position: relative; padding: 10px 0 10px 16px; border-left: 2px solid var(--adm-brand); }
+.rv-history__item.is-system { border-left-color: var(--adm-border-strong); }
+.rv-history__item + .rv-history__item { margin-top: 2px; }
+.rv-history__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rv-history__flow { font-size: 13px; font-weight: 600; color: var(--adm-text); }
+.rv-history__at { margin-left: auto; font-size: 11.5px; color: var(--adm-text-3); font-variant-numeric: tabular-nums; }
+.rv-history__reason { margin: 5px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--adm-text-2); }
+
+/* ===== 좁은 화면 ===== */
+@media (max-width: 640px) {
+  .rv-toolbar__role { margin-left: 0; }
+  .rv-summary__list > div,
+  .rv-detail__list > div { flex-direction: column; gap: 3px; }
+  .rv-summary__list dt,
+  .rv-detail__list dt { flex: none; }
+  .rv-history__at { margin-left: 0; width: 100%; }
+}
+
+/* ===== 라이트 모드 ===== */
+:root[data-adm-theme='light'] .rv-tab.is-on .rv-tab__count { color: #ffffff; }
+:root[data-adm-theme='light'] .rv-choice:has(input:checked) { background-color: rgba(109, 79, 224, 0.08); }
+:root[data-adm-theme='light'] .rv-error { background-color: rgba(220, 59, 62, 0.07); }
+:root[data-adm-theme='light'] .adm-modal__field input[type='date'] { color-scheme: light; }

@@ -633,6 +633,9 @@
     (reason || detail).focus();
   }
 
+  /* 전용 화면 모듈(admin-review.js 등)이 같은 표현 요소를 쓰도록 공용 헬퍼를 내보낸다 */
+  window.ADMIN_UI = { el: el, svgNode: svgNode, ICONS: ICONS, badge: badge, showToast: showToast };
+
   /* ---------- 표 선택 상태 ----------
      표(buildTable)와 페이지 헤더 버튼(buildPageHead)이 서로 다른 시점에 만들어지므로
      선택 결과를 여기에 모아두고 구독자에게 알린다. 화면을 새로 그릴 때마다 초기화한다. */
@@ -1125,7 +1128,7 @@
       ]
     },
     queue: [
-      { count: 12, label: '콘텐츠 심사 대기', href: '#/content/review' },
+      { count: 4, label: '영상 심사 대기', href: '#/content/review/wait' },
       { count: 4, label: '크리에이터 신청', href: '#/creator/list' },
       { count: 7, label: '지급 승인 대기', href: '#/settle/pay' },
       { count: 9, label: '신고 처리 대기', href: '#/report/content' },
@@ -1315,6 +1318,10 @@
       } else if (s.type === 'stats') {
         if (s.filters && s.filters.length) { content.appendChild(buildFilters(s.filters)); }
         content.appendChild(buildStats(s, sec));
+      } else if (s.type === 'custom') {
+        /* 전용 모듈 화면 (예 : js/admin-review.js 의 심사·승인 관리) */
+        var screenFn = (window.ADMIN_SCREENS || {})[s.render];
+        if (screenFn) { content.appendChild(screenFn({ sec: sec, s: s })); }
       }
     }
     renderTopNav(route);
