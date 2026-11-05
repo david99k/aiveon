@@ -1153,9 +1153,11 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
 /* --------------------------------------------------------------------------
    4. Hero
    -------------------------------------------------------------------------- */
+/* 높이는 화면 너비에 비례(FHD 기준 874px = 45.5vw)시켜 4K·울트라와이드에서도 키아트가
+   FHD와 같은 구도로 보이게 한다. 좁은 화면은 하한(600px), 세로가 짧은 화면은 뷰포트 높이로 제한. */
 .hero {
   position: relative;
-  height: 874px;
+  height: clamp(600px, 45.5vw, 100vh);
   overflow: hidden;
 }
 
@@ -1167,7 +1169,8 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
   height: 100%;
 }
 
-.hero__bg img { object-fit: cover; }
+/* 잘릴 때 남길 영역(초점) : 슬라이드별로 --hero-focus 를 지정한다 (예: 로고가 위쪽이면 center top) */
+.hero__bg img { object-fit: cover; object-position: var(--hero-focus, center center); }
 
 .hero__bg::after {
   content: '';
@@ -1179,7 +1182,7 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
 .hero__content {
   position: absolute;
   left: 110px;
-  top: 538px;
+  bottom: 63px;   /* 히어로 높이가 바뀌어도 하단 기준 위치 유지 (FHD에서 기존 top:538px 와 동일) */
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -1213,11 +1216,11 @@ a.faq__chip { text-decoration: none; } /* 문의 페이지에선 칩이 FAQ 링�
 }
 
 /* --- 상세(콘텐츠) 히어로 : 시놉시스·구독 배지·액션 버튼 확장 (Figma 338:4681) --- */
-.hero--detail { height: 893px; }
+/* 상세 히어로도 너비 비례(FHD 893px = 46.5vw). 하한은 콘텐츠(시놉시스·버튼) 높이를 고려한 값 */
+.hero--detail { height: clamp(680px, 46.5vw, 100vh); }
 
 .hero--detail .hero__content {
-  top: 330px;
-  bottom: auto;
+  bottom: 124px;  /* FHD에서 기존 top:330px 와 동일 */
   max-width: 676px;
 }
 

@@ -16,7 +16,9 @@
         @foreach ($heroes as $hero)
             <article class="swiper-slide">
                 <div class="hero__bg">
+                    {{-- focus : 화면 비율 때문에 잘릴 때 남길 영역 (예: 'center top') --}}
                     <img src="{{ asset($hero['image'] ?? 'images/main/hero_main.jpg') }}" alt=""
+                         @if (!empty($hero['focus'])) style="--hero-focus: {{ $hero['focus'] }}" @endif
                          @if (!$loop->first) loading="lazy" @endif>
                 </div>
 

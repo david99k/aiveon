@@ -104,6 +104,7 @@ class MainController
                 'tags' => ['2026', '애니메이션', '가족'],
                 'description' => "포근한 밤을 지켜주는 잠들기 전 이야기\nAI 오리지널 힐링 애니메이션",
                 'image' => 'images/main/hero_animation.jpg',
+                'focus' => 'center top',   // 타이틀 로고가 이미지 상단에 있어 위쪽을 남긴다
                 'play_url' => route('watch', 'movie'),
                 'detail_url' => route('detail'),
             ]],
