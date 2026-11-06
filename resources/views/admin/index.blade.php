@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-review.css') }}">
 </head>
 <body class="adm-body">
     <div class="adm">
@@ -71,6 +72,8 @@
     </div>
 
     <script src="{{ asset('js/admin-data.js') }}"></script>
+    <script src="{{ asset('js/admin-review-data.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
+    <script src="{{ asset('js/admin-review.js') }}"></script>
 </body>
 </html>
